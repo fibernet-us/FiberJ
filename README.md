@@ -1,4 +1,1 @@
-JCEN
-====
-
-JCEN is a Java program for fiber diffraction pattern processing. It aims to be portable, easy-to-maintain, and functionality compatible with WCEN
+FiberJ is a Java program for processing fiber diffraction patterns. It displays fiber diffraction patterns in various image formats, determines diffraction parameters, corrects systematic effects and maps diffraction data into reciprocal space. FiberJ provides highly customization colormaps great for visualizing images with dynamic ranges of intensities. Its data plotting, image filtering and manipulation routines are also useful for general scientific image processing.
