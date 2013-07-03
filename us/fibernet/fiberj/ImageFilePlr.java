@@ -270,5 +270,6 @@ public class ImageFilePlr {
     private int roundit(double d) {
         return (int) Math.round(d);
     }
-}
+    
+} // class ImageFilePlr
 

@@ -61,7 +61,7 @@ public class UIInfobar extends JPanel {
     // infobar items are InfoItem objects
     private static InfoItem[] infoList = { 
         new InfoItem(WidgetType.LABELED_TFIELD, DataType.INT,  "x"),
-        new InfoItem(WidgetType.LABELED_TFIELD, DataType.INT,  "y"),
+        new InfoItem(WidgetType.LABELED_TFIELD, DataType.INT,  "y"), // TODO, y is shown as ...
         new InfoItem(WidgetType.LABELED_TFIELD, DataType.REAL, "r"), 
         new InfoItem(WidgetType.LABELED_TFIELD, DataType.REAL, "I"),
         new InfoItem(WidgetType.LABELED_TFIELD, DataType.REAL, "d"), 

@@ -62,7 +62,7 @@ import javax.swing.JPopupMenu;
 public class ColormapControl {
 
     private static final String[] COLORMAPS = { 
-            "Rainbow", "BGR", "RGB", "Black_White", "White_Black", "Keiichi" 
+        "RGB", "BGR", "Rainbow", "Black_White", "White_Black", "Keiichi" 
     };
     private static final int colorPaneWidth = 374;
     private static final int colorPaneHeight = 143;
