@@ -1,5 +1,5 @@
 /*
- * Copyright Wen Bian. All rights reserved.
+ * Copyright Wen Bian and Billy Zheng. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -29,10 +29,8 @@
 package us.fibernet.fiberj;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -40,7 +38,10 @@ import java.awt.event.ActionListener;
 
 /**
  * A UI class for displaying program messages and taking user commands
- * and pass the commands to an PatternProcessor
+ * and pass the commands to an PatternProcessor.
+ * 
+ * Either of the two text fields can be used as command line. When one 
+ * is used as command line, the other will be used for message output.
  */
 @SuppressWarnings("serial")
 public class UIMessage extends JPanel {
@@ -48,11 +49,11 @@ public class UIMessage extends JPanel {
     private JFrame parentFrame;  // might be useful down the road
     private JTextField[] textFields;   // two text fields, one for message, one for command
     private int messageFieldNumber = 0; // id of the textField used to display messages
-    PatternProcessor imageProcessor; // to which to pass user commands
+    PatternProcessor patternProcessor; // to which to pass user commands
     
     public UIMessage(JFrame parent, int width, int height, PatternProcessor processor) {     
         parentFrame = parent;
-        imageProcessor = processor;
+        patternProcessor = processor;
         Dimension dim = new Dimension(width, height);      
         setPreferredSize(dim); 
         setMinimumSize(dim); 
@@ -62,7 +63,7 @@ public class UIMessage extends JPanel {
         textFields = new JTextField[2];
         for(int i=0; i<2; i++) {
             textFields[i] = new JTextField();
-            textFields[i].setName(i + "");
+            textFields[i].setName(i + ""); 
             textFields[i].setBackground(this.getBackground().brighter());     
             textFields[i].setEditable(true);
             
@@ -79,12 +80,18 @@ public class UIMessage extends JPanel {
         }
     }
     
-    public String getCommand() {
-        return textFields[1 - messageFieldNumber].getText();
-    }
-    
+    /**
+     * Show message or action result on the available textfield 
+     */
     public void setMessage(String messsage) {
         textFields[messageFieldNumber].setText(messsage);
+    }
+    
+    /**
+     * Get the command string from the command line text field
+     */
+    public String getCommand() {
+        return textFields[1 - messageFieldNumber].getText();
     }
     
     /**
@@ -92,7 +99,9 @@ public class UIMessage extends JPanel {
      */
     public void processCommand(String command) {
         if(command != null) {
-            imageProcessor.executeCommand(command);
+            patternProcessor.executeCommand(command);
         }
     }
-}
+    
+} // class UIMessage
+

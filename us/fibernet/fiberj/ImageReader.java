@@ -1,5 +1,5 @@
 /*
- * Copyright Xiao Yi and Wen Bian. All rights reserved.
+ * Copyright Xiao Yi, Wen Bian, and Philip Cook. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
