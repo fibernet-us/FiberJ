@@ -28,6 +28,10 @@
 
 package us.fibernet.fiberj;
 
+/**
+ * A utility class for measuring running time
+ *
+ */
 public class Timer {
 
     private long timeStart, timeEnd;  // for running time measurement

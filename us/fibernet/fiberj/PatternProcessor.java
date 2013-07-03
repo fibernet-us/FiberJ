@@ -57,6 +57,7 @@ public final class PatternProcessor {
     public double getAspectRatio() { return aspectRatio; }
     public double getShrinkScale() { return shrinkScale; }
     
+    
     /**
      * Read an image file and display the pattern
      * 

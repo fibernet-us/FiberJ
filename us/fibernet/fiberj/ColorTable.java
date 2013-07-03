@@ -28,6 +28,9 @@
 
 package us.fibernet.fiberj;
 
+/**
+ * A utility class for storing RGB color tables
+ */
 public class ColorTable {
 
     private byte[] red;

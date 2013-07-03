@@ -32,6 +32,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.Dimension;
 
+/**
+ * A JPanel subclass for displaying pattern images
+ *
+ */
 @SuppressWarnings("serial")
 public class UIPattern extends JPanel {
 
@@ -39,24 +43,30 @@ public class UIPattern extends JPanel {
     private JFrame parentFrame;
     private PatternDisplay pattern;
     
+    /**
+     * Create a JPanel with given dimensions on a parent JFrame 
+     */
     public UIPattern(JFrame parent, int width, int height) {
-        this.parentFrame = parent;
+        parentFrame = parent;
         setPreferredSize(new Dimension(width, height)); 
         setMinimumSize(new Dimension(width, height)); 
         setBounds(0, 0, width, height);
         setLayout(null);
-        initialize();
     }
     
+    /**
+     * Place a PatternDisplay object on this panel
+     */
     public void setPattern(PatternDisplay pattern) {
         this.pattern = pattern;
     }
     
+    /**
+     * Create a Colormap control associated with current pattern
+     */
     public void openColormap() {
         pattern.openColorControl();
     }
     
-    private void initialize() {
-        
-    }
-}
+    
+} // class UIPattern
