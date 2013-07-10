@@ -43,6 +43,9 @@ import java.util.Scanner;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
+/**
+ * Pattern display related utilities
+ */
 public class PatternUtil {
 
     private static final String colorTableDir = "ColorTables/";
@@ -384,23 +387,6 @@ public class PatternUtil {
             x[i] = (b[i] - sum) / A[i][i];
         }
         return x;
-    }
-
-    /**
-     * display the image in the form of int[][]. Use to check 2D array.
-     * 
-     * @param image
-     *            input image
-     */
-    public static void displayArray(int[][] image) {
-        for (int i = 0; i < image.length; i++) {
-            for (int j = 0; j < image[0].length; j++) {
-                System.out.print(image[i][j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println("image width: " + image[0].length + " height: "
-                + image.length);
     }
 
 }

@@ -26,38 +26,25 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.menu;
-
-import us.fibernet.fiberj.UIMain;
+package us.fibernet.fiberj;
 
 /**
- * A menu handler for the Main menu bar, Colormap menu
+ * An interface defining essential menu data functions to be used by a menu builder
  */
-public class MenuHandlerMainColormap extends MenuHandlerMain {  
-     
-    /*
-     * Colormap -> Load
-     */
-    // TODO
-    @Override
-    public void colormapLoad() {
+public interface MenuData {
 
-    } 
+    /** @return  total number of menus in this MenuData */
+    int getNumberOfMenus();
     
-    /*
-     * Colormap -> Load
-     */
-    // TODO
-    @Override
-    public void colormapSave() {
-        
-    } 
+    /** @return  total number of menu items in the menu identified by menuID */
+    int getNumberOfMenuItems(int menuID);
     
-    /*
-     * Colormap -> Load
-     */
-    @Override
-    public void colormapCustomize() {
-        UIMain.openColormap();
-    } 
+    /** @return  name of the menu identified by menuID */
+    String getMenuName(int menuID);
+    
+    /** @return  name of the menu item identified by menuID and menuItemID */
+    String getMenuItemName(int menuID, int menuItemID);
+    
+    /** @return  MenuCommander responsible for the menu item identified by menuID and menuItemID */
+    MenuCommander getMenuItemCommander(int menuID, int menuItemID);
 }

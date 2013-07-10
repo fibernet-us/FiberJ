@@ -26,63 +26,22 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.menu;
-
-import java.io.File;
-import javax.swing.JFileChooser;
-
-import us.fibernet.fiberj.Parameter;
-import us.fibernet.fiberj.PatternProcessor;
+package us.fibernet.fiberj;
 
 /**
- * A menu handler for the Main menu bar, File menu
- */
-public class MenuHandlerMainFile extends MenuHandlerMain {  
-     
-    /*
-     * File -> Open
-     */
-    @Override
-    public void fileOpen() {
-            // fire up a file broswer in current working directory
-            JFileChooser fc = new JFileChooser(Parameter.getWorkingDir());   
-            int response = fc.showOpenDialog(null);      
-            if(response == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                String filePath = file.getAbsolutePath();
-                System.out.println(filePath);
-                PatternProcessor.getInstance().getInputImage(filePath);      
-                // user might have changed working directory, update it
-                Parameter.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
-            } 
-            else {
-                System.out.println("Open command cancelled");
-            }
-        }
- 
-    /*
-     * File -> Save
-     */
-    // TODO
-    @Override
-    public void fileSave() {
-
-    }
+* An interface used in InfoItem GUI callback. A GUI upon update will pass relevant 
+* information to a registered InfoItemGuiCallBack by calling its updateFromGui().
+* <p>
+* This should be implemented by data objects who use InfoItem for display info
+* and obtain info from user input.
+*/
+interface InfoItemGuiCallBack {
     
-    /*
-     * File -> Close
+    /**
+     * To pass user input on GUI to data associated with this InfoItemGuiCallBack
+     * 
+     * @param name      name of the GUI associated with this InfoItemGuiCallBack
+     * @param newValue  new value from user input on the GUI
      */
-    // TODO
-    @Override
-    public void fileClose() {
-
-    }
-    
-    /*
-     * File -> Exit
-     */
-    @Override
-    public void fileExit() {
-        System.exit(0);
-    }
+    void updateFromGui(String name, String newValue);
 }

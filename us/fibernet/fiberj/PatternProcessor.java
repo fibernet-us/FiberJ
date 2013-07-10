@@ -139,7 +139,7 @@ public final class PatternProcessor {
             String filename = command.substring(command.indexOf(' ')).trim();
             // check if the file name is valid, if not, try prepend working directory to it
             if(!new File(filename).exists()) {
-                filename = Parameter.getWorkingDir() + File.separator + filename;
+                filename = SystemSettings.getWorkingDir() + File.separator + filename;
             }
             
             if(!new File(filename).exists()) {
@@ -160,12 +160,13 @@ public final class PatternProcessor {
         }
         else if(command.startsWith("pwd") || command.startsWith("dir")) {
             try {
-                UIMain.getUIMessage().setMessage(Parameter.getWorkingDir());
+                UIMain.getUIMessage().setMessage(SystemSettings.getWorkingDir());
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
             } 
         }           
     }
-}
+    
+} // class PatternProcessor
 

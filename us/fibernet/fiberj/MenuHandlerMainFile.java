@@ -26,25 +26,61 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.menu;
+package us.fibernet.fiberj;
+
+import java.io.File;
+import javax.swing.JFileChooser;
+
 
 /**
- * An interface defining essential menu data functions to be used by a menu builder
+ * A menu handler for the Main menu bar, File menu
  */
-public interface MenuData {
+public class MenuHandlerMainFile extends MenuHandlerMain {  
+     
+    /*
+     * File -> Open
+     */
+    @Override
+    public void fileOpen() {
+            // fire up a file broswer in current working directory
+            JFileChooser fc = new JFileChooser(SystemSettings.getWorkingDir());   
+            int response = fc.showOpenDialog(null);      
+            if(response == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String filePath = file.getAbsolutePath();
+                System.out.println(filePath);
+                PatternProcessor.getInstance().getInputImage(filePath);      
+                // user might have changed working directory, update it
+                SystemSettings.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
+            } 
+            else {
+                System.out.println("Open command cancelled");
+            }
+        }
+ 
+    /*
+     * File -> Save
+     */
+    // TODO
+    @Override
+    public void fileSave() {
 
-    /** @return  total number of menus in this MenuData */
-    int getNumberOfMenus();
+    }
     
-    /** @return  total number of menu items in the menu identified by menuID */
-    int getNumberOfMenuItems(int menuID);
+    /*
+     * File -> Close
+     */
+    // TODO
+    @Override
+    public void fileClose() {
+
+    }
     
-    /** @return  name of the menu identified by menuID */
-    String getMenuName(int menuID);
-    
-    /** @return  name of the menu item identified by menuID and menuItemID */
-    String getMenuItemName(int menuID, int menuItemID);
-    
-    /** @return  MenuCommander responsible for the menu item identified by menuID and menuItemID */
-    MenuCommander getMenuItemCommander(int menuID, int menuItemID);
+    /*
+     * File -> Exit
+     */
+    @Override
+    public void fileExit() {
+        System.exit(0);
+    }
 }

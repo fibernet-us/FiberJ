@@ -30,7 +30,6 @@ package us.fibernet.fiberj;
 
 /**
  * A utility class for measuring running time
- *
  */
 public class Timer {
 

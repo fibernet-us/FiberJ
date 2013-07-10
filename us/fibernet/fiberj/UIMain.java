@@ -38,8 +38,6 @@ import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 
-import us.fibernet.fiberj.menu.MenuDataMain;
-import us.fibernet.fiberj.menu.UIMenubar;
 
 /**
  * <pre>
@@ -76,6 +74,7 @@ public final class UIMain {
     private static int nonPatternWidth, nonPatternHeight;
     
     private static PatternProcessor patternProcessor;
+    private static InfoItemCollectionPixel currentPixelInfo;
 
     /**
      * No instantiation. See init().
@@ -95,6 +94,11 @@ public final class UIMain {
      */
     public static void openColormap() {
         uiPattern.openColormap();
+    }
+    
+    /** update the x- and y- coordinate of current pixel at cursor */
+    public static void cursorUpdate(int x, int y) {
+        currentPixelInfo.updateLocation(x, y);
     }
     
     /**
@@ -143,12 +147,12 @@ public final class UIMain {
     public static void updateSizeInfo() {       
         nonPatternWidth  = mainFrame.getWidth() - uiPattern.getWidth(); 
         nonPatternHeight = mainFrame.getHeight() - uiPattern.getHeight(); 
-        System.out.println("   pattern width, height: " + uiPattern.getWidth() + ", " + uiPattern.getHeight());
-        System.out.println("nonPattern width, height: " + nonPatternWidth + ", " + nonPatternHeight);     
+        //System.out.println("   pattern width, height: " + uiPattern.getWidth() + ", " + uiPattern.getHeight());
+        //System.out.println("nonPattern width, height: " + nonPatternWidth + ", " + nonPatternHeight);     
     }
     
     public static boolean isZero(double d) {
-        return Math.abs(d) < 0.00001;  // define an global epsilon if needed
+        return Math.abs(d) < 0.000001;  // define an global epsilon if needed
     }
     
     /**
@@ -196,9 +200,11 @@ public final class UIMain {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         patternProcessor = PatternProcessor.getInstance();
+        currentPixelInfo = new InfoItemCollectionPixel();
         
         uiMenubar = new UIMenubar(mainFrame, new MenuDataMain());
         uiInfobar = new UIInfobar(mainFrame, hMainwin, hInfobar);
+        uiInfobar.addInfoItemCollection(currentPixelInfo);
         uiPattern = new UIPattern(mainFrame, hMainwin, 0);
         uiMessage = new UIMessage(mainFrame, hMainwin, hMessage, patternProcessor);
 
@@ -244,7 +250,7 @@ public final class UIMain {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    Parameter.init();
+                    SystemSettings.init();
                     UIMain.init(100, 100, 600, 600, 0, 0);
                     patternProcessor.createRainbowImage(600);
                     

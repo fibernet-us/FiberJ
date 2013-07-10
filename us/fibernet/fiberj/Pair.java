@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng, Tony Yao and Wen Bian. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -28,43 +28,37 @@
 
 package us.fibernet.fiberj;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.util.Iterator;
-
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 /**
- * A JPanel for displaying pattern related information.
- * Currently items include 
+ * A simple Pair class to hold two objects
  */
-@SuppressWarnings("serial")
-public class UIInfobar extends JPanel {
+public class Pair<K, V> {
+    
+    private K key;
+    private V value;
 
-    private JFrame parentFrame;
-      
-    /** create a FlowLayout JPanel with given dimension on a parent frame */
-    public UIInfobar(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        Dimension dim = new Dimension(width, height);
-        setPreferredSize(dim); 
-        setMinimumSize(dim);  
-        setLayout(new FlowLayout(FlowLayout.LEFT)); 
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
     }
 
- 
-    /**
-     * add a collection of InfoItems (implementing addTo(JPanel)) to UIInfobar
-     * 
-     * @param infoItemCollection  an InfoItemCollection that implements Iterator &lt; InfoItem &gt;
-     */
-    public void addInfoItemCollection(InfoItemCollection infoItemCollection) {
-        while(infoItemCollection.hasNext()) {
-            infoItemCollection.next().addTo(this);
-            this.add(Box.createHorizontalStrut(1)); // add spacing between InfoItems
-        }
+    public String toString() { 
+        return "(" + key + ", " + value + ")"; 
     }
-        
-} // class UIInfobar
+
+    public K getKey() {
+        return key;
+    }
+
+    public V getValue() {
+        return value;
+    }
+    
+    public void setKey(K key) {
+        this.key = key;
+    }
+
+    public void setValue(V value) {
+        this.value = value;
+    }
+}
+

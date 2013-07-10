@@ -32,7 +32,7 @@ package us.fibernet.fiberj;
  * A class to hold current values for various system wide settings 
  *
  */
-public final class Parameter {
+public final class SystemSettings {
    
     private static String homeDir;
     private static String workingDir;
@@ -41,7 +41,7 @@ public final class Parameter {
     private static int cursorX;
     private static int cursorY;
     
-    private Parameter() { }
+    private SystemSettings() { }
  
     public static String getHomeDir()    { return homeDir;        }  
     public static String getWorkingDir() { return workingDir;     }  
@@ -63,8 +63,8 @@ public final class Parameter {
     public static void init(String... args) {
         homeDir = System.getProperty("user.home");
         workingDir = System.getProperty("user.dir");
-        System.out.println(homeDir);
-        System.out.println(workingDir);
+        //System.out.println(homeDir);
+        //System.out.println(workingDir);
     }
 
     /**
@@ -72,10 +72,7 @@ public final class Parameter {
      */
     public static void init(String filename) {
         homeDir = System.getProperty("user.home");
-        workingDir = System.getProperty("user.dir");
-        
+        workingDir = System.getProperty("user.dir"); 
     }
     
-
-} // class Parameter
-
+} // class SystemSettings

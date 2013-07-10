@@ -1,5 +1,5 @@
 /*
- * Copyright Yi Xiao. All rights reserved.
+ * Copyright Yi Xiao and Billy Zheng. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -73,7 +73,6 @@ public class PatternDisplay {
 
         imagePanel.removeAll();
         imagePanel.setLayout(null);
-        
 
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -119,7 +118,7 @@ public class PatternDisplay {
 
     // refresh the label according to the size of the frame and fit the currIndexImage too.
     private void reloadImageLabel() {
-        System.out.println("new panel size: " + imagePanel.getWidth() + ", " + imagePanel.getHeight());
+        //System.out.println("new panel size: " + imagePanel.getWidth() + ", " + imagePanel.getHeight());
         imageLabel.setBounds(0, 0, imagePanel.getWidth(), imagePanel.getHeight());
         currIndexImage = PatternUtil.fitImage(imageLabel, origIndexImage);   // currIndexImage size might change
     }
@@ -149,6 +148,7 @@ public class PatternDisplay {
         control.openColorMapControl();
     }
 
+    // track mouse pointer and draw cursor
     private void mouseHandler(MouseEvent e) {
         //added check for MouseEvent.BUTTON1 which is left click
         if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON1) {
@@ -158,7 +158,35 @@ public class PatternDisplay {
         }
     }
     
+    // update cursor location by arrow keys
+    private void keyHandler(KeyEvent e) {
+        switch(e.getKeyCode()) { 
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_KP_UP:
+                 SystemSettings.setCursorY(SystemSettings.getCursorY() - 1);
+                 drawCrossHair(SystemSettings.getCursorX(), SystemSettings.getCursorY());
+                 break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_KP_DOWN:  
+                 SystemSettings.setCursorY(SystemSettings.getCursorY() + 1);
+                 drawCrossHair(SystemSettings.getCursorX(), SystemSettings.getCursorY());
+                 break;
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_KP_LEFT:
+                 SystemSettings.setCursorX(SystemSettings.getCursorX() - 1);
+                 drawCrossHair(SystemSettings.getCursorX(), SystemSettings.getCursorY());
+                 break;
+            case KeyEvent.VK_RIGHT :
+            case KeyEvent.VK_KP_RIGHT:
+                 SystemSettings.setCursorX(SystemSettings.getCursorX() + 1);
+                 drawCrossHair(SystemSettings.getCursorX(), SystemSettings.getCursorY());
+                 break;
+        }
+    }
+    
     /*
+     * draw a target centered at the current cursor location
+     * 
      *     _|_
      *  __|_|_|__
      *    |_|_|
@@ -167,8 +195,6 @@ public class PatternDisplay {
     private void drawCrossHair(int x, int y) {
         final int A = 12;  // half length of cross hair Axis
         final int B = 6;  // half length of cross hair Box      
-        Parameter.setCursorX(x);
-        Parameter.setCursorY(y);
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g = drawImage.createGraphics();
         g.setColor(Color.WHITE);
@@ -181,32 +207,10 @@ public class PatternDisplay {
         g.draw(new Line2D.Double(x+B, y+B, x-B, y+B));
         g.dispose();
         imageLabel.setIcon(new ImageIcon(drawImage));   
-        System.out.println("x,y: " + x + "," + y);
+        //System.out.println("x,y: " + x + "," + y);
+        SystemSettings.setCursorX(x);
+        SystemSettings.setCursorY(y);
+        UIMain.cursorUpdate(x, y);
     }
     
-    private void keyHandler(KeyEvent e) {
-
-        switch(e.getKeyCode()) { 
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_KP_UP:
-                 Parameter.setCursorY(Parameter.getCursorY() - 1);
-                 drawCrossHair(Parameter.getCursorX(), Parameter.getCursorY());
-                 break;
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_KP_DOWN:  
-                 Parameter.setCursorY(Parameter.getCursorY() + 1);
-                 drawCrossHair(Parameter.getCursorX(), Parameter.getCursorY());
-                 break;
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_KP_LEFT:
-                 Parameter.setCursorX(Parameter.getCursorX() - 1);
-                 drawCrossHair(Parameter.getCursorX(), Parameter.getCursorY());
-                 break;
-            case KeyEvent.VK_RIGHT :
-            case KeyEvent.VK_KP_RIGHT:
-                 Parameter.setCursorX(Parameter.getCursorX() + 1);
-                 drawCrossHair(Parameter.getCursorX(), Parameter.getCursorY());
-                 break;
-        }
-    }
 }

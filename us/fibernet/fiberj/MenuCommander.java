@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng, Tony Yao and Wen Bian. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -28,43 +28,16 @@
 
 package us.fibernet.fiberj;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.util.Iterator;
-
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 /**
- * A JPanel for displaying pattern related information.
- * Currently items include 
+ * An interface defining a middleman between menu event (listener) and menu handler.
+ * Called by menu listener, and in turn, calls corresponding menu handler. 
+ * Concrete MenuCommander(s) are created by concrete MenuData(s).
+ * 
+ * Roles with regard to Command Pattern:
+ * MenuListener  --> Invoker
+ * MenuCommander --> Command 
+ * MenuHandler   --> Receiver 
  */
-@SuppressWarnings("serial")
-public class UIInfobar extends JPanel {
-
-    private JFrame parentFrame;
-      
-    /** create a FlowLayout JPanel with given dimension on a parent frame */
-    public UIInfobar(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        Dimension dim = new Dimension(width, height);
-        setPreferredSize(dim); 
-        setMinimumSize(dim);  
-        setLayout(new FlowLayout(FlowLayout.LEFT)); 
-    }
-
- 
-    /**
-     * add a collection of InfoItems (implementing addTo(JPanel)) to UIInfobar
-     * 
-     * @param infoItemCollection  an InfoItemCollection that implements Iterator &lt; InfoItem &gt;
-     */
-    public void addInfoItemCollection(InfoItemCollection infoItemCollection) {
-        while(infoItemCollection.hasNext()) {
-            infoItemCollection.next().addTo(this);
-            this.add(Box.createHorizontalStrut(1)); // add spacing between InfoItems
-        }
-    }
-        
-} // class UIInfobar
+public interface MenuCommander {
+    void execute();
+}

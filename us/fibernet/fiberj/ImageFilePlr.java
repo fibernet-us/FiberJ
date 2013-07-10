@@ -199,8 +199,8 @@ public class ImageFilePlr {
         
         double[] numberArray = new double[count];
         int ni = 0;  // number of numbers parsed
-        int si = 0;  // current working index of numstr
-        int fi = format.indexOf(fmtsep, 0); // current working index of headerFormat
+        int si = 0;  // current working currentIndex of numstr
+        int fi = format.indexOf(fmtsep, 0); // current working currentIndex of headerFormat
         
         while(ni < count && si < numstr.length() && fi < format.length()) {
             

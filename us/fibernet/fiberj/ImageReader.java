@@ -46,7 +46,10 @@ import com.sun.media.jai.codec.TIFFDecodeParam;
 import com.sun.media.jai.codec.ImageDecoder;
 import com.sun.media.jai.codec.ImageCodec;
 
-
+/**
+ * A utility class for read patterns of diffraction formats
+ *
+ */
 @SuppressWarnings("restriction")
 public final class ImageReader {
 
@@ -68,15 +71,15 @@ public final class ImageReader {
         String fname = args[0];
         
         if(args.length == 1) {
-            if (endsWithIgnoreCase(fname, "tif")) {
+            if (fname.toLowerCase().endsWith("tif")) {
                 return readTif(fname);
             } 
-            else if (endsWithIgnoreCase(fname, "plr")) {
+            else if (fname.toLowerCase().endsWith("plr")) {
                 return readPlr(fname);
             } 
         }
         else {
-            if (endsWithIgnoreCase(fname, "dat")) {
+            if (fname.toLowerCase().endsWith("dat")) {
                 int w = 0, h = 0;
                 try {
                     w = Integer.parseInt(args[1]);
@@ -188,39 +191,8 @@ public final class ImageReader {
         }
         return output;
     }
-    
-    /*
-     * The following code is copied from:
-     * http://www.java2s.com/Tutorial/Java/0040__Data-Type/CheckifaStringendswithaspecifiedsuffix.htm
-     */
-    
-    /*
-     * Check if a String ends with a specified suffix, case insensitive.
-     */
-    private static boolean endsWithIgnoreCase(String str, String suffix) {
-        return endsWith(str, suffix, true);
-    }
 
-    /*
-     * Check if a String ends with a specified suffix
-     */
-    private static boolean endsWith(String str, String suffix,
-            boolean ignoreCase) {
-
-        if (str == null || suffix == null) {
-            return (str == null && suffix == null);
-        }
-
-        if (suffix.length() > str.length()) {
-            return false;
-        }
-
-        int strOffset = str.length() - suffix.length();
-        return str.regionMatches(ignoreCase, strOffset, suffix, 0,
-                suffix.length());
-    }
-
-}
+} // class ImageReader
 
 
 

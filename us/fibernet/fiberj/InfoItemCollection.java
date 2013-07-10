@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng, Tony Yao and Wen Bian. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -28,43 +28,44 @@
 
 package us.fibernet.fiberj;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 /**
- * A JPanel for displaying pattern related information.
- * Currently items include 
+ * A collection of InfoItems providing an implementation for Iterator interface.
+ * Subclasses need to populate infoItemList themselves.
  */
-@SuppressWarnings("serial")
-public class UIInfobar extends JPanel {
-
-    private JFrame parentFrame;
-      
-    /** create a FlowLayout JPanel with given dimension on a parent frame */
-    public UIInfobar(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        Dimension dim = new Dimension(width, height);
-        setPreferredSize(dim); 
-        setMinimumSize(dim);  
-        setLayout(new FlowLayout(FlowLayout.LEFT)); 
-    }
-
- 
-    /**
-     * add a collection of InfoItems (implementing addTo(JPanel)) to UIInfobar
-     * 
-     * @param infoItemCollection  an InfoItemCollection that implements Iterator &lt; InfoItem &gt;
-     */
-    public void addInfoItemCollection(InfoItemCollection infoItemCollection) {
-        while(infoItemCollection.hasNext()) {
-            infoItemCollection.next().addTo(this);
-            this.add(Box.createHorizontalStrut(1)); // add spacing between InfoItems
+abstract class InfoItemCollection implements Iterator<InfoItem> {
+    
+    protected ArrayList<InfoItem> infoItemList;
+    protected int currentIndex = 0; 
+    
+    /** create InfoItems and add them to infoItemList */
+    protected abstract void populateInfoItemList();
+    
+    
+    /** implement Iterator's hasNext() */
+    public boolean hasNext() { 
+        return currentIndex < infoItemList.size();
+    } 
+    
+    /** implement Iterator's next() */
+    public InfoItem next() { 
+        if(hasNext()) {
+            return infoItemList.get(currentIndex++); 
         }
+        currentIndex = 0; 
+        return null;
+    } 
+
+    /** implement Iterator's remove() */
+    public void remove() { 
+        throw new UnsupportedOperationException(); 
+    } 
+    
+    /** reset iterator to initial state */
+    public void reset() {
+        currentIndex = 0;
     }
-        
-} // class UIInfobar
+    
+}

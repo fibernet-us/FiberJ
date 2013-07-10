@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng, Tony Yao and Wen Bian. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -28,43 +28,42 @@
 
 package us.fibernet.fiberj;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.util.Iterator;
-
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 /**
- * A JPanel for displaying pattern related information.
- * Currently items include 
+ * A default menu handler for the MenuDataMain. 
  */
-@SuppressWarnings("serial")
-public class UIInfobar extends JPanel {
+public class MenuHandlerMain implements MenuHandler { 
+    
+    public void fileOpen() {}   
+    public void fileSave() {}   
+    public void fileClose() {}    
+    public void fileExit() {}
 
-    private JFrame parentFrame;
-      
-    /** create a FlowLayout JPanel with given dimension on a parent frame */
-    public UIInfobar(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        Dimension dim = new Dimension(width, height);
-        setPreferredSize(dim); 
-        setMinimumSize(dim);  
-        setLayout(new FlowLayout(FlowLayout.LEFT)); 
-    }
+    public void imageFlip() {} 
+    public void imageRotate() {} 
+    public void imageResize() {} 
+    public void imageCrop() {} 
 
- 
-    /**
-     * add a collection of InfoItems (implementing addTo(JPanel)) to UIInfobar
-     * 
-     * @param infoItemCollection  an InfoItemCollection that implements Iterator &lt; InfoItem &gt;
-     */
-    public void addInfoItemCollection(InfoItemCollection infoItemCollection) {
-        while(infoItemCollection.hasNext()) {
-            infoItemCollection.next().addTo(this);
-            this.add(Box.createHorizontalStrut(1)); // add spacing between InfoItems
-        }
-    }
-        
-} // class UIInfobar
+    public void colormapLoad() {} 
+    public void colormapSave() {} 
+    public void colormapCustomize() {} 
+
+    public void drawCircle() {} 
+    public void drawResolutionCircle() {} 
+    public void drawLayerline() {} 
+    public void drawRefresh() {} 
+    public void drawClearAll() {} 
+
+    public void processFilter() {} 
+    public void processPlot() {} 
+    public void processCorrection() {} 
+    public void processTransform() {} 
+    public void processBackground() {} 
+
+    public void windowParameter() {} 
+    public void windowCoordinates() {} 
+    public void windowPixelViewer() {} 
+    public void windowLog() {} 
+    
+    public void helpAbout() {}   
+    public void helpResource() {}               
+}

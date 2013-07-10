@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng, Tony Yao and Wen Bian. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -28,43 +28,43 @@
 
 package us.fibernet.fiberj;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.util.Iterator;
-
-import javax.swing.Box;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 /**
- * A JPanel for displaying pattern related information.
- * Currently items include 
+ * A utility class containing the main window's menu data
  */
-@SuppressWarnings("serial")
-public class UIInfobar extends JPanel {
+public final class MenuDataMain extends MenuDataImpl {
 
-    private JFrame parentFrame;
-      
-    /** create a FlowLayout JPanel with given dimension on a parent frame */
-    public UIInfobar(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        Dimension dim = new Dimension(width, height);
-        setPreferredSize(dim); 
-        setMinimumSize(dim);  
-        setLayout(new FlowLayout(FlowLayout.LEFT)); 
+    private static final String[][] MENU_NAMES = {
+        { "File",    /**/ "Open", "Save", "Close", "Exit" },     
+        { "Image",   /**/ "Flip", "Rotate", "Resize", "Crop" },  
+        { "Colormap",/**/ "Load", "Save", "Customize"},       
+        { "Draw",    /**/ "Circle", "Resolution Circle", "Layerline", "Refresh", "Clear All" }, 
+        { "Process", /**/ "Filter", "Plot", "Correction", "Transform", "Background"},       
+        { "Window",  /**/ "SystemSettings", "Coordinates", "InfoItemCollectionPixel Viewer", "Log" },
+        { "Help",    /**/ "About", "Resource" }
+    };  
+    
+    // one handler per menu
+    private static final MenuHandlerMain[] MENU_HANDLERS = {
+        new MenuHandlerMainFile(),     // File      
+        new MenuHandlerMain(),         // Image     // TODO
+        new MenuHandlerMainColormap(), // Colormap 
+        new MenuHandlerMain(),         // Draw      // TODO
+        new MenuHandlerMain(),         // Process   // TODO
+        new MenuHandlerMain(),         // Window    // TODO
+        new MenuHandlerMain()          // Help      // TODO
+    };
+
+    public MenuDataMain() {
+    }  
+     
+    @Override
+    protected String[][] getMenuNames() { 
+        return MENU_NAMES;     
+    }
+    
+    @Override
+    protected MenuHandler getMenuHandler(int menuID, int menuItemID) {  
+        return MENU_HANDLERS[menuID];
     }
 
- 
-    /**
-     * add a collection of InfoItems (implementing addTo(JPanel)) to UIInfobar
-     * 
-     * @param infoItemCollection  an InfoItemCollection that implements Iterator &lt; InfoItem &gt;
-     */
-    public void addInfoItemCollection(InfoItemCollection infoItemCollection) {
-        while(infoItemCollection.hasNext()) {
-            infoItemCollection.next().addTo(this);
-            this.add(Box.createHorizontalStrut(1)); // add spacing between InfoItems
-        }
-    }
-        
-} // class UIInfobar
+} // class MenuDataMain
