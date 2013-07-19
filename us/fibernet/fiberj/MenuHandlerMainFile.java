@@ -73,6 +73,7 @@ public class MenuHandlerMainFile extends MenuHandlerMain {
     // TODO
     @Override
     public void fileClose() {
+        UIMain.split();
 
     }
     

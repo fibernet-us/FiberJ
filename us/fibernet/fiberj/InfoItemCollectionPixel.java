@@ -55,20 +55,22 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
     /** implement InfoItemCollection's populateInfoItemList */
     @Override
     protected void populateInfoItemList() {
+        
         infoItemList = new ArrayList<InfoItem>();
-        infoItemList.add(new InfoItemTextField("x", "0",      this));
-        infoItemList.add(new InfoItemTextField("y", "0",      this));
-        infoItemList.add(new InfoItemTextField("r", "0.00",   this));
-        infoItemList.add(new InfoItemTextField("I", "0.00",   this));
-        infoItemList.add(new InfoItemTextField("d", "0.0000", this));
-        infoItemList.add(new InfoItemTextField("D", "0.0000", this));
-        infoItemList.add(new InfoItemTextField("R", "0.0000", this));
-        infoItemList.add(new InfoItemTextField("Z", "0.0000", this));
+        infoItemList.add(new InfoItemTextField("x", "0", "%d",   3, false, this));
+        infoItemList.add(new InfoItemTextField("y", "0", "%d",   3, false, this));
+        infoItemList.add(new InfoItemTextField("r", "0", "%.1f", 4, false, this));
+        infoItemList.add(new InfoItemTextField("I", "0", "%.1f", 4, false, this));
+        infoItemList.add(new InfoItemTextField("d", "0", "%.2f", 4, false, this));
+        infoItemList.add(new InfoItemTextField("D", "0", "%.4f", 4, false, this));
+        infoItemList.add(new InfoItemTextField("R", "0", "%.4f", 4, false, this));
+        infoItemList.add(new InfoItemTextField("Z", "0", "%.4f", 4, false, this));
     }
     
-    /** implement InfoItemGuiCallBack's update(). obtain user input from gui */
+    /** implement InfoItemGuiCallBack. obtain user input from gui */
+    // TODO: update cursor position
     @Override
-    public void updateFromGui(String name, String newValue) {      
+    public void guiUpdated(String name, String newValue) {      
         int iv = getIntValue(newValue);
         double dv = getDoubleValue(newValue); 
         if(iv < 0 || dv < 0) {
@@ -103,17 +105,40 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
     // compute all data from x and y, and update gui
     private void updateAll() {
         // TODO: compute other values
+        Pattern p = PatternProcessor.getCurrentPattern();
+        if(p == null) {
+            return;
+        }
         
+        r = p.getr(x, y);
+        I = p.getI(x, y);
+        
+        double[] RZ = {0.0, 0.0};
+        if(p.xy2RZ(x, y, RZ)) {
+            R = RZ[0];
+            Z = RZ[1];
+            D = Math.sqrt(R*R + Z*Z);
+            if(D != 0) { 
+                d = 1/D;
+            }
+            else {
+                d = 0.0;
+            }
+        }
+        else {
+            d = D = R = Z = 0.0;
+        }
+
         // display new values
         int i = -1;
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValue(String.format("%d", x));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValue(String.format("%d", y));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValue(String.format("%.2f", r));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValue(String.format("%.2f", I));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValue(String.format("%.4f", d));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValue(String.format("%.4f", D));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValue(String.format("%.4f", R));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValue(String.format("%.4f", Z));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%d", x));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%d", y));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.1f", r));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.1f", I));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.2f", d));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", D));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", R));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", Z));
     }
     
     // return value as int

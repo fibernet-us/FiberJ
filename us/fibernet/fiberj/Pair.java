@@ -41,10 +41,6 @@ public class Pair<K, V> {
         this.value = value;
     }
 
-    public String toString() { 
-        return "(" + key + ", " + value + ")"; 
-    }
-
     public K getKey() {
         return key;
     }
@@ -60,5 +56,9 @@ public class Pair<K, V> {
     public void setValue(V value) {
         this.value = value;
     }
-}
+    
+    public String toString() { 
+        return "(" + key + ": " + value + ")"; 
+    }
 
+}

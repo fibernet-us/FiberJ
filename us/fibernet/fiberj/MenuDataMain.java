@@ -39,7 +39,7 @@ public final class MenuDataMain extends MenuDataImpl {
         { "Colormap",/**/ "Load", "Save", "Customize"},       
         { "Draw",    /**/ "Circle", "Resolution Circle", "Layerline", "Refresh", "Clear All" }, 
         { "Process", /**/ "Filter", "Plot", "Correction", "Transform", "Background"},       
-        { "Window",  /**/ "SystemSettings", "Coordinates", "InfoItemCollectionPixel Viewer", "Log" },
+        { "Window",  /**/ "Parameter", "Coordinates", "Pixel Viewer", "Log" },
         { "Help",    /**/ "About", "Resource" }
     };  
     

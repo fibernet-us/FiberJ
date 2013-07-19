@@ -37,7 +37,7 @@ import java.awt.Dimension;
  *
  */
 @SuppressWarnings("serial")
-public class UIPattern extends JPanel {
+public class UIPattern extends ScrollablePanel {
 
     //private int width, height;
     private JFrame parentFrame;
@@ -68,5 +68,8 @@ public class UIPattern extends JPanel {
         pattern.openColorControl();
     }
     
+    public JFrame getParentFrame() {
+        return parentFrame;
+    }
     
 } // class UIPattern

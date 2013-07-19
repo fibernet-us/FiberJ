@@ -30,12 +30,14 @@ package us.fibernet.fiberj;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.Box;
+import javax.swing.JPanel;
 
 /**
  * A collection of InfoItems providing an implementation for Iterator interface.
  * Subclasses need to populate infoItemList themselves.
  */
-abstract class InfoItemCollection implements Iterator<InfoItem> {
+abstract class InfoItemCollection implements InfoItem, Iterator<InfoItem> {
     
     protected ArrayList<InfoItem> infoItemList;
     protected int currentIndex = 0; 
@@ -43,13 +45,25 @@ abstract class InfoItemCollection implements Iterator<InfoItem> {
     /** create InfoItems and add them to infoItemList */
     protected abstract void populateInfoItemList();
     
+    /** implements InfoItem */
+    @Override
+    public void addTo(JPanel panel) {
+        reset();
+        while(hasNext()) {
+            next().addTo(panel);
+            panel.add(Box.createHorizontalStrut(1)); 
+        }
+        reset();
+    }
     
     /** implement Iterator's hasNext() */
+    @Override
     public boolean hasNext() { 
         return currentIndex < infoItemList.size();
     } 
     
     /** implement Iterator's next() */
+    @Override
     public InfoItem next() { 
         if(hasNext()) {
             return infoItemList.get(currentIndex++); 
@@ -59,6 +73,7 @@ abstract class InfoItemCollection implements Iterator<InfoItem> {
     } 
 
     /** implement Iterator's remove() */
+    @Override
     public void remove() { 
         throw new UnsupportedOperationException(); 
     } 

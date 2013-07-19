@@ -30,7 +30,7 @@ package us.fibernet.fiberj;
 
 /**
 * An interface used in InfoItem GUI callback. A GUI upon update will pass relevant 
-* information to a registered InfoItemGuiCallBack by calling its updateFromGui().
+* information to a registered InfoItemGuiCallBack by calling its guiUpdated().
 * <p>
 * This should be implemented by data objects who use InfoItem for display info
 * and obtain info from user input.
@@ -43,5 +43,5 @@ interface InfoItemGuiCallBack {
      * @param name      name of the GUI associated with this InfoItemGuiCallBack
      * @param newValue  new value from user input on the GUI
      */
-    void updateFromGui(String name, String newValue);
+    void guiUpdated(String name, String newValue);
 }

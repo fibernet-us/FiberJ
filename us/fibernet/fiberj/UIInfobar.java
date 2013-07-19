@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng, Tony Yao and Wen Bian. All rights reserved.
+ * Copyright Billy Zheng and Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -30,8 +30,6 @@ package us.fibernet.fiberj;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.util.Iterator;
-
 import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -45,26 +43,26 @@ public class UIInfobar extends JPanel {
 
     private JFrame parentFrame;
       
-    /** create a FlowLayout JPanel with given dimension on a parent frame */
-    public UIInfobar(JFrame parent, int width, int height) {
+    /** 
+     * create a FlowLayout JPanel with given dimension on a parent frame 
+     */
+    public UIInfobar(JFrame parent, int width, int height, InfoItem... infoItems) {
         parentFrame = parent;
         Dimension dim = new Dimension(width, height);
         setPreferredSize(dim); 
         setMinimumSize(dim);  
         setLayout(new FlowLayout(FlowLayout.LEFT)); 
+        for(InfoItem i : infoItems) {
+            addInfoItem(i);
+        }
     }
-
  
     /**
-     * add a collection of InfoItems (implementing addTo(JPanel)) to UIInfobar
-     * 
-     * @param infoItemCollection  an InfoItemCollection that implements Iterator &lt; InfoItem &gt;
+     * add an InfoItem (implementing addTo(JPanel)) to UIInfobar
      */
-    public void addInfoItemCollection(InfoItemCollection infoItemCollection) {
-        while(infoItemCollection.hasNext()) {
-            infoItemCollection.next().addTo(this);
-            this.add(Box.createHorizontalStrut(1)); // add spacing between InfoItems
-        }
+    public void addInfoItem(InfoItem infoItem) {
+        infoItem.addTo(this);
+        this.add(Box.createHorizontalStrut(1)); // add spacing between InfoItems
     }
         
 } // class UIInfobar

@@ -29,14 +29,30 @@
 package us.fibernet.fiberj;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 
 /**
@@ -58,20 +74,24 @@ public final class UIMain {
 
     private static final String FIBERJ_VS = "FiberJ 0.3";
     private static JFrame mainFrame;
+    private static JFrame patternFrame;  // allow pattern to be undocked from main window
     private static UIMenubar uiMenubar;  
     private static UIInfobar uiInfobar; 
     private static UIPattern uiPattern;
     private static UIMessage uiMessage;
     
     // these parameters might get overwritten by those in ~/.fiberj or from command line
-    private static int wMainwin = 600; // width of mainFrame
-    private static int hMainwin = 600; // height of mainFrame     
+    private static int wPattern = 600; // width of uiPattern
+    private static int hPattern = 600; // height of uiPattern     
     private static int hInfobar = 30;  // height of uiInfobar: high enough for info widgets
-    private static int hMessage = 30;  // height of uiPattern: high enough for one line of text
+    private static int hMessage = 30;  // height of uiMessage: high enough for one line of text
+    private static int screenWidth;
+    private static int screenHeight;
     
     // the accumulated size of the parts of mainFrame that are not uiPattern.
     // this info is used to maintain pattern's aspect ratio in window resizing event
     private static int nonPatternWidth, nonPatternHeight;
+    private static boolean isDocked;  // if uiPattern is docked on mainFrame
     
     private static PatternProcessor patternProcessor;
     private static InfoItemCollectionPixel currentPixelInfo;
@@ -126,7 +146,7 @@ public final class UIMain {
     }
     
     /**
-     * Refresh the main window in case of UI add/remove/update.
+     * Resize pattern according to user command line input
      */
     public static void resizeToWidth(int width)  {
         double ratio = patternProcessor.getAspectRatio();
@@ -135,9 +155,11 @@ public final class UIMain {
             return;
         }
         
-        int wFrame   = width + nonPatternWidth;
-        int hFrame   = (int) (width / ratio) + nonPatternHeight;
-        mainFrame.setSize(wFrame, hFrame);
+        int height = (int) (width / ratio);
+        uiPattern.setPreferredSize(new Dimension(width, height));
+
+            mainFrame.pack();
+
     }
     
     /**
@@ -158,19 +180,44 @@ public final class UIMain {
     /**
      * Maintain the pattern's aspect ratio in window resizing event
      */
-    public static void onFrameResize() {        
+    public static void onMainFrameResize() {    
+        if(!isDocked) {
+            return;
+        }
+        
+        double ratio = patternProcessor.getAspectRatio();
+        if(isZero(ratio)) {  
+            return;
+        }
+        
+        // reset frame height based on corrected height and width-height ratio
+        int hFrame   = mainFrame.getHeight();
+        int hPatt = hFrame - nonPatternHeight;
+        int wPatt = (int) (hPatt * ratio);
+        uiPattern.setPreferredSize(new Dimension(wPatt, hPatt));
+        mainFrame.pack();
+    }
+    
+    /**
+     * Maintain the pattern's aspect ratio in window resizing event
+     */
+    public static void onPatternFrameResize() {       
+        if(isDocked) {
+            return;
+        }
+        
         double ratio = patternProcessor.getAspectRatio();
         
         if(isZero(ratio)) {  
             return;
         }
         
-        // reset frame height based on corrected width
-        int wFrame   = mainFrame.getWidth();
-        int wPattern = wFrame - nonPatternWidth;
-        int hPattern = (int) (wPattern / ratio);
-        int hFrame   = hPattern + nonPatternHeight;
-        mainFrame.setSize(wFrame, hFrame);
+        // reset frame height based on corrected width and width-height ratio       
+        int wFrame = patternFrame.getWidth();
+        int wPatt = wFrame - nonPatternWidth; // nonPatternWidth is the same for mainFrame & patternFrame
+        int hPatt = (int) (wPatt / ratio);
+        uiPattern.setPreferredSize(new Dimension(wPatt, hPatt));
+        patternFrame.pack(); 
     }
     
     /**
@@ -179,35 +226,34 @@ public final class UIMain {
      * 
      * @param x x-coordinate of the main window's startup top-left position
      * @param y y-coordinate of the main window's startup top-left position
-     * @param wMain if > 0 overwrite default wMainwin         
-     * @param hMain if > 0 overwrite default hMainwin       
+     * @param wPatt if > 0 overwrite default wPattern         
+     * @param hPatt if > 0 overwrite default hPattern       
      * @param hInfo if > 0 overwrite default hInfobar       
      * @param hMess if > 0 overwrite default hMessage 
      */
-    public static synchronized void init(int x, int y, int wMain, int hMain, int hInfo, int hMess) {
+    public static synchronized void init(int x, int y, int wPatt, int hPatt, int hInfo, int hMess) {
         
         if(mainFrame != null) {
             return;
         }
 
-        if(wMain > 0) { wMainwin = wMain; }    
-        if(hMain > 0) { hMainwin = hMain; }
+        if(wPatt > 0) { wPattern = wPatt; }    
+        if(hPatt > 0) { hPattern = hPatt; }
         if(hInfo > 0) { hInfobar = hInfo; }
         if(hMess > 0) { hMessage = hMess; }
         
         mainFrame = new JFrame(FIBERJ_VS);
-        mainFrame.setBounds(x, y, wMainwin, hMainwin);
+        mainFrame.setLocation(x, y);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         patternProcessor = PatternProcessor.getInstance();
         currentPixelInfo = new InfoItemCollectionPixel();
         
         uiMenubar = new UIMenubar(mainFrame, new MenuDataMain());
-        uiInfobar = new UIInfobar(mainFrame, hMainwin, hInfobar);
-        uiInfobar.addInfoItemCollection(currentPixelInfo);
-        uiPattern = new UIPattern(mainFrame, hMainwin, 0);
-        uiMessage = new UIMessage(mainFrame, hMainwin, hMessage, patternProcessor);
-
+        uiPattern = new UIPattern(mainFrame, wPattern, hPattern);
+        uiMessage = new UIMessage(mainFrame, wPattern, hMessage, patternProcessor);
+        uiInfobar = new UIInfobar(mainFrame, wPattern, hInfobar, currentPixelInfo);
+      
         Border lineBorder = BorderFactory.createLineBorder(Color.gray);
         uiInfobar.setBorder(lineBorder);
         uiPattern.setBorder(lineBorder);
@@ -216,26 +262,77 @@ public final class UIMain {
         // add() is forwarded to getContentPane().add().
         // use BorderLayout to keep height of uiInfobar and uiMessage fixed
         // and let uiPattern take on resizing (BorderLayout.CENTER is greedy)
+        mainFrame.setLayout(new BorderLayout()); 
         mainFrame.add(uiInfobar, BorderLayout.PAGE_START);
         mainFrame.add(uiPattern, BorderLayout.CENTER);
         mainFrame.add(uiMessage, BorderLayout.PAGE_END);    
-        
+            
         // listen for window resizing for pattern resizing
         mainFrame.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
-               onFrameResize();
+                    onMainFrameResize();
             };
         });
         
+        mainFrame.pack();
         mainFrame.setVisible(true);
+        isDocked = true;
     }
 
+    /**
+     * Move uiPattern onto a free standing frame, and attach uiMessage under uiInfobar
+     */
+    public static synchronized void split() {
+        
+        if(uiPattern.getParentFrame() == patternFrame) {
+            return;
+        }
+        
+        if(patternFrame == null) {
+            patternFrame = new JFrame();
+            patternFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            //patternFrame.setUndecorated(true);
+            patternFrame.setBounds(10, 10, 600, 600);
+            patternFrame.setLayout(new BorderLayout()); 
+            patternFrame.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent evt) {
+                    onPatternFrameClose();
+                }
+            });
+        }
 
+        patternFrame.add(uiPattern, BorderLayout.CENTER);
+        
+        // listen for window resizing for pattern resizing
+        patternFrame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent evt) {
+                onPatternFrameResize();
+            };
+        });
+        
+        mainFrame.pack();
+        mainFrame.setVisible(true);
+        
+        patternFrame.pack();
+        patternFrame.setVisible(true);
+        
+        isDocked = false;     
+    }
+    
+    // TODO: re-dock uiPatten into mainFrame
+    static void onPatternFrameClose() {
+        patternFrame.setVisible(false);
+        mainFrame.add(uiPattern, BorderLayout.CENTER);
+        isDocked = true;
+        mainFrame.pack();
+        mainFrame.setVisible(true);
+    }
+    
     /**
      * <pre>
      * @param args: in the form of -x value[,value]                        
      *              -c int,int: coordinates (x, y) of the main window's top-left corner at startup
-     *              -d int,int: dimension (width, height) of the main window at startup          
+     *              -d int,int: dimension (width, height) of the pattern panel          
      *              -i int    : info bar height, just large enough to show info widgets
      *              -m int    : message pane height, just large enough to show one line of text
      *              -p string : pattern image file name 
@@ -250,6 +347,19 @@ public final class UIMain {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
+                    //try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
+                    //catch (Exception e) { }
+                    
+                    // screen size
+                    //GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+                    //screenWidth = gd.getDisplayMode().getWidth();
+                    //screenHeight = gd.getDisplayMode().getHeight();
+                    
+                    // available screen size
+                    Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+                    screenWidth = (int)r.getWidth();
+                    screenHeight = (int)r.getHeight();
+
                     SystemSettings.init();
                     UIMain.init(100, 100, 600, 600, 0, 0);
                     patternProcessor.createRainbowImage(600);

@@ -32,6 +32,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
+
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -43,6 +46,7 @@ public class InfoItemTextField implements InfoItem {
 
     private JLabel label;
     private JTextField textField;
+    boolean editable;
     private int nColumn;  // width of textField
     private String name;  
     private String value;
@@ -59,15 +63,27 @@ public class InfoItemTextField implements InfoItem {
      *                  while 0.00 means value is a double with the length of mantissa being 2 
      * @param callBackObj  a InfoItemGuiCallBack object for passing on user input to
      */
-    public InfoItemTextField(String labelStr, String textStr, InfoItemGuiCallBack callBackObj) {
+    public InfoItemTextField(String labelStr, String textStr, String textFormat, int columns, 
+                             boolean isEditable, InfoItemGuiCallBack callBackObj) {
         label = new JLabel(labelStr);
+        label.setFont(new Font("Arial", Font.BOLD, 12)); // the default font does not show letter "y"!
         textField = new JTextField(textStr); 
-        textField.setBackground(new JPanel().getBackground().brighter());
         name = labelStr;
         value = textStr;
+        format = textFormat;
+        nColumn = columns;
+        editable = isEditable;
+        textField.setColumns(nColumn);
+        textField.setEditable(editable);
+        if(editable) {
+            textField.setBackground(new JPanel().getBackground().brighter());
+        }
+        else {
+            textField.setBackground(new JPanel().getBackground());
+        }
         callBack = callBackObj;
         addCallback();
-        parseFormat();      
+        parseDataType();      
     }
     
     /** add label and textField to a JPanel */
@@ -145,7 +161,7 @@ public class InfoItemTextField implements InfoItem {
     /**
      * set value on gui with given input without validation or formatting
      */
-    public void setGuiValueNoAsk(String input) {
+    public void setGuiValueNoCheck(String input) {
         value = input;
         textField.setText(input);  
     }
@@ -153,6 +169,7 @@ public class InfoItemTextField implements InfoItem {
     public String toString() {
         return "InfoItemTextField: (" + name + ", " + value + ")";
     }
+    
     
     // add actionlistener to textField. validate user input. hook up callback.
     private void addCallback() {
@@ -164,33 +181,23 @@ public class InfoItemTextField implements InfoItem {
                     JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 else {
-                    callBack.updateFromGui(name, value);
+                    callBack.guiUpdated(name, value);
                 }
             }
         });
     }
     
-    // get the length of mantissa and set format string accordingly
-    private void parseFormat() {
-        if(! value.matches("\\d+(\\.\\d+)?")) { // not a number
-            format = "%s";
-            dataType = DataType.STRING;
-            return;
-        }
-            
-        int dotIndex = value.indexOf('.');
-        if(dotIndex < 1) {
-            format = "%d";
+    // get the dataType from format specifier
+    private void parseDataType() {
+        if(format.matches("d")) {
             dataType = DataType.INT;
-            nColumn = 3;  
+        }
+        else if(format.matches("f")) {
+            dataType = DataType.DOUBLE;
         }
         else {
-            format = "%." + (value.length() - 1 - dotIndex) + "f";
-            dataType = DataType.DOUBLE;
-            nColumn = 4;  // enough for 6-7 digits
+            dataType = DataType.STRING;
         }
-       
-        textField.setColumns(nColumn);
     }
     
     

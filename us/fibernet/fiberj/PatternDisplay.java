@@ -192,6 +192,7 @@ public class PatternDisplay {
      *    |_|_|
      *      |   
      */
+    // TODO: draw on glass pane? maybe faster.
     private void drawCrossHair(int x, int y) {
         final int A = 12;  // half length of cross hair Axis
         final int B = 6;  // half length of cross hair Box      

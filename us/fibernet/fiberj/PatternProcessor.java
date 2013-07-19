@@ -42,20 +42,19 @@ public final class PatternProcessor {
     private static double aspectRatio = 1.0;    // ratio of image width to height
     private static double shrinkScale = 1.0;    // scale factor, size1 of displayData / size1 of workingData
     
+    private static Pattern currentPattern;
     private static PatternDisplay patternDisplay;   // where image will be displayed
     
-    /**
-     * No instantiation
-     */
+    /** No instantiation */
     private PatternProcessor() { }
     
-    /**
-     * @return the singleton instance of PatternProcessor
-     */
-    public static PatternProcessor getInstance() { return patternProcessor; }
+    /** @return the singleton instance of PatternProcessor  */
+    public static PatternProcessor getInstance()  { return patternProcessor; }
     
-    public double getAspectRatio() { return aspectRatio; }
-    public double getShrinkScale() { return shrinkScale; }
+    public static Pattern getCurrentPattern()  { return currentPattern; }
+    
+    public double getAspectRatio()  { return aspectRatio; }
+    public double getShrinkScale()  { return shrinkScale; }
     
     
     /**
@@ -80,10 +79,11 @@ public final class PatternProcessor {
 
         if (workingData != null) {
             UIMain.updateSizeInfo();
+            currentPattern = new Pattern(workingData, this);
             patternDisplay = new PatternDisplay(UIMain.getUIPattern(), workingData, this);
             UIMain.getUIPattern().setPattern(patternDisplay);
         }
-        
+
         UIMain.setTitle(UIMain.getTitle() + " - " + new File(args[0]).getName());
     }
 

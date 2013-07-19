@@ -47,7 +47,7 @@ import com.sun.media.jai.codec.ImageDecoder;
 import com.sun.media.jai.codec.ImageCodec;
 
 /**
- * A utility class for read patterns of diffraction formats
+ * A utility class for read diffraction pattern image files
  *
  */
 @SuppressWarnings("restriction")
@@ -166,7 +166,7 @@ public final class ImageReader {
         
         try {
             BufferedReader br = new BufferedReader(new FileReader(fname));
-            ImageFilePlr dp = new ImageFilePlr();
+            ImagePlr dp = new ImagePlr();
             dp.parseData(br);
             br.close();            
             return dp.getImageData();
