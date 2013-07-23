@@ -53,7 +53,7 @@ public class PatternUtil {
 
     static {
         try {
-            colors = PatternUtil.getColorTable(colorTableDir + "rainbow.txt");
+            colors = PatternUtil.getColorTable(colorTableDir + "rgb.txt");
         } catch (IOException e) {
             System.out.println("Couldn't find color table file.");
         }
@@ -127,9 +127,14 @@ public class PatternUtil {
 
 
     /**
+     * Compute color index from a data array, i.e., scale data values to range of [0, numColors - 1]
      */
     static int[][] computerColorIndex(int[][] input, int numColors) {
 
+        if(input == null || input.length < 1) {
+            return null;
+        }
+        
         int[][] output = new int[input.length][input[0].length];
         
         int max = Integer.MIN_VALUE;
@@ -156,7 +161,8 @@ public class PatternUtil {
             for (int j = 0; j < output[0].length; j++) {
                 if (input[i][j] < min) {
                     output[i][j] = 0;
-                } else {
+                } 
+                else {
                     output[i][j] = (int) ((input[i][j] - min) / factor);
                 }
             }

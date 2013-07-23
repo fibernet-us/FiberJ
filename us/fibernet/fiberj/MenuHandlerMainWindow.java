@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -28,48 +28,37 @@
 
 package us.fibernet.fiberj;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.Dimension;
-
 /**
- * A JPanel subclass for displaying pattern images
- *
+ * A menu handler for the Main menu bar, Process menu
  */
-@SuppressWarnings("serial")
-public class UIPattern extends ScrollablePanel {
+public class MenuHandlerMainWindow extends MenuHandlerMain {
 
-    //private int width, height;
-    private JFrame parentFrame;
-    private PatternDisplay patternDisplay;
+    /**
+     * Window -> Parameter
+     */
+    public void windowParameter() {} 
     
     /**
-     * Create a JPanel with given dimensions on a parent JFrame 
+     * Window -> Coordinates
      */
-    public UIPattern(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        setPreferredSize(new Dimension(width, height)); 
-        setMinimumSize(new Dimension(width, height)); 
-        setBounds(0, 0, width, height);
-        setLayout(null);
+    public void windowCoordinates() {} 
+    
+    /**
+     * Window -> PixelViewer
+     */
+    public void windowPixelViewer() {} 
+    
+    /**
+     * Window -> Pattern
+     */
+    public void windowPattern() {
+        UIMain.undockPattern();
     }
     
     /**
-     * Place a PatternDisplay object on this panel
+     * Window -> Log
      */
-    public void setPattern(PatternDisplay patternDisplay) {
-        this.patternDisplay = patternDisplay;
-    }
+    public void windowLog() {} 
     
-    /**
-     * Create a Colormap control associated with current patternDisplay
-     */
-    public void openColormap() {
-        patternDisplay.openColorControl();
-    }
     
-    public JFrame getParentFrame() {
-        return parentFrame;
-    }
-    
-} // class UIPattern
+} // class MenuHandlerMainWindow

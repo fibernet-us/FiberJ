@@ -62,6 +62,7 @@ public class MenuHandlerMain implements MenuHandler {
     public void windowParameter() {} 
     public void windowCoordinates() {} 
     public void windowPixelViewer() {} 
+    public void windowPattern() {}
     public void windowLog() {} 
     
     public void helpAbout() {}   

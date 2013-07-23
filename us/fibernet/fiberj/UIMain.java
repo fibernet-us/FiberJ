@@ -282,7 +282,7 @@ public final class UIMain {
     /**
      * Move uiPattern onto a free standing frame, and attach uiMessage under uiInfobar
      */
-    public static synchronized void split() {
+    public static synchronized void undockPattern() {
         
         if(uiPattern.getParentFrame() == patternFrame) {
             return;
@@ -362,9 +362,8 @@ public final class UIMain {
 
                     SystemSettings.init();
                     UIMain.init(100, 100, 600, 600, 0, 0);
-                    patternProcessor.createRainbowImage(600);
+                    patternProcessor.createPatternImage(600);
                     
-                    //patternProcessor.getInputImage("2048.tif");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
