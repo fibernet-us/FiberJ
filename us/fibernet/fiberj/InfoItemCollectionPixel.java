@@ -113,7 +113,21 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
         r = p.getr(x, y);
         I = p.getI(x, y);
         
-        d = D = R = Z = 0.0;
+        double[] RZ = {0.0, 0.0};
+        if(p.xy2RZ(x, y, RZ)) {
+            R = RZ[0];
+            Z = RZ[1];
+            D = Math.sqrt(R*R + Z*Z);
+            if(D != 0) { 
+                d = 1/D;
+            }
+            else {
+                d = 0.0;
+            }
+        }
+        else {
+            d = D = R = Z = 0.0;
+        }
 
         // display new values
         int i = -1;

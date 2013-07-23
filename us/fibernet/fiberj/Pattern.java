@@ -33,49 +33,107 @@ package us.fibernet.fiberj;
  */
 public class Pattern {
     
-    private int width, height;     // width and height of the pattern
-    private int dataMin, dataMax;  // min and max value of intensity data
-    private int[][] data;          // diffracton intensity
-    private int[][] mask;          // for pixels who are masked   
-    private boolean isRecip;       // if a pattern is reciprocal
+    private int[][] data;       // diffracton intensity
+    private int[][] mask;       // for pixels who are masked   
+    private int width;          // width of this pattern
+    private int height;         // height of this pattern
+    private int dataMin;        // min value of intensity data
+    private int dataMax;        // max value of intensity data
+    private boolean isRecip;    // if this pattern is in reciprocal space
 
-    private double fiber_twist;        /* fiber missetting angles: */
-    private double fiber_tilt;         /* -rotations about x and y axes */
-    private double fiber_repeat;       /* fiber repeat distance */
-    private double wave_length;        /* radiation wave length */
-    private double rwave_length;       /* 1/wave_length */
-    private double SF_distance;        /* specimen to film distance */
-    private double nSF_distance;       /* normalize SF_distance */
-    private double fcenter_x, fcenter_y;   /* center of the film */
-    private double betaD;              /* detector missetting angles: */
-    private double gammaD;             /* -rotations about y and z axies */
-    private double raster_unit;        /* pixel size of detector (or film) */
-    private double detector_fog;       /* */
-    private double calibrant_d;
-    /*
-    double twist;       // fiber missetting angle: rotations about x axis 
-    double tilt;        // fiber missetting angle: rotations about y axis 
-    double repeat;      // fiber repeat distance 
-    double waveLength;  // radiation wave length in Angstrom
-    double sdd;         // specimen to detector distance 
-    double xCenter;     // x-coordinate of pattern center
-    double yCenter;     // y-coordinate of pattern center
-    double betaD;       // detector missetting angle: rotations about y axis
-    double gammaD;      // detector missetting angle: rotations about z axis 
-    double pixelSize;   // pixel size of detector (or film) 
-    double detectorFog; // 
-    double dCalibrant;  // d-spacing of the calibrant, in Angstrom
-    */
+    private double xCenter;     // x-coordinate of pattern center (pixel)
+    private double yCenter;     // y-coordinate of pattern center (pixel)
+    private double wavelen;     // radiation wave length (angstrom)
+    private double sdd;         // specimen to detector distance in (millimeter)
+    private double sddp;        // normalized sdd (pixel)
+    private double pixelSize;   // pixel size of pattern image (micrometer)
+                                // or step size in reciprocal space (1/angstrom)
+    private double twist;       // fiber missetting angle: rotations about x axis (degree) 
+    private double tilt;        // fiber missetting angle: rotations about y axis (degree)
+    private double repeat;      // fiber repeat distance (angstrom)
+    private double betaD;       // detector missetting angle: rotations about y axis (degree)
+    private double gammaD;      // detector missetting angle: rotations about z axis (degree)
+    private double offset;      // detector offset or bias or background
+    private double dCalibrant;  // d-spacing of calibrant (angstrom)
     
-    public Pattern(int[][] dataArrary, boolean isReciprocal) {
-        data = dataArrary;
-        isRecip = isReciprocal;
+    public Pattern(int[][] data, boolean isRecip) {
+        this.data = data;
+        this.isRecip = isRecip;
+        
+        height = data.length;
+        width = data[0].length;
+        xCenter = width / 2.0;
+        yCenter = height / 2.0; 
+        mask = new int[height][width];
+        
+        if(!isRecip) {
+            // example data 
+            xCenter = 269.50;
+            yCenter = 268.34; 
+            wavelen = 0.9002;
+            pixelSize = 205.2; 
+            sdd = 250.0; 
+            sddp = sdd * 1000.0 / pixelSize;
+            twist = 0.0;        
+            tilt = 0.0;         
+            repeat = 0.0;              
+            betaD = 0.0;              
+            gammaD = 0.0;                        
+            offset = 0.0;       
+            dCalibrant = 3.035;
+            System.out.println(this);
+        }
+        else {
+            pixelSize = 0.001;
+        }
+           
     }
+    
+    public String toString() {
+        return  "width = "         + width + "\n" +  
+                "height = "       + height + "\n" +  
+                "xCenter = "    + xCenter + "\n" +  
+                "yCenter = "    + yCenter + "\n" +  
+                "pixelSize = "  + pixelSize + "\n" +  
+                "wavelen = "  + wavelen + "\n" +  
+                "sdd = "  + sdd + "\n" +  
+                "sddp = " + sddp + "\n" +  
+                "twist = "  + twist + "\n" +  
+                "tilt = "   + tilt + "\n" +  
+                "repeat = " + repeat + "\n" +  
+                "betaD = "        + betaD + "\n" +  
+                "gammaD = "       + gammaD + "\n" +  
+                "offset = " + offset + "\n" +  
+                "dCalibrant = "  + dCalibrant;
+    }
+  
+    /*--------------------- getters -----------------------*/
+    
+    public int     getWidth()       { return width;     }
+    public int     getHeight()      { return height;     }
+    public int     getDataMin()     { return dataMin;    }
+    public int     getDataMax()     { return dataMax;    }
+    public int[][] getData()        { return data;       }
+    public int[][] getMask()        { return mask;       }
+    public double  getxCenter()     { return xCenter;    }
+    public double  getyCenter()     { return yCenter;    }
+    public double  getWavelen()     { return wavelen;    }
+    public double  getSdd()         { return sdd;        }
+    public double  getSddp()        { return sddp;       }
+    public double  getPixelSize()   { return pixelSize;  }
+    public double  getTwist()       { return twist;      }
+    public double  getTilt()        { return tilt;       }
+    public double  getRepeat()      { return repeat;     }
+    public double  etBetaD()        { return betaD;      }
+    public double  getGammaD()      { return gammaD;     }
+    public double  getOffset()      { return offset;     }
+    public double  getdCalibrant()  { return dCalibrant; } 
+    public boolean isRecip()        { return isRecip;    }
 
     /** get the radius of the pixel at (x, y) relative to pattern center */
     double getr(int x, int y) {
-        double dx = x - fcenter_x;
-        double dy = y - fcenter_y;
+        double dx = x - xCenter;
+        double dy = y - yCenter;
         return Math.sqrt(dx*dx + dy*dy);
     }
     
@@ -89,166 +147,80 @@ public class Pattern {
         return data[y0][x0];
     }
     
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getDataMin() {
-        return dataMin;
-    }
-
-    public int getDataMax() {
-        return dataMax;
-    }
-
-    public int[][] getData() {
-        return data;
-    }
-
-    public int[][] getMask() {
-        return mask;
-    }
-
-    public double getFiber_twist() {
-        return fiber_twist;
-    }
-
-    public double getFiber_tilt() {
-        return fiber_tilt;
-    }
-
-    public double getFiber_repeat() {
-        return fiber_repeat;
-    }
-
-    public double getWave_length() {
-        return wave_length;
-    }
-
-    public double getRwave_length() {
-        return rwave_length;
-    }
-
-    public double getSF_distance() {
-        return SF_distance;
-    }
-
-    public double getnSF_distance() {
-        return nSF_distance;
-    }
-
-    public double getFcenter_x() {
-        return fcenter_x;
-    }
-
-    public double getFcenter_y() {
-        return fcenter_y;
-    }
-
-    public double getBetaD() {
-        return betaD;
-    }
-
-    public double getGammaD() {
-        return gammaD;
-    }
-
-    public double getRaster_unit() {
-        return raster_unit;
-    }
-
-    public double getDetector_fog() {
-        return detector_fog;
-    }
-
-    public double getCalibrant_d() {
-        return calibrant_d;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setDataMin(int dataMin) {
-        this.dataMin = dataMin;
-    }
-
-    public void setDataMax(int dataMax) {
-        this.dataMax = dataMax;
-    }
-
-    public void setData(int[][] data) {
-        this.data = data;
-    }
-
-    public void setMask(int[][] mask) {
-        this.mask = mask;
-    }
-
-    /*------------------------------- setters -------------------------------*/
+    /*--------------------- setters -----------------------*/
     
-    public void setFiber_twist(double fiber_twist) {
-        this.fiber_twist = fiber_twist;
+    public void setMask(int[][] a)       { mask = a;       }
+    public void setDataMin(int i)        { dataMin = i;    }
+    public void setDataMax(int i)        { dataMax = i;    }
+    public void setxCenter(double d)     { xCenter = d;    }
+    public void setyCenter(double d)     { yCenter = d;    }
+    public void setWavelen(double d)     { wavelen = d;    }
+    public void setPixelSize(double d)   { pixelSize = d;  }
+    public void setTwist(double d)       { twist = d;      }
+    public void setTilt(double d)        { tilt = d;       }
+    public void setRepeat(double d)      { repeat = d;     }
+    public void setBetaD(double d)       { betaD = d;      }
+    public void setGammaD(double d)      { gammaD = d;     }
+    public void setOffset(double d)      { offset = d;     }
+    public void setdCalibrant(double d)  { dCalibrant = d; }
+    public void setRecip(boolean b)      { isRecip = b;    }
+
+    /**
+     * set sdd (specimen to detector distance) in millimeter and compute the 
+     * normalized distance in pixel
+     */
+    public void setSdd(double d) {  
+        sdd = d;
+        sddp = sdd * 1000.0 / pixelSize;
+    }
+    
+    /**
+     * replace this pattern's data array with a new one, set dimension and center
+     * values, and create a new mask array
+     */
+    public void setData(int[][] newData) {
+        data = newData;
+        height = data.length;
+        width = data[0].length;
+        xCenter = width / 2.0;
+        yCenter = height / 2.0; 
+        mask = new int[height][width];
     }
 
-    public void setFiber_tilt(double fiber_tilt) {
-        this.fiber_tilt = fiber_tilt;
+    /**
+     * transform a point from detector space to reciprocal space (R & Z) 
+     */
+    public boolean xy2RZ(double x, double y, double[] RZ) { 
+        return true; // TODO
+    }
+    
+    /**
+     *  transform a point from detector space to reciprocal space (R & L) 
+     */
+    public boolean xy2RL(double x, double y, double[] RL) { 
+        return true; // TODO
+    }
+   
+    /** 
+     * transform a point from detector space to reciprocal space (R & Z & incident Angle) 
+     */
+    public boolean xy2RZA(double x, double y, double[] RZA) { 
+        return true; // TODO
+    }
+    
+    /**
+     * transform a point (R & L) from reciprocal space to detector space 
+     */
+    public boolean RL2xy(double RR, double LL, double[] xy)  { 
+        return true; // TODO
     }
 
-    public void setFiber_repeat(double fiber_repeat) {
-        this.fiber_repeat = fiber_repeat;
+    /** 
+     * transform a point(R & Z) from reciprocal space to detector space 
+     */
+    public boolean RZ2xy(double R, double Z, double[] xy) { 
+        return true; // TODO
     }
 
-    public void setWave_length(double wave_length) {
-        this.wave_length = wave_length;
-    }
-
-    public void setRwave_length(double rwave_length) {
-        this.rwave_length = rwave_length;
-    }
-
-    public void setSF_distance(double sF_distance) {
-        SF_distance = sF_distance;
-    }
-
-    public void setnSF_distance(double nSF_distance) {
-        this.nSF_distance = nSF_distance;
-    }
-
-    public void setFcenter_x(double fcenter_x) {
-        this.fcenter_x = fcenter_x;
-    }
-
-    public void setFcenter_y(double fcenter_y) {
-        this.fcenter_y = fcenter_y;
-    }
-
-    public void setBetaD(double betaD) {
-        this.betaD = betaD;
-    }
-
-    public void setGammaD(double gammaD) {
-        this.gammaD = gammaD;
-    }
-
-    public void setRaster_unit(double raster_unit) {
-        this.raster_unit = raster_unit;
-    }
-
-    public void setDetector_fog(double detector_fog) {
-        this.detector_fog = detector_fog;
-    }
-
-    public void setCalibrant_d(double calibrant_d) {
-        this.calibrant_d = calibrant_d;
-    }
-
+ 
 } // class Pattern
