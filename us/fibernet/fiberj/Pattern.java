@@ -37,6 +37,7 @@ public class Pattern {
     private int dataMin, dataMax;  // min and max value of intensity data
     private int[][] data;          // diffracton intensity
     private int[][] mask;          // for pixels who are masked   
+    private boolean isRecip;       // if a pattern is reciprocal
 
     private double fiber_twist;        /* fiber missetting angles: */
     private double fiber_tilt;         /* -rotations about x and y axes */
@@ -65,6 +66,29 @@ public class Pattern {
     double detectorFog; // 
     double dCalibrant;  // d-spacing of the calibrant, in Angstrom
     */
+    
+    public Pattern(int[][] dataArrary, boolean isReciprocal) {
+        data = dataArrary;
+        isRecip = isReciprocal;
+    }
+
+    /** get the radius of the pixel at (x, y) relative to pattern center */
+    double getr(int x, int y) {
+        double dx = x - fcenter_x;
+        double dy = y - fcenter_y;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+    
+    /** get the intensity value of the pixel at (x, y) */
+    double getI(int x, int y) {
+        int x0 = (int)(x / PatternProcessor.getInstance().getShrinkScale() + 0.5);
+        int y0 = (int)(y / PatternProcessor.getInstance().getShrinkScale() + 0.5);
+        if(x0 < 0 || x0 >= width || y0 < 0 || y0 >= height) {
+            return 0.0;
+        }
+        return data[y0][x0];
+    }
+    
     public int getWidth() {
         return width;
     }

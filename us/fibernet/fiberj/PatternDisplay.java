@@ -56,17 +56,19 @@ public class PatternDisplay {
     private JLabel imageLabel;
     private BufferedImage currIndexImage;
     private BufferedImage origIndexImage;
-    private int[][] imageDataArray;  // original array for images, input pixels may get skipped
-    private int[][] imageIndexArray; // converted to color indexes
+    private int[][] imageDataArray;  // original data array. used in calc color index and colormap histogram
+    private int[][] imageIndexArray; // color indexes calculated from original data array
     private ColormapControl control;
     private PatternProcessor patternProcessor;
 
     public PatternDisplay(UIPattern panel, int[][] imageData, PatternProcessor processor) {
         imagePanel       = panel;
         patternProcessor = processor;
-        imageDataArray   = PatternUtil.shrinkArray(imageData);
+        imageDataArray   = imageData;
+        //imageDataArray = PatternUtil.shrinkArray(imageData);
         imageIndexArray  = PatternUtil.computerColorIndex(imageDataArray, 256);
         initialize();
+        imagePanel.setPattern(this);
     }
 
     private void initialize() {
@@ -112,7 +114,7 @@ public class PatternDisplay {
         int newWidth = imagePanel.getWidth();
         int newHeight = (int)(newWidth / patternProcessor.getAspectRatio());
         imagePanel.setSize(newWidth, newHeight);
-        patternProcessor.setShrinkScale(newWidth); 
+        patternProcessor.recalcShrinkScale(newWidth); 
         reloadImageLabel();
     }
 

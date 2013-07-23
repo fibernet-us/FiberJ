@@ -1,5 +1,5 @@
 /*
- * Copyright Wen Bian and Billy Zheng. All rights reserved.
+ * Copyright Billy Zheng and Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -36,96 +36,91 @@ import java.io.File;
  */
 public final class PatternProcessor {
 
-    private static PatternProcessor patternProcessor = new PatternProcessor();
-    private static int[][] originalData;  // image data read from file
-    private static int[][] workingData;   // current data. likely different from original after some processing
-    private static double aspectRatio = 1.0;    // ratio of image width to height
-    private static double shrinkScale = 1.0;    // scale factor, size1 of displayData / size1 of workingData
+    private static PatternProcessor instance = new PatternProcessor();
+    private int[][] originalData;  // image data read from file
+    private int[][] workingData;   // current data. likely different from original after some processing
+    private double aspectRatio = 1.0;  // ratio of image width to height
+    private double shrinkScale = 1.0;  // scale factor, size1 of displayData / size1 of workingData    
+    private static Pattern currentPattern;  // currently only allow one active pattern
     
-    private static Pattern currentPattern;
-    private static PatternDisplay patternDisplay;   // where image will be displayed
-    
-    /** No instantiation */
+    /** no instantiation */
     private PatternProcessor() { }
     
     /** @return the singleton instance of PatternProcessor  */
-    public static PatternProcessor getInstance()  { return patternProcessor; }
+    public static PatternProcessor getInstance()  { return instance; }
+  
+    // getters 
+    public double  getAspectRatio()     { return aspectRatio;    }
+    public double  getShrinkScale()     { return shrinkScale;    }
+    public Pattern getCurrentPattern()  { return currentPattern; }
+
+    // setters
+    public void setAspectRatio(double ratio)        { aspectRatio = ratio;         }
+    public void setshrinkScale(double scale)        { shrinkScale = scale;         }
+    public void setCurrentPattern(Pattern pattern)  { createPatternImage(pattern); }
+   
     
-    public static Pattern getCurrentPattern()  { return currentPattern; }
-    
-    public double getAspectRatio()  { return aspectRatio; }
-    public double getShrinkScale()  { return shrinkScale; }
+    /**
+     * Recalculate shrinkScale based on new pattern display width
+     */
+    public synchronized void recalcShrinkScale(double newWidth) {
+        shrinkScale = originalData[0].length / newWidth;
+    }
     
     
     /**
-     * Read an image file and display the pattern
-     * 
-     * @param args image file name and file attributes if applicable
+     * Read an image file and create an a pattern image 
+     * @param args  image file path and file attributes if applicable
      */
-    public synchronized void getInputImage(String... args) {
-        
+    public synchronized void createPatternImage(String... args) {
+
         if(args.length < 1) {
             return;
         }
-        
-        originalData = ImageReader.readPattern(args);
-        if(originalData == null) {
+
+        workingData = ImageReader.readPattern(args);
+        if(workingData == null) {
             return;
         }
-        
-        workingData = originalData;
-        aspectRatio = originalData[0].length / originalData.length;
-        shrinkScale = 1.0;
 
-        if (workingData != null) {
-            UIMain.updateSizeInfo();
-            currentPattern = new Pattern(workingData, this);
-            patternDisplay = new PatternDisplay(UIMain.getUIPattern(), workingData, this);
-            UIMain.getUIPattern().setPattern(patternDisplay);
-        }
-
-        UIMain.setTitle(UIMain.getTitle() + " - " + new File(args[0]).getName());
+        currentPattern = new Pattern(workingData, false);
+        createPatternImage(workingData, new File(args[0]).getName()); // add only file name itself
     }
-
-    /**
-     * Create a rainbow image
+  
+    /** 
+     * Create an a square rainbow image (no pattern data)
      */
-    public synchronized void createRainbowImage(int width) {
+    public synchronized void createPatternImage(int width) {
 
         if(width < 0) {
             width = 500;
         }
         
-        originalData = new int[width][width];
+        workingData = new int[width][width];
         for(int i=0; i<width; i++) {
             for(int j=0; j<width; j++) {
-                originalData[i][j] = i + j; 
+                workingData[i][j] = i + j; 
             }
         }
         
-        workingData = originalData;
-        aspectRatio = 1.0;
-        shrinkScale = 1.0;
-
-        patternDisplay = new PatternDisplay(UIMain.getUIPattern(), workingData, this);
-        UIMain.getUIPattern().setPattern(patternDisplay);
-        
-        UIMain.setTitle(UIMain.getTitle());
-        UIMain.updateSizeInfo();
+        createPatternImage(workingData, "");
     }
     
-    public synchronized void setPatternDisplaySize(int width) {
-        UIMain.resizeToWidth(width);
-    }
-    
-    /*
-     * TODO: update image width/height on title bar?
+    /**
+     * Create a pattern image from a Pattern object
      */
-    public synchronized void setShrinkScale(double newWidth) {
-        shrinkScale = originalData[0].length / newWidth;
-        //System.out.println("old height: " + originalData.length + ", new width: " + newWidth);
-    }
+    public synchronized void createPatternImage(Pattern pattern) {
 
+        if(pattern == null) {
+            return;
+        }
+        
+        currentPattern = pattern;
+        workingData = pattern.getData();         
+        createPatternImage(workingData, "");
+    }
+    
+ 
     /**
      * Implements interface ComandProcessor to process user command
      * 
@@ -146,13 +141,13 @@ public final class PatternProcessor {
                 UIMain.getUIMessage().setMessage(filename + " not found");
             }
             else {
-                this.getInputImage(filename);
+                this.createPatternImage(filename);
             }                  
         }
         else if(command.startsWith("resize") || command.startsWith("size")) {
             try {
                 int newWidth = Integer.parseInt(command.substring(command.indexOf(' ')).trim());
-                setPatternDisplaySize(newWidth);   // TODO: not working
+                UIMain.resizeToWidth(newWidth);   // TODO: not working properly?
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
@@ -167,6 +162,15 @@ public final class PatternProcessor {
             } 
         }           
     }
+
+    // create pattern display and colormap control 
+    // TODO: maybe we should pass in a Pattern object instead of dataArray
+    private synchronized void createPatternImage(int[][] dataArray, String title) {
+        originalData = dataArray.clone();
+        aspectRatio = dataArray[0].length / dataArray.length;        
+        new PatternDisplay(UIMain.getUIPattern(), dataArray, this);
+        UIMain.updateSizeInfo();
+        UIMain.setTitle(UIMain.getTitle() + " - " + title);    
+    }
     
 } // class PatternProcessor
-

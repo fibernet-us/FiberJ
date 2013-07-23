@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -28,48 +28,37 @@
 
 package us.fibernet.fiberj;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.Dimension;
-
 /**
- * A JPanel subclass for displaying pattern images
- *
+ * A menu handler for the Main menu bar, Process menu
  */
-@SuppressWarnings("serial")
-public class UIPattern extends ScrollablePanel {
+public class MenuHandlerMainProcess extends MenuHandlerMain {  
+     
+    /*
+     * Process -> Filter
+     */
+    public void processFilter() {} 
+    
+    /*
+     * Process -> Plot
+     */
+    public void processPlot() {} 
 
-    //private int width, height;
-    private JFrame parentFrame;
-    private PatternDisplay patternDisplay;
-    
-    /**
-     * Create a JPanel with given dimensions on a parent JFrame 
+    /*
+     * Process -> Correction
      */
-    public UIPattern(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        setPreferredSize(new Dimension(width, height)); 
-        setMinimumSize(new Dimension(width, height)); 
-        setBounds(0, 0, width, height);
-        setLayout(null);
-    }
-    
-    /**
-     * Place a PatternDisplay object on this panel
+    public void processCorrection() {} 
+  
+    /*
+     * Process -> Transform
      */
-    public void setPattern(PatternDisplay patternDisplay) {
-        this.patternDisplay = patternDisplay;
-    }
-    
-    /**
-     * Create a Colormap control associated with current patternDisplay
+    public void processTransform() {
+        new Transform(PatternProcessor.getInstance().getCurrentPattern()).toReciprocal();
+    } 
+ 
+    /*
+     * Process -> Background
      */
-    public void openColormap() {
-        patternDisplay.openColorControl();
-    }
+    public void processBackground() {} 
     
-    public JFrame getParentFrame() {
-        return parentFrame;
-    }
     
-} // class UIPattern
+} // class MenuHandlerMainProcess
