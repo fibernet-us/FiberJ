@@ -39,7 +39,7 @@ public final class MenuDataMain extends MenuDataImpl {
         { "Colormap",/**/ "Load", "Save", "Customize"},       
         { "Draw",    /**/ "Circle", "Resolution Circle", "Layerline", "Refresh", "Clear All" }, 
         { "Process", /**/ "Filter", "Plot", "Correction", "Transform", "Background"},       
-        { "Window",  /**/ "Parameter", "Coordinates", "Pixel Viewer", "Log" },
+        { "Window",  /**/ "Parameter", "Coordinates", "Pixel Viewer", "Pattern", "Log" },
         { "Help",    /**/ "About", "Resource" }
     };  
     
@@ -49,8 +49,8 @@ public final class MenuDataMain extends MenuDataImpl {
         new MenuHandlerMain(),         // Image     // TODO
         new MenuHandlerMainColormap(), // Colormap 
         new MenuHandlerMain(),         // Draw      // TODO
-        new MenuHandlerMain(),         // Process   // TODO
-        new MenuHandlerMain(),         // Window    // TODO
+        new MenuHandlerMainProcess(),  // Process   
+        new MenuHandlerMainWindow(),   // Window    
         new MenuHandlerMain()          // Help      // TODO
     };
 

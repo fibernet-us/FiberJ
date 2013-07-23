@@ -49,7 +49,7 @@ public class MenuHandlerMainFile extends MenuHandlerMain {
                 File file = fc.getSelectedFile();
                 String filePath = file.getAbsolutePath();
                 System.out.println(filePath);
-                PatternProcessor.getInstance().getInputImage(filePath);      
+                PatternProcessor.getInstance().createPatternImage(filePath);      
                 // user might have changed working directory, update it
                 SystemSettings.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
             } 
@@ -63,20 +63,14 @@ public class MenuHandlerMainFile extends MenuHandlerMain {
      */
     // TODO
     @Override
-    public void fileSave() {
-
-    }
+    public void fileSave() { }
     
     /*
      * File -> Close
      */
     // TODO
     @Override
-    public void fileClose() {
-        UIMain.split();
-
-    }
-    
+    public void fileClose() { }
     /*
      * File -> Exit
      */

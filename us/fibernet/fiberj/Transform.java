@@ -28,48 +28,24 @@
 
 package us.fibernet.fiberj;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import java.awt.Dimension;
-
-/**
- * A JPanel subclass for displaying pattern images
+/*
+ * Transform data from detector space to reciprocal space
  *
  */
-@SuppressWarnings("serial")
-public class UIPattern extends ScrollablePanel {
+public class Transform {
 
-    //private int width, height;
-    private JFrame parentFrame;
-    private PatternDisplay patternDisplay;
-    
-    /**
-     * Create a JPanel with given dimensions on a parent JFrame 
-     */
-    public UIPattern(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        setPreferredSize(new Dimension(width, height)); 
-        setMinimumSize(new Dimension(width, height)); 
-        setBounds(0, 0, width, height);
-        setLayout(null);
+    enum TransformType {CART, POLAR, RAD};
+    TransformType transType;
+    Pattern pattern;
+
+    public Transform(Pattern pattern) {
+        this.pattern = pattern;
     }
     
-    /**
-     * Place a PatternDisplay object on this panel
-     */
-    public void setPattern(PatternDisplay patternDisplay) {
-        this.patternDisplay = patternDisplay;
+    void toReciprocal()  {
     }
-    
-    /**
-     * Create a Colormap control associated with current patternDisplay
-     */
-    public void openColormap() {
-        patternDisplay.openColorControl();
+
+    void toPolarReciprocal() {
     }
-    
-    public JFrame getParentFrame() {
-        return parentFrame;
-    }
-    
-} // class UIPattern
+
+} 
