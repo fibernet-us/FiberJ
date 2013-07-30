@@ -47,14 +47,7 @@ public class MenuHandlerMainWindow extends MenuHandlerMain {
      * Window -> PixelViewer
      */
     public void windowPixelViewer() {} 
-    
-    /**
-     * Window -> Pattern
-     */
-    public void windowPattern() {
-        UIMain.undockPattern();
-    }
-    
+       
     /**
      * Window -> Log
      */
