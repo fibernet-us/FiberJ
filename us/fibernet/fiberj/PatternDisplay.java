@@ -109,12 +109,13 @@ public class PatternDisplay {
         imagePanel.updateUI();
     }
     
-    // called upon imagePanel resize event, resize according to new width and aspect ratio
+    // called upon imagePanel resize event, resize according to new height and aspect ratio
     private void resizeImagePanel() {
-        int newWidth = imagePanel.getWidth();
-        int newHeight = (int)(newWidth / patternProcessor.getAspectRatio());
+        int newHeight = imagePanel.getHeight();
+        int newWidth = (int)(newHeight * patternProcessor.getAspectRatio());
         imagePanel.setSize(newWidth, newHeight);
-        patternProcessor.recalcShrinkScale(newWidth); 
+        imagePanel.setPreferredSize(new Dimension(newWidth, newHeight));
+        patternProcessor.recalcShrinkScale(newHeight); 
         reloadImageLabel();
     }
 
@@ -162,26 +163,39 @@ public class PatternDisplay {
     
     // update cursor location by arrow keys
     private void keyHandler(KeyEvent e) {
+        int curX = SystemSettings.getCursorX();
+        int curY = SystemSettings.getCursorY();
+        
         switch(e.getKeyCode()) { 
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_KP_UP:
-                 SystemSettings.setCursorY(SystemSettings.getCursorY() - 1);
-                 drawCrossHair(SystemSettings.getCursorX(), SystemSettings.getCursorY());
-                 break;
-            case KeyEvent.VK_DOWN:
-            case KeyEvent.VK_KP_DOWN:  
-                 SystemSettings.setCursorY(SystemSettings.getCursorY() + 1);
-                 drawCrossHair(SystemSettings.getCursorX(), SystemSettings.getCursorY());
-                 break;
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_KP_LEFT:
-                 SystemSettings.setCursorX(SystemSettings.getCursorX() - 1);
-                 drawCrossHair(SystemSettings.getCursorX(), SystemSettings.getCursorY());
+                if(curX > 0) {
+                    SystemSettings.setCursorX(--curX);
+                    drawCrossHair(curX, curY);
+                 }
                  break;
-            case KeyEvent.VK_RIGHT :
+            case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_KP_RIGHT:
-                 SystemSettings.setCursorX(SystemSettings.getCursorX() + 1);
-                 drawCrossHair(SystemSettings.getCursorX(), SystemSettings.getCursorY());
+                if(curX < imagePanel.getWidth() - 1) {
+                    SystemSettings.setCursorX(++curX);
+                    drawCrossHair(curX, curY);
+                 }
+                 break;
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_KP_UP:
+                 if(curY > 0) {
+                     SystemSettings.setCursorY(--curY);
+                     drawCrossHair(curX, curY);
+                 }
+                 break;
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_KP_DOWN:
+                 if(curY < imagePanel.getHeight() - 1) {
+                    SystemSettings.setCursorY(++curY);
+                    drawCrossHair(curX, curY);
+                 }
+                 break;
+            default:
                  break;
         }
     }

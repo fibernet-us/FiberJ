@@ -1,5 +1,5 @@
 /*
- * Copyright Wen Bian. All rights reserved.
+ * Copyright Wen Bian and Billy Zheng. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -74,8 +74,9 @@ public final class UIMain {
 
     private static final String FIBERJ_VS = "FiberJ 0.3";
     private static JFrame mainFrame;
-    private static JFrame patternFrame;  // allow pattern to be undocked from main window
-    private static UIMenubar uiMenubar;  
+    private static JScrollPane jScrollPane; // to scroll pattern when its display size is too big
+    private static JPanel patternPanel; // to hold uiPattern
+    private static UIMenubar uiMenubar; 
     private static UIInfobar uiInfobar; 
     private static UIPattern uiPattern;
     private static UIMessage uiMessage;
@@ -85,140 +86,25 @@ public final class UIMain {
     private static int hPattern = 600; // height of uiPattern     
     private static int hInfobar = 30;  // height of uiInfobar: high enough for info widgets
     private static int hMessage = 30;  // height of uiMessage: high enough for one line of text
-    private static int screenWidth;
-    private static int screenHeight;
+    private static int patternPadding = 5;  // padding around uiPattern in patternPanel 
+    
+    // size of screen that is available for apps. equal to raw screen size minus size of taskbar, sidebar, etc
+    private static int availableScreenWidth, availableScreenHeight;    
     
     // the accumulated size of the parts of mainFrame that are not uiPattern.
     // this info is used to maintain pattern's aspect ratio in window resizing event
     private static int nonPatternWidth, nonPatternHeight;
-    private static boolean isDocked;  // if uiPattern is docked on mainFrame
+    
+    private static boolean isScrollPattern;  // if pattern is in a scrolled pane
     
     private static PatternProcessor patternProcessor;
     private static InfoItemCollectionPixel currentPixelInfo;
 
+    
     /**
      * No instantiation. See init().
      */
     private UIMain() { }  
-    
-    /**
-     * UI component getters, used by UI updater, massager, etc.
-     */
-    public static UIMenubar getUIMenubar()  {  return uiMenubar;  }
-    public static UIInfobar getUIInfobar()  {  return uiInfobar;  }
-    public static UIPattern getUIPattern()  {  return uiPattern;  }
-    public static UIMessage getUIMessage()  {  return uiMessage;  }
-    
-    /**
-     * UI delegation methods. Pass calls from other component to sub UIs.
-     */
-    public static void openColormap() {
-        uiPattern.openColormap();
-    }
-    
-    /** update the x- and y- coordinate of current pixel at cursor */
-    public static void cursorUpdate(int x, int y) {
-        currentPixelInfo.updateLocation(x, y);
-    }
-    
-    /**
-     * Get the default the main window title
-     */
-    public static String getTitle() {  
-        return FIBERJ_VS;  
-    }
-    
-    /**
-     * Set the main window title, for displaying pattern name, size, etc.
-     */
-    public static void setTitle(String title) {  
-        mainFrame.setTitle(title);  
-    }
-    
-    /**
-     * Refresh the main window in case of UI add/remove/update.
-     */
-    public static void refresh()  {
-        SwingUtilities.updateComponentTreeUI(mainFrame);
-        mainFrame.invalidate();
-        mainFrame.validate();
-        mainFrame.repaint();
-    }
-    
-    /**
-     * Resize pattern according to user command line input
-     */
-    public static void resizeToWidth(int width)  {
-        double ratio = patternProcessor.getAspectRatio();
-        
-        if(isZero(ratio)) {  
-            return;
-        }
-        
-        int height = (int) (width / ratio);
-        uiPattern.setPreferredSize(new Dimension(width, height));
-
-            mainFrame.pack();
-
-    }
-    
-    /**
-     * Get the accumulated size of the parts of mainFrame that are not uiPattern.
-     * This info remains unchanged in window resizing, as uiPattern gets all "resize" as "CENTER".
-     */
-    public static void updateSizeInfo() {       
-        nonPatternWidth  = mainFrame.getWidth() - uiPattern.getWidth(); 
-        nonPatternHeight = mainFrame.getHeight() - uiPattern.getHeight(); 
-        //System.out.println("   pattern width, height: " + uiPattern.getWidth() + ", " + uiPattern.getHeight());
-        //System.out.println("nonPattern width, height: " + nonPatternWidth + ", " + nonPatternHeight);     
-    }
-    
-    public static boolean isZero(double d) {
-        return Math.abs(d) < 0.000001;  // define an global epsilon if needed
-    }
-    
-    /**
-     * Maintain the pattern's aspect ratio in window resizing event
-     */
-    public static void onMainFrameResize() {    
-        if(!isDocked) {
-            return;
-        }
-        
-        double ratio = patternProcessor.getAspectRatio();
-        if(isZero(ratio)) {  
-            return;
-        }
-        
-        // reset frame height based on corrected height and width-height ratio
-        int hFrame   = mainFrame.getHeight();
-        int hPatt = hFrame - nonPatternHeight;
-        int wPatt = (int) (hPatt * ratio);
-        uiPattern.setPreferredSize(new Dimension(wPatt, hPatt));
-        mainFrame.pack();
-    }
-    
-    /**
-     * Maintain the pattern's aspect ratio in window resizing event
-     */
-    public static void onPatternFrameResize() {       
-        if(isDocked) {
-            return;
-        }
-        
-        double ratio = patternProcessor.getAspectRatio();
-        
-        if(isZero(ratio)) {  
-            return;
-        }
-        
-        // reset frame height based on corrected width and width-height ratio       
-        int wFrame = patternFrame.getWidth();
-        int wPatt = wFrame - nonPatternWidth; // nonPatternWidth is the same for mainFrame & patternFrame
-        int hPatt = (int) (wPatt / ratio);
-        uiPattern.setPreferredSize(new Dimension(wPatt, hPatt));
-        patternFrame.pack(); 
-    }
     
     /**
      * Create application UI and data hooks. Synchronize it to ensure UI creation happen once 
@@ -232,7 +118,7 @@ public final class UIMain {
      * @param hMess if > 0 overwrite default hMessage 
      */
     public static synchronized void init(int x, int y, int wPatt, int hPatt, int hInfo, int hMess) {
-        
+
         if(mainFrame != null) {
             return;
         }
@@ -241,19 +127,19 @@ public final class UIMain {
         if(hPatt > 0) { hPattern = hPatt; }
         if(hInfo > 0) { hInfobar = hInfo; }
         if(hMess > 0) { hMessage = hMess; }
-        
+
         mainFrame = new JFrame(FIBERJ_VS);
         mainFrame.setLocation(x, y);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         patternProcessor = PatternProcessor.getInstance();
         currentPixelInfo = new InfoItemCollectionPixel();
-        
+
         uiMenubar = new UIMenubar(mainFrame, new MenuDataMain());
         uiPattern = new UIPattern(mainFrame, wPattern, hPattern);
         uiMessage = new UIMessage(mainFrame, wPattern, hMessage, patternProcessor);
         uiInfobar = new UIInfobar(mainFrame, wPattern, hInfobar, currentPixelInfo);
-      
+
         Border lineBorder = BorderFactory.createLineBorder(Color.gray);
         uiInfobar.setBorder(lineBorder);
         uiPattern.setBorder(lineBorder);
@@ -264,69 +150,143 @@ public final class UIMain {
         // and let uiPattern take on resizing (BorderLayout.CENTER is greedy)
         mainFrame.setLayout(new BorderLayout()); 
         mainFrame.add(uiInfobar, BorderLayout.PAGE_START);
-        mainFrame.add(uiPattern, BorderLayout.CENTER);
         mainFrame.add(uiMessage, BorderLayout.PAGE_END);    
-            
+
+        // a hack to allow pattern resize to smaller than the main window and remain fully visible
+        // without changing patter display related code - it seems quite messy to do that.
+        patternPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, patternPadding, patternPadding));
+        patternPanel.add(uiPattern);
+        mainFrame.add(patternPanel, BorderLayout.CENTER);
+
         // listen for window resizing for pattern resizing
         mainFrame.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
-                    onMainFrameResize();
+                onMainFrameResize();
             };
         });
-        
+
         mainFrame.pack();
         mainFrame.setVisible(true);
-        isDocked = true;
+        isScrollPattern = false;
     }
 
+    
     /**
-     * Move uiPattern onto a free standing frame, and attach uiMessage under uiInfobar
+     * UI component getters, used by UI updater, massager, etc.
      */
-    public static synchronized void undockPattern() {
-        
-        if(uiPattern.getParentFrame() == patternFrame) {
+    public static UIMenubar getUIMenubar()  {  return uiMenubar;  }
+    public static UIInfobar getUIInfobar()  {  return uiInfobar;  }
+    public static UIPattern getUIPattern()  {  return uiPattern;  }
+    public static UIMessage getUIMessage()  {  return uiMessage;  }
+    
+    /** Get and set the main window title */
+    public static String getTitle()            { return mainFrame.getTitle(); }
+    public static void setTitle(String title)  { mainFrame.setTitle(title);   }
+    
+    /*
+     * UI delegation methods. Pass calls from other component to sub UIs.
+     */ 
+
+    public static void openColormap()              { uiPattern.openColormap();              }
+    public static void setMessage(String message)  { uiMessage.setMessage(message);         }
+    public static void cursorUpdate(int x, int y)  { currentPixelInfo.updateLocation(x, y); }
+    
+
+    /** Refresh the main window in case of UI add/remove/update. */
+    public static void refresh()  {
+        SwingUtilities.updateComponentTreeUI(mainFrame);
+        mainFrame.invalidate();
+        mainFrame.validate();
+        mainFrame.repaint();
+    }
+    
+    /**
+     * Remove the scrollbar from pattern display
+     */
+    public static synchronized void unScrollPattern() {
+        if(isScrollPattern) {
+            jScrollPane.remove(patternPanel);
+            mainFrame.remove(jScrollPane);           
+            jScrollPane.setVisible(false);
+            mainFrame.add(patternPanel, BorderLayout.CENTER);
+            isScrollPattern = false;    
+        }       
+        refresh();
+    }
+    
+    /**
+     * Add a scrollbar to pattern display
+     */
+    public static synchronized void scrollPattern() {
+        mainFrame.remove(patternPanel);
+        jScrollPane = new JScrollPane(patternPanel);
+        jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        mainFrame.add(jScrollPane, BorderLayout.CENTER);
+        isScrollPattern = true;     
+        refresh();
+    }
+    
+    /**
+     * Resize pattern per user command line input. Add or remove scrollbar accordingly.
+     */
+    public static void resizeToHeight(int height)  {
+        double ratio = patternProcessor.getAspectRatio();       
+        if(isZero(ratio)) {  
             return;
         }
         
-        if(patternFrame == null) {
-            patternFrame = new JFrame();
-            patternFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            //patternFrame.setUndecorated(true);
-            patternFrame.setBounds(10, 10, 600, 600);
-            patternFrame.setLayout(new BorderLayout()); 
-            patternFrame.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent evt) {
-                    onPatternFrameClose();
-                }
-            });
+        int width = (int) (height * ratio + 0.5);
+        uiPattern.setPreferredSize(new Dimension(width, height));
+        
+        if(height + patternPadding + nonPatternHeight > availableScreenHeight) {
+            scrollPattern();    
         }
-
-        patternFrame.add(uiPattern, BorderLayout.CENTER);
-        
-        // listen for window resizing for pattern resizing
-        patternFrame.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent evt) {
-                onPatternFrameResize();
-            };
-        });
-        
-        mainFrame.pack();
-        mainFrame.setVisible(true);
-        
-        patternFrame.pack();
-        patternFrame.setVisible(true);
-        
-        isDocked = false;     
+        else {
+            unScrollPattern();
+            mainFrame.pack();         
+        }
     }
     
-    // TODO: re-dock uiPatten into mainFrame
-    static void onPatternFrameClose() {
-        patternFrame.setVisible(false);
-        mainFrame.add(uiPattern, BorderLayout.CENTER);
-        isDocked = true;
+    /**
+     * Maintain the pattern's aspect ratio in window resizing event
+     */
+    public static void onMainFrameResize() {    
+        if(isScrollPattern) {
+            return;
+        }
+        
+        double ratio = patternProcessor.getAspectRatio();
+        if(isZero(ratio)) {  
+            return;
+        }
+        
+        // reset frame height based on corrected height and width-height ratio
+        int hFrame   = mainFrame.getHeight();
+        int hPatt = hFrame - nonPatternHeight;
+        int wPatt = (int) (hPatt * ratio);
+        uiPattern.setPreferredSize(new Dimension(wPatt, hPatt));
+        //layout does work properly if we also set the size of patternPanel
+        //patternPanel.setPreferredSize(new Dimension(wPatt+patternPadding, hPatt+patternPadding));
         mainFrame.pack();
-        mainFrame.setVisible(true);
+        setMessage("width, height: " + wPatt + ", " + hPatt);
     }
+    
+    /** check if a double value is close to zero */
+    public static boolean isZero(double d) {
+        return Math.abs(d) < 0.000001;  // define an global epsilon if needed
+    }
+    
+    /**
+     * Get the accumulated size of the parts of mainFrame that are not uiPattern.
+     * This info remains unchanged in window resizing, as uiPattern gets all "resize" as "CENTER".
+     */
+    public static void updateSizeInfo() {       
+        nonPatternWidth  = mainFrame.getWidth() - uiPattern.getWidth(); 
+        nonPatternHeight = mainFrame.getHeight() - uiPattern.getHeight();  
+    }
+    
+
     
     /**
      * <pre>
@@ -348,17 +308,16 @@ public final class UIMain {
             public void run() {
                 try {
                     //try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
-                    //catch (Exception e) { }
-                    
+                    //catch (Exception e) { }                   
                     // screen size
                     //GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-                    //screenWidth = gd.getDisplayMode().getWidth();
-                    //screenHeight = gd.getDisplayMode().getHeight();
+                    //availableScreenWidth = gd.getDisplayMode().getWidth();
+                    //availableScreenHeight = gd.getDisplayMode().getHeight();
                     
-                    // available screen size
+                    // get available screen size
                     Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-                    screenWidth = (int)r.getWidth();
-                    screenHeight = (int)r.getHeight();
+                    availableScreenWidth = (int)r.getWidth() - 10;
+                    availableScreenHeight = (int)r.getHeight() - 10;
 
                     SystemSettings.init();
                     UIMain.init(100, 100, 600, 600, 0, 0);
