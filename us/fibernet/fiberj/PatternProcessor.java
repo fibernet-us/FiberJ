@@ -61,12 +61,16 @@ public final class PatternProcessor {
    
     
     /**
-     * Recalculate shrinkScale based on new pattern display width
+     * Recalculate shrinkScale based on new pattern display height
      */
-    public synchronized void recalcShrinkScale(double newWidth) {
-        shrinkScale = originalData[0].length / newWidth;
+    public synchronized void recalcShrinkScale(double newHeight) {
+        shrinkScale = originalData.length / newHeight;
     }
     
+    
+    public synchronized void toOriginalSize() {
+        UIMain.resizeToHeight(originalData.length);   
+    }
     
     /**
      * Read an image file and create an a pattern image 
@@ -83,6 +87,15 @@ public final class PatternProcessor {
             return;
         }
 
+        ///////////////////////////////////////////////////////////////////////////////
+        // TODO: remove this later.  this is for comparing intensity values with WCEN
+        for(int i=0; i<workingData.length; i++) {
+            for(int j=0; j<workingData[0].length; j++) {
+                workingData[i][j] /= 2; 
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////////////
+        
         currentPattern = new Pattern(workingData, false);
         createPatternImage(workingData, new File(args[0]).getName()); // add only file name itself
     }
@@ -103,7 +116,7 @@ public final class PatternProcessor {
             }
         }
         
-        createPatternImage(workingData, "");
+        createPatternImage(workingData, null);
     }
     
     /**
@@ -117,7 +130,7 @@ public final class PatternProcessor {
         
         currentPattern = pattern;
         workingData = pattern.getData();         
-        createPatternImage(workingData, "");
+        createPatternImage(workingData, pattern.toString());
     }
     
  
@@ -127,6 +140,8 @@ public final class PatternProcessor {
      */
     // TODO: look up command from CommandTable and call corresponding action
     public synchronized void executeCommand(String command) {
+        
+        command = command.toLowerCase();
         
         //System.out.println(command);
         // a simple example
@@ -144,10 +159,32 @@ public final class PatternProcessor {
                 this.createPatternImage(filename);
             }                  
         }
-        else if(command.startsWith("resize") || command.startsWith("size")) {
+        else if(command.contains("actual")) {
             try {
-                int newWidth = Integer.parseInt(command.substring(command.indexOf(' ')).trim());
-                UIMain.resizeToWidth(newWidth);   // TODO: not working properly?
+                UIMain.resizeToHeight(originalData.length); 
+                UIMain.setMessage("width, height: " + originalData[0].length + ", " + originalData.length);
+            }
+            catch(NumberFormatException e) {
+                e.printStackTrace();
+            } 
+        }
+        else if(command.startsWith("resize") || command.startsWith("size") 
+                || command.startsWith("height") || command.startsWith("width")) {
+            try {
+                int size = Integer.parseInt(command.substring(command.indexOf(' ')).trim());
+                if(command.charAt(0) == 'w') {
+                    size /= aspectRatio;
+                }
+                UIMain.resizeToHeight(size); 
+                UIMain.setMessage("width, height: " + (int)(size*aspectRatio+0.5) + ", " + size);
+            }
+            catch(NumberFormatException e) {
+                e.printStackTrace();
+            } 
+        }
+        else if(command.startsWith("scroll")) {
+            try {
+                UIMain.scrollPattern();
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
@@ -169,8 +206,8 @@ public final class PatternProcessor {
         originalData = dataArray.clone();
         aspectRatio = dataArray[0].length / dataArray.length;        
         new PatternDisplay(UIMain.getUIPattern(), dataArray, this);
+        UIMain.setTitle(UIMain.getTitle() + (title == null ? "" : (" - " + title)) ); 
         UIMain.updateSizeInfo();
-        UIMain.setTitle(UIMain.getTitle() + " - " + title);    
     }
     
 } // class PatternProcessor

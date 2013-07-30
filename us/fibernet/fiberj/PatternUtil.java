@@ -222,6 +222,10 @@ public class PatternUtil {
         int newWidth = label.getWidth();
         int newHeight = label.getHeight();
         
+        if(newWidth < 1 || newHeight < 1) {
+            return null;
+        }
+        
         BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = resizedImage.createGraphics();
         g.drawImage(image, 0, 0, newWidth, newHeight, null);
