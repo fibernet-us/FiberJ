@@ -32,31 +32,31 @@ package us.fibernet.fiberj;
 /**
  * A menu handler for the Main menu bar, Colormap menu
  */
-public class MenuHandlerMainColormap extends MenuHandlerMain {  
-     
-    /*
-     * Colormap -> Load
-     */
-    // TODO
-    @Override
-    public void colormapLoad() {
-
-    } 
+public class MenuHandlerMainColormap extends MenuHandlerMainDefault {  
     
     /*
      * Colormap -> Load
      */
     // TODO
     @Override
-    public void colormapSave() {
-        
+    public void mainColormapLoad() {
+        super.mainColormapLoad();
     } 
     
     /*
-     * Colormap -> Load
+     * Colormap -> Save
+     */
+    // TODO
+    @Override
+    public void mainColormapSave() {
+        super.mainColormapSave();        
+    } 
+    
+    /*
+     * Colormap -> Customize
      */
     @Override
-    public void colormapCustomize() {
+    public void mainColormapCustomize() {
         UIMain.openColormap();
     } 
 }

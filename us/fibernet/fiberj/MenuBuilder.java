@@ -1,5 +1,5 @@
 /*
- * Copyright Wen Bian. All rights reserved.
+ * Copyright Wen Bian and Billy Zheng. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -28,21 +28,21 @@
 
 package us.fibernet.fiberj;
 
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 
 /**
- * A menu handler for the Main menu bar, Process menu
+ *  A class for creating a JMenuBar on a JFrame given a list of MenuItems
  */
-public class MenuHandlerMainProcess extends MenuHandlerMainDefault {  
-     
-  
-    /*
-     * Process -> Transform
-     */
-    @Override
-    public void mainProcessTransform()  { 
-        new Transform(PatternProcessor.getInstance().getCurrentPattern()).toReciprocal();
-    } 
- 
+public class MenuBuilder {
+   
+    public static JMenuBar build (JFrame parentFrame, MenuItem... menuItems) { 
+        JMenuBar menuBar = new JMenuBar();
+        for(MenuItem mi : menuItems) {
+            menuBar.add(mi.build());
+        }
+        parentFrame.setJMenuBar(menuBar);
+        return menuBar;
+    }   
     
-    
-} // class MenuHandlerMainProcess
+} // class MenuBuilder

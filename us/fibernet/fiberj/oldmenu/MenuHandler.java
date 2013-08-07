@@ -26,25 +26,15 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj;
+package us.fibernet.fiberj.oldmenu;
 
 /**
- * An interface defining essential menu data functions to be used by a menu builder
+ * MenuHandler defines a marker interface for all MenuHandlers.
+ * 
+ * No common method is defined. When a concrete MenuHandler is called, 
+ * caller looks up the MenuHandler to see if it has certain methods, 
+ * and if it does, caller calls the methods; if not, caller complains.
  */
-public interface MenuData {
+public interface MenuHandler {
 
-    /** @return  total number of menus in this MenuData */
-    int getNumberOfMenus();
-    
-    /** @return  total number of menu items in the menu identified by menuID */
-    int getNumberOfMenuItems(int menuID);
-    
-    /** @return  name of the menu identified by menuID */
-    String getMenuName(int menuID);
-    
-    /** @return  name of the menu item identified by menuID and menuItemID */
-    String getMenuItemName(int menuID, int menuItemID);
-    
-    /** @return  MenuCommander responsible for the menu item identified by menuID and menuItemID */
-    MenuCommander getMenuItemCommander(int menuID, int menuItemID);
 }

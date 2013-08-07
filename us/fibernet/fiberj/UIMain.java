@@ -33,26 +33,18 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
-import javax.swing.JOptionPane;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
 
 /**
@@ -72,11 +64,11 @@ import javax.swing.UIManager;
  */
 public final class UIMain {
 
-    private static final String FIBERJ_VS = "FiberJ 0.3";
+    private static final String FIBERJ_VS = "FiberJ 0.4";
     private static JFrame mainFrame;
     private static JScrollPane jScrollPane; // to scroll pattern when its display size is too big
     private static JPanel patternPanel; // to hold uiPattern
-    private static UIMenubar uiMenubar; 
+    private static JMenuBar  uiMenubar; 
     private static UIInfobar uiInfobar; 
     private static UIPattern uiPattern;
     private static UIMessage uiMessage;
@@ -135,7 +127,7 @@ public final class UIMain {
         patternProcessor = PatternProcessor.getInstance();
         currentPixelInfo = new InfoItemCollectionPixel();
 
-        uiMenubar = new UIMenubar(mainFrame, new MenuDataMain());
+        uiMenubar = MenuBuilder.build(mainFrame, new MenuMain().getMenuItems());
         uiPattern = new UIPattern(mainFrame, wPattern, hPattern);
         uiMessage = new UIMessage(mainFrame, wPattern, hMessage, patternProcessor);
         uiInfobar = new UIInfobar(mainFrame, wPattern, hInfobar, currentPixelInfo);
@@ -174,7 +166,7 @@ public final class UIMain {
     /**
      * UI component getters, used by UI updater, massager, etc.
      */
-    public static UIMenubar getUIMenubar()  {  return uiMenubar;  }
+    public static JMenuBar getUIMenubar()  {  return uiMenubar;  }
     public static UIInfobar getUIInfobar()  {  return uiInfobar;  }
     public static UIPattern getUIPattern()  {  return uiPattern;  }
     public static UIMessage getUIMessage()  {  return uiMessage;  }
@@ -308,11 +300,12 @@ public final class UIMain {
             public void run() {
                 try {
                     //try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
-                    //catch (Exception e) { }                   
+                    //catch (Exception e) { }    
+                    //
                     // screen size
                     //GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-                    //availableScreenWidth = gd.getDisplayMode().getWidth();
-                    //availableScreenHeight = gd.getDisplayMode().getHeight();
+                    //screenWidth = gd.getDisplayMode().getWidth();
+                    //screenHeight = gd.getDisplayMode().getHeight();
                     
                     // get available screen size
                     Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
@@ -322,6 +315,10 @@ public final class UIMain {
                     SystemSettings.init();
                     UIMain.init(100, 100, 600, 600, 0, 0);
                     patternProcessor.createPatternImage(600);
+                    
+                    if(SwingUtilities.isEventDispatchThread()) {
+                        System.out.println("on edt");
+                    }
                     
                 } catch (Exception e) {
                     e.printStackTrace();

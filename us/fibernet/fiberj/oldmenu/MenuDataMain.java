@@ -26,7 +26,8 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj;
+package us.fibernet.fiberj.oldmenu;
+
 
 /**
  * A utility class containing the main window's menu data
@@ -47,10 +48,10 @@ public final class MenuDataMain extends MenuDataImpl {
     private static final MenuHandlerMain[] MENU_HANDLERS = {
         new MenuHandlerMainFile(),     // File      
         new MenuHandlerMain(),         // Image     // TODO
-        new MenuHandlerMainColormap(), // Colormap 
+        new MenuHandlerMain(),         // Colormap  // TODO
         new MenuHandlerMain(),         // Draw      // TODO
-        new MenuHandlerMainProcess(),  // Process   
-        new MenuHandlerMainWindow(),   // Window    
+        new MenuHandlerMain(),         // Process   // TODO
+        new MenuHandlerMain(),         // Window    // TODO
         new MenuHandlerMain()          // Help      // TODO
     };
 
@@ -67,4 +68,4 @@ public final class MenuDataMain extends MenuDataImpl {
         return MENU_HANDLERS[menuID];
     }
 
-} // class MenuDataMain
+} // class MenuMain

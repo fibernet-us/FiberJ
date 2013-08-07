@@ -26,23 +26,18 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj;
-
+package us.fibernet.fiberj.oldmenu;
 
 /**
- * A menu handler for the Main menu bar, Process menu
+ * An interface defining a middleman between menu event (listener) and menu handler.
+ * Called by menu listener, and in turn, calls corresponding menu handler. 
+ * Concrete MenuCommand(s) are created by concrete MenuData(s).
+ * 
+ * Roles with regard to Command Pattern:
+ * MenuListener  --> Invoker
+ * MenuCommand --> Command 
+ * MenuHandler   --> Receiver 
  */
-public class MenuHandlerMainProcess extends MenuHandlerMainDefault {  
-     
-  
-    /*
-     * Process -> Transform
-     */
-    @Override
-    public void mainProcessTransform()  { 
-        new Transform(PatternProcessor.getInstance().getCurrentPattern()).toReciprocal();
-    } 
- 
-    
-    
-} // class MenuHandlerMainProcess
+public interface MenuCommand {
+    void execute();
+}

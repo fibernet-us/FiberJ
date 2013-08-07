@@ -26,44 +26,41 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj;
+package us.fibernet.fiberj.oldmenu;
+
+import java.io.File;
+import javax.swing.JFileChooser;
+
 
 /**
- * A default menu handler for the MenuDataMain. 
+ * A menu handler for the Main menu bar, File menu
  */
-public class MenuHandlerMain implements MenuHandler { 
+public class MenuHandlerMainFile extends MenuHandlerMain {  
+     
+    /*
+     * File -> Open
+     */
+    @Override
+    public void fileOpen() {
+            // fire up a file broswer in current working directory
+            JFileChooser fc = new JFileChooser();   
+            int response = fc.showOpenDialog(null);      
+            if(response == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String filePath = file.getAbsolutePath();
+                System.out.println(filePath);
+            } 
+            else {
+                System.out.println("Open command cancelled");
+            }
+        }
+ 
     
-    public void fileOpen() {}   
-    public void fileSave() {}   
-    public void fileClose() {}    
-    public void fileExit() {}
-
-    public void imageFlip() {} 
-    public void imageRotate() {} 
-    public void imageResize() {} 
-    public void imageCrop() {} 
-
-    public void colormapLoad() {} 
-    public void colormapSave() {} 
-    public void colormapCustomize() {} 
-
-    public void drawCircle() {} 
-    public void drawResolutionCircle() {} 
-    public void drawLayerline() {} 
-    public void drawRefresh() {} 
-    public void drawClearAll() {} 
-
-    public void processFilter() {} 
-    public void processPlot() {} 
-    public void processCorrection() {} 
-    public void processTransform() {} 
-    public void processBackground() {} 
-
-    public void windowParameter() {} 
-    public void windowCoordinates() {} 
-    public void windowPixelViewer() {} 
-    public void windowLog() {} 
-    
-    public void helpAbout() {}   
-    public void helpResource() {}               
+    /*
+     * File -> Exit
+     */
+    @Override
+    public void fileExit() {
+        System.exit(0);
+    }
 }

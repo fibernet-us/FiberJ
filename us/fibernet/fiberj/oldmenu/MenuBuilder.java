@@ -1,5 +1,5 @@
 /*
- * Copyright Wen Bian and Billy Zheng. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj;
+package us.fibernet.fiberj.oldmenu;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -38,31 +38,21 @@ import java.awt.event.ActionListener;
 
 /**
  *  A class for creating a JMenuBar with a MenuData, on a JFrame. Each menu item 
- *  is associated with a MenuActionListener hooked to a MenuCommander.
+ *  is associated with a MenuActionListener hooked to a MenuCommand.
  */
-public class UIMenubar {
-
-    private JMenuBar menuBar;
-    private JFrame parentFrame;
-    private MenuData menuData;
-    
-    public UIMenubar(JFrame parentFrame, MenuData menuData) { 
-        this.parentFrame = parentFrame;
-        this.menuData = menuData;
-        buildMenuBar();
-    }   
-    
+public class MenuBuilder {
+      
     /*
-     *  Build menuBar with menuData, add a MenuActionListener, and attach it to parentFrame 
+     *  Build a JMenuBar with menuData, add a MenuActionListener, and attach it to parentFrame 
      *  
      *  menu-0        menu-1       ...
      *  menu-item-0   menu-item-0  ...
      *  menu-item-1   menu-item-1  ...
      *  ...           ...          ...
      */
-    protected void buildMenuBar() {
+    public static JMenuBar build(JFrame parentFrame, MenuData menuData) {
 
-                    menuBar = new JMenuBar();     
+        JMenuBar    menuBar = new JMenuBar();     
         int          nMenus = menuData.getNumberOfMenus();       
         JMenu[]       menus = new JMenu[nMenus];
         JMenuItem[][] items = new JMenuItem[nMenus][];
@@ -84,17 +74,19 @@ public class UIMenubar {
         }      
 
         parentFrame.setJMenuBar(menuBar);
+        
+        return menuBar;
     }     
     
     /*
-     *  An ActionListener implementer. It connects a MenuCommander 
+     *  An ActionListener implementer. It connects a MenuCommand 
      *  corresponding to a menu item and calls its execute() on menu events
      */
-    protected class MenuActionListener implements ActionListener {   
+    protected static class MenuActionListener implements ActionListener {   
         
-        private MenuCommander menuCommand;
+        private MenuCommand menuCommand;
         
-        public MenuActionListener(MenuCommander menuCommand) {
+        public MenuActionListener(MenuCommand menuCommand) {
             this.menuCommand = menuCommand;
         }
         
@@ -109,4 +101,4 @@ public class UIMenubar {
     } // class MenuCommandListener
 
     
-} // class UIMenubar
+} // class MenuBuilder

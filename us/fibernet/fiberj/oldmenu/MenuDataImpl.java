@@ -26,10 +26,10 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj;
+package us.fibernet.fiberj.oldmenu;
 
  /**
- * MenuDataImpl provides a partial implementation of MenuData. Concrete subclasses 
+ * MenuData provides a partial implementation of MenuData. Concrete subclasses 
  * will need to implement the getMenuNames() and getMenuHandler() methods.
  */
 public abstract class MenuDataImpl implements MenuData {
@@ -83,11 +83,11 @@ public abstract class MenuDataImpl implements MenuData {
         return getMenuNames()[menuID][menuItemID + 1];  // first is menu name
     }
     
-    /** Get the MenuCommander for the menu item identified by menuID and menuItemID  */
-    public MenuCommander getMenuItemCommander(final int menuID, final int menuItemID) {    
+    /** Get the MenuCommand for the menu item identified by menuID and menuItemID  */
+    public MenuCommand getMenuItemCommander(final int menuID, final int menuItemID) {    
         
-        // create and return an anonymous MenuCommander
-        return  new MenuCommander() {          
+        // create and return an anonymous MenuCommand
+        return  new MenuCommand() {          
             
             MenuHandler handler = getMenuHandler(menuID, menuItemID);
             
@@ -123,8 +123,8 @@ public abstract class MenuDataImpl implements MenuData {
                 
             } // execute()
                   
-        }; // new MenuCommander() {  
+        }; // new MenuCommand() {  
     }
     
     
-} // class MenuDataImpl
+} // class MenuData

@@ -29,11 +29,11 @@
 package us.fibernet.fiberj;
 
 /**
- * MenuHandler defines a common interface for all MenuHandlers.
+ * A marker interface for all MenuHandlers.
  * 
  * No common method is defined. When a concrete MenuHandler is called, 
- * caller looks up the MenuHandler to see if it has certain methods, 
- * and if it does, caller calls the methods; if not, caller complains.
+ * caller checks if the MenuHandler has certain method, and if it does, 
+ * caller calls the methods; if not, caller pops up a warning.
  */
 public interface MenuHandler {
 

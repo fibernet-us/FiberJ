@@ -35,47 +35,85 @@ import javax.swing.JFileChooser;
 /**
  * A menu handler for the Main menu bar, File menu
  */
-public class MenuHandlerMainFile extends MenuHandlerMain {  
-     
+public class MenuHandlerMainFile extends MenuHandlerMainDefault {  
+
     /*
      * File -> Open
      */
     @Override
-    public void fileOpen() {
-            // fire up a file broswer in current working directory
-            JFileChooser fc = new JFileChooser(SystemSettings.getWorkingDir());   
-            int response = fc.showOpenDialog(null);      
-            if(response == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                String filePath = file.getAbsolutePath();
-                System.out.println(filePath);
-                PatternProcessor.getInstance().createPatternImage(filePath);      
-                // user might have changed working directory, update it
-                SystemSettings.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
-            } 
-            else {
-                System.out.println("Open command cancelled");
-            }
+    public void mainFileOpen() {
+        // fire up a file browser in current working directory
+        JFileChooser fc = new JFileChooser(SystemSettings.getWorkingDir());   
+        int response = fc.showOpenDialog(null);      
+        if(response == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+            String filePath = file.getAbsolutePath();
+            System.out.println(filePath);
+            PatternProcessor.getInstance().createPatternImage(filePath);      
+            // user might have changed working directory, update it
+            SystemSettings.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
+        } 
+        else {
+            System.out.println("Open command cancelled");
         }
- 
-    /*
-     * File -> Save
-     */
-    // TODO
-    @Override
-    public void fileSave() { }
-    
-    /*
-     * File -> Close
-     */
-    // TODO
-    @Override
-    public void fileClose() { }
+    }
+
+
     /*
      * File -> Exit
      */
     @Override
-    public void fileExit() {
+    public void mainFileExit() {
         System.exit(0);
     }
-}
+
+
+    /////////////////////// TODO ///////////////////////
+
+    /*
+     * File -> Save
+     */
+    public void mainFileSave() {
+        super.mainFileSave();
+    }
+
+    /*
+     * mainFileSaveAs handlers
+     */
+    public void mainFileSaveAsTIF() {
+        super.mainFileSaveAsTIF();
+    }
+
+    public void mainFileSaveAsSMV() {
+        super.mainFileSaveAsSMV();
+    }
+
+    public void mainFileClose() {
+        super.mainFileClose();
+    }
+
+    public void mainFileBrowse() {
+        super.mainFileBrowse();
+    }
+
+    public void mainFileConvert() {
+        super.mainFileConvert();
+    }
+
+    public void mainFileMerge() {
+        super.mainFileMerge();
+    }
+
+    /*
+     * mainFileParameter handlers
+     */
+    public void mainFileParameterLoad() {
+        super.mainFileParameterLoad();
+    } 
+
+    public void mainFileParameterSave() {
+        super.mainFileParameterSave();
+    }
+    
+} // class MenuHandlerMainFile
+

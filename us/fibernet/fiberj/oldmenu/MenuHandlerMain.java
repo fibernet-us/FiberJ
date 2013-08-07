@@ -26,18 +26,44 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj;
+package us.fibernet.fiberj.oldmenu;
 
 /**
- * An interface defining a middleman between menu event (listener) and menu handler.
- * Called by menu listener, and in turn, calls corresponding menu handler. 
- * Concrete MenuCommander(s) are created by concrete MenuData(s).
- * 
- * Roles with regard to Command Pattern:
- * MenuListener  --> Invoker
- * MenuCommander --> Command 
- * MenuHandler   --> Receiver 
+ * A default menu handler (adapter) for the MenuMain. 
  */
-public interface MenuCommander {
-    void execute();
+public class MenuHandlerMain implements MenuHandler { 
+    
+    public void fileOpen() {}   
+    public void fileSave() {}   
+    public void fileClose() {}    
+    public void fileExit() {}
+
+    public void imageFlip() {} 
+    public void imageRotate() {} 
+    public void imageResize() {} 
+    public void imageCrop() {} 
+
+    public void colormapLoad() {} 
+    public void colormapSave() {} 
+    public void colormapCustomize() {} 
+
+    public void drawCircle() {} 
+    public void drawResolutionCircle() {} 
+    public void drawLayerline() {} 
+    public void drawRefresh() {} 
+    public void drawClearAll() {} 
+
+    public void processFilter() {} 
+    public void processPlot() {} 
+    public void processCorrection() {} 
+    public void processTransform() {} 
+    public void processBackground() {} 
+
+    public void windowParameter() {} 
+    public void windowCoordinates() {} 
+    public void windowPixelViewer() {} 
+    public void windowLog() {} 
+    
+    public void helpAbout() {}   
+    public void helpResource() {}               
 }

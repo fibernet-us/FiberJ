@@ -26,23 +26,25 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj;
-
+package us.fibernet.fiberj.oldmenu;
 
 /**
- * A menu handler for the Main menu bar, Process menu
+ * An interface defining essential menu data functions to be used by a menu builder
  */
-public class MenuHandlerMainProcess extends MenuHandlerMainDefault {  
-     
-  
-    /*
-     * Process -> Transform
-     */
-    @Override
-    public void mainProcessTransform()  { 
-        new Transform(PatternProcessor.getInstance().getCurrentPattern()).toReciprocal();
-    } 
- 
+public interface MenuData {
+
+    /** @return  total number of menus in this MenuData */
+    int getNumberOfMenus();
     
+    /** @return  total number of menu items in the menu identified by menuID */
+    int getNumberOfMenuItems(int menuID);
     
-} // class MenuHandlerMainProcess
+    /** @return  name of the menu identified by menuID */
+    String getMenuName(int menuID);
+    
+    /** @return  name of the menu item identified by menuID and menuItemID */
+    String getMenuItemName(int menuID, int menuItemID);
+    
+    /** @return  MenuCommand responsible for the menu item identified by menuID and menuItemID */
+    MenuCommand getMenuItemCommander(int menuID, int menuItemID);
+}
