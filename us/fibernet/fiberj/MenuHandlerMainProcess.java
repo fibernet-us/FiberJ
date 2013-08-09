@@ -43,6 +43,9 @@ public class MenuHandlerMainProcess extends MenuHandlerMainDefault {
         new Transform(PatternProcessor.getInstance().getCurrentPattern()).toReciprocal();
     } 
  
-    
+    public void mainProcessBackground()     { super.mainProcessBackground();   }
+    public void mainProcessCorrection()     { super.mainProcessCorrection();   }
+    public void mainProcessFilter()         { super.mainProcessFilter();       }
+    public void mainProcessPlot()           { super.mainProcessPlot();         }
     
 } // class MenuHandlerMainProcess

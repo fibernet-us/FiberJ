@@ -42,10 +42,13 @@ import java.util.ArrayList;
 public final class MenuMain {  
     
     private static final String surName = "main";
-    private static final MenuHandlerMainDefault defaultHandler = new MenuHandlerMainDefault();
     private static final MenuHandlerMainFile fileHandler = new MenuHandlerMainFile();
+    private static final MenuHandlerMainImage imageHandler = new MenuHandlerMainImage();
     private static final MenuHandlerMainColormap colormapHandler = new MenuHandlerMainColormap();
+    private static final MenuHandlerMainDraw drawHandler = new MenuHandlerMainDraw();
     private static final MenuHandlerMainProcess processHandler = new MenuHandlerMainProcess();
+    private static final MenuHandlerMainWindow windowHandler = new MenuHandlerMainWindow();
+    private static final MenuHandlerMainHelp helpHandler = new MenuHandlerMainHelp();
     
     private static final MenuItem[] MENU_ITEMS = {
       
@@ -56,7 +59,7 @@ public final class MenuMain {
                     new MenuItemLeaf(         "TIF",        fileHandler),
                     new MenuItemLeaf(         "SMV",        fileHandler)),
               new MenuItemLeaf(            "Close",         fileHandler), 
-              new MenuItemSeperator(),//////////////////////////////////              
+              new MenuItemSeperator(),////////////////////////////////// 
               new MenuItemLeaf(            "Browse",        fileHandler), 
               new MenuItemLeaf(            "Convert",       fileHandler), 
               new MenuItemLeaf(            "Merge",         fileHandler), 
@@ -69,21 +72,21 @@ public final class MenuMain {
         ), 
 
         new MenuItemComposite(surName,  "Image ",   
-              new MenuItemLeaf(            "Crop",          defaultHandler),
+              new MenuItemLeaf(            "Crop",          imageHandler),
               new MenuItemComposite(       "Flip", 
-                    new MenuItemLeaf(         "Horizontal", defaultHandler),
-                    new MenuItemLeaf(         "Vertical",   defaultHandler)),
+                    new MenuItemLeaf(         "Horizontal", imageHandler),
+                    new MenuItemLeaf(         "Vertical",   imageHandler)),
               new MenuItemComposite(       "Rotate", 
-                    new MenuItemLeaf(         "90",         defaultHandler),
-                    new MenuItemLeaf(         "180",        defaultHandler),
-                    new MenuItemLeaf(         "270",        defaultHandler), 
-                    new MenuItemLeaf(         "Custom",     defaultHandler)), 
+                    new MenuItemLeaf(         "90",         imageHandler),
+                    new MenuItemLeaf(         "180",        imageHandler),
+                    new MenuItemLeaf(         "270",        imageHandler), 
+                    new MenuItemLeaf(         "Custom",     imageHandler)), 
               new MenuItemComposite(       "Resize", 
-                    new MenuItemLeaf(         "Actual",     defaultHandler),
-                    new MenuItemLeaf(         "Custom",     defaultHandler)),
+                    new MenuItemLeaf(         "Actual",     imageHandler),
+                    new MenuItemLeaf(         "Custom",     imageHandler)),
               new MenuItemSeperator(),/////////////////////////////////////
-              new MenuItemLeaf(            "Repair",        defaultHandler),
-              new MenuItemLeaf(            "Rescale",       defaultHandler)
+              new MenuItemLeaf(            "Repair",        imageHandler),
+              new MenuItemLeaf(            "Rescale",       imageHandler)
         ),  
 
         new MenuItemComposite(surName,  "Colormap ",
@@ -93,15 +96,15 @@ public final class MenuMain {
         ),   
 
         new MenuItemComposite(surName,  "Draw ",    
-              new MenuItemLeaf(            "Circle",        defaultHandler), 
-              new MenuItemLeaf(            "Resolution",    defaultHandler), 
-              new MenuItemLeaf(            "Layerline",     defaultHandler), 
+              new MenuItemLeaf(            "Circle",        drawHandler), 
+              new MenuItemLeaf(            "Resolution",    drawHandler), 
+              new MenuItemLeaf(            "Layerline",     drawHandler), 
               new MenuItemSeperator(),/////////////////////////////////////
-              new MenuItemLeaf(            "Mask",          defaultHandler), 
+              new MenuItemLeaf(            "Mask",          drawHandler), 
               new MenuItemSeperator(),/////////////////////////////////////
-              new MenuItemLeaf(            "Refresh",       defaultHandler), 
-              new MenuItemLeaf(            "Clear",         defaultHandler), 
-              new MenuItemLeaf(            "Clear All",     defaultHandler)
+              new MenuItemLeaf(            "Refresh",       drawHandler), 
+              new MenuItemLeaf(            "Clear",         drawHandler), 
+              new MenuItemLeaf(            "Clear All",     drawHandler)
         ), 
 
         new MenuItemComposite(surName,  "Process ", 
@@ -113,16 +116,16 @@ public final class MenuMain {
         ),
 
         new MenuItemComposite(surName,  "Window ", 
-              new MenuItemLeaf(            "Parameter",     defaultHandler),  
-              new MenuItemLeaf(            "Coordinates",   defaultHandler),
-              new MenuItemLeaf(            "Pixel Viewer",  defaultHandler), 
-              new MenuItemLeaf(            "Comand Line",   defaultHandler),
-              new MenuItemLeaf(            "Log",           defaultHandler)
+              new MenuItemLeaf(            "Parameter",     windowHandler),  
+              new MenuItemLeaf(            "Coordinates",   windowHandler),
+              new MenuItemLeaf(            "Pixel Viewer",  windowHandler), 
+              new MenuItemLeaf(            "Comand Line",   windowHandler),
+              new MenuItemLeaf(            "Log",           windowHandler)
         ),
                  
         new MenuItemComposite(surName,  "Help ",    
-              new MenuItemLeaf(            "About",         defaultHandler), 
-              new MenuItemLeaf(            "Resource",      defaultHandler)
+              new MenuItemLeaf(            "About",         helpHandler), 
+              new MenuItemLeaf(            "Resource",      helpHandler)
         )
     };
     
