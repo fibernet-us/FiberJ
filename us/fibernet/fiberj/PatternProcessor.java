@@ -64,13 +64,9 @@ public final class PatternProcessor {
      * Recalculate shrinkScale based on new pattern display height
      */
     public synchronized void recalcShrinkScale(double newHeight) {
-        shrinkScale = originalData.length / newHeight;
+        shrinkScale = workingData.length / newHeight;
     }
     
-    
-    public synchronized void toOriginalSize() {
-        UIMain.resizeToHeight(originalData.length);   
-    }
     
     /**
      * Read an image file and create an a pattern image 
@@ -100,6 +96,22 @@ public final class PatternProcessor {
         createPatternImage(workingData, new File(args[0]).getName()); // add only file name itself
     }
   
+    
+    /**
+     * Create a pattern image from a Pattern object
+     */
+    public synchronized void createPatternImage(Pattern pattern) {
+
+        if(pattern == null) {
+            return;
+        }
+        
+        currentPattern = pattern;
+        workingData = pattern.getData();         
+        createPatternImage(workingData, pattern.toString());
+    }
+    
+    
     /** 
      * Create an a square rainbow image (no pattern data)
      */
@@ -118,20 +130,8 @@ public final class PatternProcessor {
         
         createPatternImage(workingData, null);
     }
-    
-    /**
-     * Create a pattern image from a Pattern object
-     */
-    public synchronized void createPatternImage(Pattern pattern) {
 
-        if(pattern == null) {
-            return;
-        }
-        
-        currentPattern = pattern;
-        workingData = pattern.getData();         
-        createPatternImage(workingData, pattern.toString());
-    }
+    
     
  
     /**
@@ -161,15 +161,14 @@ public final class PatternProcessor {
         }
         else if(command.contains("actual")) {
             try {
-                UIMain.resizeToHeight(originalData.length); 
-                UIMain.setMessage("width, height: " + originalData[0].length + ", " + originalData.length);
+                UIMain.resizeToHeight(workingData.length); 
+                UIMain.setMessage("width, height: " + workingData[0].length + ", " + workingData.length);
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
             } 
         }
-        else if(command.startsWith("resize") || command.startsWith("size") 
-                || command.startsWith("height") || command.startsWith("width")) {
+        else if(command.startsWith("height") || command.startsWith("width")) {
             try {
                 int size = Integer.parseInt(command.substring(command.indexOf(' ')).trim());
                 if(command.charAt(0) == 'w') {
