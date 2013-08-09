@@ -316,10 +316,6 @@ public final class UIMain {
                     UIMain.init(100, 100, 600, 600, 0, 0);
                     patternProcessor.createPatternImage(600);
                     
-                    if(SwingUtilities.isEventDispatchThread()) {
-                        System.out.println("on edt");
-                    }
-                    
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
