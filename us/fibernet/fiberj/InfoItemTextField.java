@@ -93,6 +93,14 @@ public class InfoItemTextField implements InfoItem {
         parent.add(textField);
     }
     
+    public JLabel getLabel() {
+        return label;
+    }
+    
+    public JTextField getTextField() {
+        return textField;
+    }
+    
     /** return value */
     public String getValue() {
         return getFormattedValue();
@@ -134,6 +142,16 @@ public class InfoItemTextField implements InfoItem {
         } 
     }
 
+    public void setLabelFont(Font f) {
+        label.setFont(f);
+    }
+    
+    public void setTextFieldSize(Dimension d) {
+        textField.setPreferredSize(d);
+        textField.setMaximumSize(d);
+        textField.setMinimumSize(d);
+    }
+    
     /**
      * verify user input and set value on gui according to desired format
      * @return an error string  @Attention("We return null for success!")

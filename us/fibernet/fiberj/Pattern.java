@@ -124,7 +124,7 @@ public class Pattern {
     public double  getTwist()       { return twist;      }
     public double  getTilt()        { return tilt;       }
     public double  getRepeat()      { return repeat;     }
-    public double  etBetaD()        { return betaD;      }
+    public double  getBetaD()       { return betaD;      }
     public double  getGammaD()      { return gammaD;     }
     public double  getOffset()      { return offset;     }
     public double  getdCalibrant()  { return dCalibrant; } 

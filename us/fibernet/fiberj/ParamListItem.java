@@ -1,5 +1,34 @@
+/*
+ * Copyright Kate Wu. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are
+ * permitted provided that the following conditions are met:
+ *
+ * - Redistributions of source code must retain the above copyright notice, this list
+ *   of conditions and the following disclaimer.
+ * 
+ * - Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer listed in this license in the
+ *   documentation and/or other materials provided with the distribution.
+ *
+ * - Neither the name of the copyright holders nor the names of its contributors may
+ *   be used to endorse or promote products derived from this software without specific
+ *   prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+ * THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+ * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package us.fibernet.fiberj;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,86 +51,19 @@ public class ParamListItem extends InfoItemTextField {
 
 	boolean refinable;
 	private JCheckBox ckbox;
-	private JLabel label;
-	private JTextField textField;
-	private String name;
-	private String value;
-	private int nColumns;
-	private InfoItemGuiCallBack callBack;
 
-	/**
-	 * @param labelStr
-	 *            the name of this item
-	 * 
-	 * @param textStr
-	 *            the value of this item, by default it's double
-	 * @param columns
-	 *            width of textfield
-	 * @param isRefinable
-	 *            if yes, then the item has a checkbox
-	 * @param callBackObj
-	 *            a InfoItemGuiCallBack object for passing on user input to
-	 */
 	public ParamListItem(String labelStr, String textStr, int columns,
 			boolean isRefinable, InfoItemGuiCallBack callBackObj) {
+	    
 		super(labelStr, textStr, "%.4f", columns, true, callBackObj);
-		label = new JLabel(labelStr);
-		label.setFont(new Font("Arial", Font.BOLD, 12)); // the default font
-		textField = new JTextField(textStr);
-		name = labelStr;
-		value = textStr;
-		nColumns = columns;
+		
 		refinable = isRefinable;
-		textField.setColumns(nColumns);
-		callBack = callBackObj;
 		if (refinable) {
 			ckbox = new JCheckBox();
 		}
-		addCallback();
-
-	}
-
-	/** override the method in superclass */
-	@Override
-	public void addTo(JPanel parent) {
-		parent.add(label);
-		parent.add(textField);
-		if (ckbox != null) {
-			parent.add(ckbox);
-		}
-	}
-
-	/** add action listener to text field and hook up callback */
-	private void addCallback() {
-		textField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JTextField j = (JTextField) e.getSource();
-				String err = setGuiValue(j.getText());
-				if (err != null) {
-					JOptionPane.showMessageDialog(null, err, "Error",
-							JOptionPane.ERROR_MESSAGE);
-				} else {
-					callBack.guiUpdated(name, value);
-				}
-			}
-		});
-	}
-
-	/** set the label component */
-	public void setLabel(JLabel label) {
-		this.label = label;
-		name = label.getText();
-	}
-
-	/** get the label component */
-	public JLabel getLabel() {
-		return label;
-	}
-
-	/** get the text field component */
-	public JTextField getTextField() {
-		return textField;
+		
+		setLabelFont(new JLabel().getFont()); // use default
+		setTextFieldSize(new Dimension(90, 25));
 	}
 
 	/** get the checkbox component */

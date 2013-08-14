@@ -30,17 +30,18 @@ package us.fibernet.fiberj;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import javax.swing.Box;
 import javax.swing.JPanel;
 
 /**
- * A collection of InfoItems providing an implementation for Iterator interface.
+ * A collection of InfoItems implementing InfoItem and Iterable interfaces.
  * Subclasses need to populate infoItemList themselves.
  */
-abstract class InfoItemCollection implements InfoItem, Iterator<InfoItem> {
+abstract class InfoItemCollection implements InfoItem, Iterable<InfoItem> {
     
     protected ArrayList<InfoItem> infoItemList;
-    protected int currentIndex = 0; 
     
     /** create InfoItems and add them to infoItemList */
     protected abstract void populateInfoItemList();
@@ -48,39 +49,46 @@ abstract class InfoItemCollection implements InfoItem, Iterator<InfoItem> {
     /** implements InfoItem */
     @Override
     public void addTo(JPanel panel) {
-        reset();
-        while(hasNext()) {
-            next().addTo(panel);
+        for(InfoItem item : infoItemList) {
+            item.addTo(panel);
             panel.add(Box.createHorizontalStrut(1)); 
         }
-        reset();
     }
     
-    /** implement Iterator's hasNext() */
+    /** implements Iterable<InfoItem> */
     @Override
-    public boolean hasNext() { 
-        return currentIndex < infoItemList.size();
-    } 
+    public Iterator<InfoItem> iterator() {
+        return  new InfoItemCollectionIterator();
+    }
     
-    /** implement Iterator's next() */
-    @Override
-    public InfoItem next() { 
-        if(hasNext()) {
-            return infoItemList.get(currentIndex++); 
-        }
-        currentIndex = 0; 
-        return null;
-    } 
 
-    /** implement Iterator's remove() */
-    @Override
-    public void remove() { 
-        throw new UnsupportedOperationException(); 
-    } 
+    private class InfoItemCollectionIterator implements Iterator<InfoItem> {
+        
+        private int currentIndex = 0; 
+        
+        public InfoItemCollectionIterator() {
+            currentIndex = 0;
+        }
+        
+        @Override
+        public boolean hasNext() { 
+            return currentIndex < infoItemList.size();
+        } 
+
+        @Override
+        public InfoItem next() { 
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            
+            return infoItemList.get(currentIndex++); 
+        } 
+
+        @Override
+        public void remove() { 
+            throw new UnsupportedOperationException(); 
+        } 
     
-    /** reset iterator to initial state */
-    public void reset() {
-        currentIndex = 0;
-    }
+    } // class InfoItemCollectionIterator
     
 }
