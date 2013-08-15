@@ -64,10 +64,17 @@ public class ParamListItemRecip implements InfoItem {
         jrbYes = new JRadioButton("yes", isRecip);
         jrbNo = new JRadioButton("no", !isRecip);
         callback = callbackObj;
-        addCallback();
+        if(actionLabel != null) {
+            addCallback();
+        }
         createGroup();
     }
 
+    public void setActionLabel(JLabel actionLabel) {
+        this.actionLabel = actionLabel;
+        addCallback();
+    }
+    
     /**
      * add two radio buttons to a group so only one button is selected at a
      * time
@@ -88,7 +95,6 @@ public class ParamListItemRecip implements InfoItem {
                 actionLabel.setText(ANGST_LABLE);
                 value = true;
                 callback.guiUpdated(name, "true");
-
             }
         });
         jrbNo.addActionListener(new ActionListener() {

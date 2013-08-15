@@ -90,26 +90,26 @@ public class Pattern {
     }
     
     public String toString() {
-        return  "width = "         + width + "\n" +  
-                "height = "       + height + "\n" +  
-                "xCenter = "    + xCenter + "\n" +  
-                "yCenter = "    + yCenter + "\n" +  
+        return  "width = "      + width     + "\n" +  
+                "height = "     + height    + "\n" +  
+                "xCenter = "    + xCenter   + "\n" +  
+                "yCenter = "    + yCenter   + "\n" +  
                 "pixelSize = "  + pixelSize + "\n" +  
-                "wavelen = "  + wavelen + "\n" +  
-                "sdd = "  + sdd + "\n" +  
-                "sddp = " + sddp + "\n" +  
-                "twist = "  + twist + "\n" +  
-                "tilt = "   + tilt + "\n" +  
-                "repeat = " + repeat + "\n" +  
-                "betaD = "        + betaD + "\n" +  
-                "gammaD = "       + gammaD + "\n" +  
-                "offset = " + offset + "\n" +  
-                "dCalibrant = "  + dCalibrant;
+                "wavelen = "    + wavelen   + "\n" +  
+                "sdd = "        + sdd       + "\n" +  
+                "sddp = "       + sddp      + "\n" +  
+                "twist = "      + twist     + "\n" +  
+                "tilt = "       + tilt      + "\n" +  
+                "repeat = "     + repeat    + "\n" +  
+                "betaD = "      + betaD     + "\n" +  
+                "gammaD = "     + gammaD    + "\n" +  
+                "offset = "     + offset    + "\n" +  
+                "dCalibrant = " + dCalibrant;
     }
   
     /*--------------------- getters -----------------------*/
     
-    public int     getWidth()       { return width;     }
+    public int     getWidth()       { return width;      }
     public int     getHeight()      { return height;     }
     public int     getDataMin()     { return dataMin;    }
     public int     getDataMax()     { return dataMax;    }
@@ -131,14 +131,14 @@ public class Pattern {
     public boolean isRecip()        { return isRecip;    }
 
     /** get the radius of the pixel at (x, y) relative to pattern center */
-    double getr(int x, int y) {
+    public double getr(int x, int y) {
         double dx = x - xCenter;
         double dy = y - yCenter;
         return Math.sqrt(dx*dx + dy*dy);
     }
     
     /** get the intensity value of the pixel at (x, y) */
-    double getI(int x, int y) {
+    public double getI(int x, int y) {
         int x0 = (int)(x / PatternProcessor.getInstance().getShrinkScale() + 0.5);
         int y0 = (int)(y / PatternProcessor.getInstance().getShrinkScale() + 0.5);
         if(x0 < 0 || x0 >= width || y0 < 0 || y0 >= height) {

@@ -52,10 +52,10 @@ public class ParamListItem extends InfoItemTextField {
 	boolean refinable;
 	private JCheckBox ckbox;
 
-	public ParamListItem(String labelStr, String textStr, int columns,
+	public ParamListItem(String labelStr, String textStr, String format, int columns,
 			boolean isRefinable, InfoItemGuiCallBack callBackObj) {
 	    
-		super(labelStr, textStr, "%.4f", columns, true, callBackObj);
+		super(labelStr, textStr, format, columns, true, callBackObj);
 		
 		refinable = isRefinable;
 		if (refinable) {

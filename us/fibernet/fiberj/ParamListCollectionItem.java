@@ -39,6 +39,21 @@ import java.util.ArrayList;
  */
 public final class ParamListCollectionItem extends InfoItemCollection implements InfoItemGuiCallBack {		
 
+    final static String[][] PARAM_DEF = {
+            { "pixel size (μm)",  "0",  "%.4f",    "editable" }, 
+            { "center x (pix)",   "0",  "%.4f",    "editable" },
+            { "center y (pix)",   "0",  "%.4f",    "editable" },
+            { "tilt (°)",         "0",  "%.4f",    "editable" },
+            { "twist (°)",        "0",  "%.4f",    "editable" },
+            { "repeat (Å)",       "0",  "%.4f",    "editable" },
+            { "distance (mm)",    "0",  "%.4f",    "editable" },
+            { "wavelength (Å)",   "0",  "%.4f",  "uneditable" },
+            { "oY (°)",           "0",  "%.4f",    "editable" },
+            { "oZ (°)",           "0",  "%.4f",    "editable" },
+            { "offset",           "0",  "%.4f",  "uneditable" },
+            { "calibrant (Å)",    "0",  "%.4f",  "uneditable" }
+    };
+    
 	public ParamListCollectionItem() {
 		populateInfoItemList();
 	}
@@ -47,31 +62,17 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
 	 * implement InfoItemCollection#populateInfoItemList()
 	 */
 	@Override
-	protected void populateInfoItemList() {
-		ParamListItem pixsiz = new ParamListItem("pixel size (μm)", "0", 4, false, this);
-		InfoItem reciprocal = new ParamListItemRecip("reciprocal", false, pixsiz.getLabel(), this);
-		
+	protected void populateInfoItemList() {    
 		infoItemList = new ArrayList<InfoItem>();
+		ParamListItemRecip reciprocal = new ParamListItemRecip("reciprocal", false, null, this);
 		infoItemList.add(reciprocal);
-		infoItemList.add(pixsiz);
-		infoItemList.add(new ParamListItem("center x (pix)", "0", 10, true, this));
-		infoItemList.add(new ParamListItem("center y (pix)", "0", 10, true, this));
-		infoItemList.add(new ParamListItem("tilt (°)",       "0", 10, true, this));
-		infoItemList.add(new ParamListItem("twist (°)",      "0", 10, true, this));
-		infoItemList.add(new ParamListItem("repeat (Å)",     "0", 10, true, this));
-	    infoItemList.add(new ParamListItem("distance (mm)",  "0", 10, true, this));
-		infoItemList.add(new ParamListItem("wavelength (Å)", "0", 10, false, this));
-		infoItemList.add(new ParamListItem("oY (°)",         "0", 10, true, this));
-		infoItemList.add(new ParamListItem("oZ (°)",         "0", 10, true, this));
-		infoItemList.add(new ParamListItem("offset",         "0", 10, false, this));
-		infoItemList.add(new ParamListItem("calibrant (Å)",  "0", 10, false, this));
-	}
-
-	/**
-	 * @return the current Pattern object
-	 */
-	protected Pattern getP() {
-		return PatternProcessor.getInstance().getCurrentPattern();
+		
+		for(String[] def : PARAM_DEF) {
+		    infoItemList.add(new ParamListItem(def[0], def[1], def[2], 10, def[3].equals("editable"), this));
+		}
+		reciprocal.setActionLabel(((ParamListItem)infoItemList.get(1)).getLabel());
+		
+		updateUI();
 	}
 
 	/*
@@ -79,69 +80,70 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
 	 */
 	@Override
 	public void guiUpdated(String name, String newValue) {
-
-		Pattern currentPattern = getP();
-		if (currentPattern == null) {
+	       
+		Pattern cp = getCurrentPattern();
+		if (cp == null) {
 			return;
 		}
 
 		if (name.equalsIgnoreCase("reciprocal")) {
-			currentPattern.setRecip(getBooleanValue(newValue));
+			cp.setRecip(Boolean.parseBoolean(newValue));
 			return;
 		}
 
-		double v = getDoubleValue(newValue);
-		if (v < 0) {
-			return;
-		}
-		
-		String s = name.toLowerCase();
+		try {
+		    String s = name.toLowerCase();
+		    double v = Double.parseDouble(newValue);
 
-		if(s.startsWith("pixel")) {
-			currentPattern.setPixelSize(v);
+		    if(s.startsWith("pixel")) {
+		        cp.setPixelSize(v);
+		    }
+		    else if(s.startsWith("center x")) {
+		        cp.setxCenter(v);
+		    }
+		    else if(s.startsWith("center y")) {
+		        cp.setyCenter(v);
+		    }
+		    else if(s.startsWith("tilt")) {
+		        cp.setTilt(v);
+		    }
+		    else if(s.startsWith("twist")) {
+		        cp.setTwist(v);
+		    }
+		    else if(s.startsWith("distance")) {
+		        cp.setSdd(v);
+		    }
+		    else if(s.startsWith("wavelength")) {
+		        cp.setWavelen(v);
+		    }
+		    else if(s.startsWith("oy")) {
+		        cp.setBetaD(v);
+		    }
+		    else if(s.startsWith("oz")) {
+		        cp.setGammaD(v);
+		    }
+		    else if(s.startsWith("offset")) {
+		        cp.setOffset(v);
+		    }
+		    else if(s.startsWith("calibrant")) {
+		        cp.setdCalibrant(v);
+		    }
+		    else if(s.startsWith("repeat")) {
+		        cp.setRepeat(v);
+		    }
+		} 
+		catch (NumberFormatException e) {
+		    // not reachable since we already validated newvalue before guiUpdated()
 		}
-		else if(s.startsWith("center x")) {
-			currentPattern.setxCenter(v);
-		}
-		else if(s.startsWith("center y")) {
-			currentPattern.setyCenter(v);
-		}
-		else if(s.startsWith("tilt")) {
-			currentPattern.setTilt(v);
-		}
-		else if(s.startsWith("twist")) {
-			currentPattern.setTwist(v);
-		}
-	    else if(s.startsWith("distance")) {
-	        currentPattern.setSdd(v);
-	    }
-		else if(s.startsWith("wavelenth")) {
-			currentPattern.setWavelen(v);
-		}
-		else if(s.startsWith("oY")) {
-			currentPattern.setBetaD(v);
-		}
-		else if(s.startsWith("oZ")) {
-			currentPattern.setGammaD(v);
-		}
-		else if(s.startsWith("offset")) {
-			currentPattern.setOffset(v);
-		}
-		else if(s.startsWith("calibrant")) {
-			currentPattern.setdCalibrant(v);
-		}
-		else if(s.startsWith("repeat")) {
-			currentPattern.setRepeat(v);
-		}
-
 	}
+	
 
 	/**
 	 * update parameter gui with values from current Pattern
 	 */
 	public void updateUI() {
 	    
-		Pattern cp = getP();
+		Pattern cp = getCurrentPattern();
 		if (cp == null) {
 			return;
 		}
@@ -149,33 +151,26 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
 		// display updated value
 		int i = -1;
 		((ParamListItemRecip) infoItemList.get(++i)).setGuiValue(cp.isRecip());
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getPixelSize()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getxCenter()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getyCenter()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getTilt()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getTwist()));
-	    ((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getRepeat()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getSdd()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getWavelen()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getBetaD()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getGammaD()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getOffset()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", cp.getdCalibrant()));
-	}
-
-	/** parse string to boolean */
-	private boolean getBooleanValue(String value) {
-		return Boolean.parseBoolean(value);
-	}
-
-	/** parse string to double */
-	private double getDoubleValue(String value) {
-		try {
-			return Double.parseDouble(value);
-		} catch (NumberFormatException e) {
-			return -1;
-		}
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getPixelSize()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getxCenter()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getyCenter()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getTilt()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getTwist()));
+	    ((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getRepeat()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getSdd()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getWavelen()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getBetaD()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getGammaD()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getOffset()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getdCalibrant()));
 	}
 
 
-}
+    /**
+     * @return the current Pattern object
+     */
+    protected Pattern getCurrentPattern() {
+        return PatternProcessor.getInstance().getCurrentPattern();
+    }
+    
+} // class ParamListCollectionItem

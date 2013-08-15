@@ -207,15 +207,17 @@ public class InfoItemTextField implements InfoItem {
     
     // get the dataType from format specifier
     private void parseDataType() {
-        if(format.matches("d")) {
+        if(format.matches("%[0-9]*d")) {
             dataType = DataType.INT;
         }
-        else if(format.matches("f")) {
+        else if(format.matches("%[0-9]*\\.[0-9]+f")) {
             dataType = DataType.DOUBLE;
         }
         else {
             dataType = DataType.STRING;
         }
+        
+        //System.out.println(name + " ==> " + dataType);
     }
     
     
