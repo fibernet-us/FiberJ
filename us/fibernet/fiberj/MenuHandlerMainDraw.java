@@ -31,11 +31,27 @@ package us.fibernet.fiberj;
 public class MenuHandlerMainDraw extends MenuHandlerMainDefault {
 
     /*
-     * mainDraw handlers
+     * Draw -> Circle
      */
-    public void mainDrawCircle()       { super.mainDrawCircle();     }
-    public void mainDrawResolution()   { super.mainDrawResolution(); }
-    public void mainDrawLayerline()    { super.mainDrawLayerline();  }
+    public void mainDrawCircle() { 
+        new DrawDialog("Circle");
+    }
+    
+    /*
+     * Draw -> Resolution
+     */
+    public void mainDrawResolution() { 
+        new DrawDialog("Resolution");
+    }
+    
+    /*
+     * Draw -> Layerline
+     */
+    public void mainDrawLayerline() { 
+        new DrawDialog("Layerline");
+    }
+    
+    
     public void mainDrawMask()         { super.mainDrawMask();       }
     public void mainDrawRefresh()      { super.mainDrawRefresh();    }
     public void mainDrawClear()        { super.mainDrawClear();      }
