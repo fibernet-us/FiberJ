@@ -28,59 +28,61 @@
 
 package us.fibernet.fiberj;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import java.awt.Color;
-import java.awt.Dimension;
-import java.util.ArrayList;
 
 /**
- * A JPanel subclass for displaying pattern images
+ * 
+ * A utility class representing a circle object in drawing and ploting 
  *
  */
-@SuppressWarnings("serial")
-public class UIPattern extends ScrollablePanel {
+public class Circle {
 
-    //private int width, height;
-    private JFrame parentFrame;
-    private PatternDisplay patternDisplay;
+    double radius;
+    double cx, cy; // center x, y
+    Color color; 
+    double thetaStep; // increment in degree along perimeter 
+                      // need to be small enough so circle looks continuous
     
-    /**
-     * Create a JPanel with given dimensions on a parent JFrame 
-     */
-    public UIPattern(JFrame parent, int width, int height) {
-        parentFrame = parent;
-        setPreferredSize(new Dimension(width, height)); 
-        setMinimumSize(new Dimension(width, height)); 
-        setBounds(0, 0, width, height);
-        setLayout(null);
+    public Circle(double r, double x, double y, double thetStep, Color color) {
+        this(r, x, y);
+        this.thetaStep = thetStep;
+        this.color = color;
     }
     
-    /**
-     * Place a PatternDisplay object on this panel
-     */
-    public void setPattern(PatternDisplay patternDisplay) {
-        this.patternDisplay = patternDisplay;
+    public Circle(double r, double x, double y, Color color) {
+        this(r, x, y);
+        this.color = color;
     }
     
-    /**
-     * Create a Colormap control associated with current patternDisplay
-     */
-    public void openColormap() {
-        patternDisplay.openColorControl();
+    public Circle(double r, double x, double y) {
+        radius = r;
+        cx = x;
+        cy = y;
+        // 1 degree theta increment for r=50
+        thetaStep = Math.PI * 2 / 360 / (r / 50); 
     }
     
-    public JFrame getParentFrame() {
-        return parentFrame;
+    public String toString() {
+        return "circle: radius=" + radius + ", cx=" + cx + ", cy=" + cy;
     }
     
-    public void drawCircle(Circle c) {
-        patternDisplay.drawCircle(c);
+    public double getX()          { return cx;        }
+    public double getY()          { return cy;        }
+    public double getR()          { return radius;    }
+    public double getThetaStep()  { return thetaStep; }
+    public Color getColor()       { return color;     }
+    
+    public void setX(double x)    { cx = x;          }
+    public void setY(double y)    { cy = y;          }
+    public void setColor(Color c) { color = c;       }
+    
+    public void setR(double r) { 
+        radius = r; 
+        thetaStep = Math.PI * 2 / 360 / (r / 50); 
     }
     
-    public void drawCircles(ArrayList<Circle> cs) {
-        patternDisplay.drawCircles(cs);
-    }
+    public int getIX()   { return (int)(cx + 0.5);     }
+    public int getIY()   { return (int)(cy + 0.5);     }
+    public int getIR()   { return (int)(radius + 0.5); }
     
-} // class UIPattern
+}

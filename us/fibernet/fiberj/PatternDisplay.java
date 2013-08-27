@@ -49,6 +49,7 @@ import javax.swing.SwingConstants;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class PatternDisplay {
 
@@ -209,7 +210,7 @@ public class PatternDisplay {
      *      |   
      */
     // TODO: draw on glass pane? maybe faster.
-    private void drawCrossHair(int x, int y) {
+    public void drawCrossHair(int x, int y) {
         final int A = 12;  // half length of cross hair Axis
         final int B = 6;  // half length of cross hair Box      
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
@@ -230,4 +231,49 @@ public class PatternDisplay {
         UIMain.cursorUpdate(x, y);
     }
     
+    // draw a circle using Graphics2D.drawOval
+    // maybe draw it manually for more accuracy
+    public void drawCircle(Circle c) { 
+        BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
+        Graphics2D g = drawImage.createGraphics();
+        g.setColor(c.getColor());
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        int x = (int)(c.getX() - c.getR() + 0.5);
+        int y = (int)(c.getY() - c.getR() + 0.5);
+        int w = (int)(c.getR() * 2.0 + 0.5);
+        g.drawOval(x, y, w, w);
+        g.dispose();
+        imageLabel.setIcon(new ImageIcon(drawImage));   
+    }
+    
+    // draw a circle using Graphics2D.drawOval
+    // maybe draw it manually for more accuracy
+    public void drawCircles(ArrayList<Circle> cs) { 
+        BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
+        Graphics2D g2d = drawImage.createGraphics();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        for(Circle c : cs) {
+            g2d.setColor(c.getColor());
+            /*
+            int x = (int)(c.getX() - c.getR() + 0.5);
+            int y = (int)(c.getY() - c.getR() + 0.5);
+            int w = (int)(c.getR() * 2.0 + 0.5);
+            g2d.drawOval(x, y, w, w);
+            */
+            double x0 = c.getX();
+            double y0 = c.getY();
+            double r  = c.getR();
+            double thetaStep = c.getThetaStep();
+            double theta = 0;
+            int NP = (int)(Math.PI * 2 / thetaStep + 1.5);
+            for(int i=0; i<NP; i++) {
+                theta += thetaStep;
+                double x = x0 + r * Math.cos(theta);
+                double y = y0 + r * Math.sin(theta);
+                g2d.draw(new Line2D.Double(x, y, x, y));
+            }
+        }
+        g2d.dispose();
+        imageLabel.setIcon(new ImageIcon(drawImage));   
+    }
 }

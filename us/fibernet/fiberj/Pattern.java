@@ -130,6 +130,13 @@ public class Pattern {
     public double  getdCalibrant()  { return dCalibrant; } 
     public boolean isRecip()        { return isRecip;    }
 
+    /**
+     *  get max dimension of the pattern 
+     */
+    public double getMaxDimension() {
+        return Math.sqrt(width*width + height*height);
+    }
+    
     /** get the radius of the pixel at (x, y) relative to pattern center */
     public double getr(int x, int y) {
         double dx = x - xCenter;
