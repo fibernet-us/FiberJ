@@ -166,7 +166,7 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
 	}
 
 
-    /**
+    /*
      * @return the current Pattern object
      */
     protected Pattern getCurrentPattern() {

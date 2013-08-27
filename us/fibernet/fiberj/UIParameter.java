@@ -57,12 +57,16 @@ public final class UIParameter {
 	private UIParameter() {
 	};
 
+	public static boolean isOpened() {
+	    return (paramFrame != null);
+	}
+	
 	/**
 	 * create Parameter UI and make sure it happens only once.
 	 */
 	public static synchronized void init() {
 
-		if (paramFrame != null) {
+		if (isOpened()) {
 	        paramFrame.pack();
 	        paramFrame.setVisible(true);
 			return;
@@ -98,6 +102,15 @@ public final class UIParameter {
 
 	}
 
+	/**
+	 * Other modules call this method when pattern parameters are updated
+	 */
+	public static void refresh() {
+	    if(isOpened()) {
+	        paramListCollectionItems.updateUI();
+	    }
+	}
+	
 	
     /*
      * build paramPanel with GroupsLayout
