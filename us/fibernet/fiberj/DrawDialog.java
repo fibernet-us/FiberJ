@@ -109,10 +109,10 @@ public class DrawDialog extends JDialog {
             rStep = 1;
             xMin = 0;
             xMax = cp.getWidth();
-            xDefault = cp.getxCenter();
+            xDefault = cp.getCenterX();
             yMin = 0;
             yMax = cp.getHeight();
-            yDefault = cp.getyCenter();    
+            yDefault = cp.getCenterY();    
             xyStep = 1;   
         }
         
@@ -145,6 +145,23 @@ public class DrawDialog extends JDialog {
         setVisible(true);
     }
 
+    /**
+     * @return the radius of the current circle for computing sdd.
+     *         assuming the circle is drawn on calibrant ring and
+     *         assuming the center is determined correctly.
+     *         
+     */
+    public static double getCurrentCircleRadius() {
+        if(!circleList.isEmpty()) {
+           return circleList.get(circleList.size() - 1).getR();
+        }
+        else {
+            String err = "calibrant ring is not drawn!";
+            JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
+            return -1;
+        }
+    }
+    
 
     /*
      * Pen color panel
@@ -412,7 +429,7 @@ public class DrawDialog extends JDialog {
                     }
                     drawCircles();
                 }
-                getCurrentPattern().setxCenter(x);
+                getCurrentPattern().setCenterX(x);
                
                 break;
             case RESOLUTION: 
@@ -434,7 +451,7 @@ public class DrawDialog extends JDialog {
                     }
                     drawCircles();
                 }
-                getCurrentPattern().setyCenter(y);
+                getCurrentPattern().setCenterY(y);
                
                 break;
             case RESOLUTION: 
@@ -538,7 +555,7 @@ public class DrawDialog extends JDialog {
      * @return the current Pattern object
      */
     private Pattern getCurrentPattern() {
-        return PatternProcessor.getInstance().getCurrentPattern();
+        return PatternProcessor.getCurrentPattern();
     }
 }
 

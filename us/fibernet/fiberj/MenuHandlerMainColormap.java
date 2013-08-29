@@ -34,6 +34,15 @@ package us.fibernet.fiberj;
  */
 public class MenuHandlerMainColormap extends MenuHandlerMainDefault {  
     
+    
+    /*
+     * Colormap -> Customize
+     */
+    @Override
+    public void mainColormapCustomize() {
+        UIMain.openColormap();
+    } 
+    
     /*
      * Colormap -> Load
      */
@@ -51,12 +60,5 @@ public class MenuHandlerMainColormap extends MenuHandlerMainDefault {
     public void mainColormapSave() {
         super.mainColormapSave();        
     } 
-    
-    /*
-     * Colormap -> Customize
-     */
-    @Override
-    public void mainColormapCustomize() {
-        UIMain.openColormap();
-    } 
+
 }

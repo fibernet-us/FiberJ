@@ -80,6 +80,7 @@ public final class MenuMain {
                     new MenuItemLeaf(         "Custom",     imageHandler)), 
               new MenuItemComposite(       "Resize", 
                     new MenuItemLeaf(         "Actual",     imageHandler),
+                    new MenuItemLeaf(         "Fit",        imageHandler),
                     new MenuItemLeaf(         "Custom",     imageHandler)),
               new MenuItemSeperator(),/////////////////////////////////////
               new MenuItemLeaf(            "Repair",        imageHandler),
@@ -87,9 +88,9 @@ public final class MenuMain {
         ),  
 
         new MenuItemComposite(surName,  "Colormap ",
+              new MenuItemLeaf(            "Customize",     colormapHandler),
               new MenuItemLeaf(            "Load",          colormapHandler), 
-              new MenuItemLeaf(            "Save",          colormapHandler), 
-              new MenuItemLeaf(            "Customize",     colormapHandler)
+              new MenuItemLeaf(            "Save",          colormapHandler)
         ),   
 
         new MenuItemComposite(surName,  "Draw ",    
@@ -114,7 +115,7 @@ public final class MenuMain {
 
         new MenuItemComposite(surName,  "Window ", 
               new MenuItemLeaf(            "Parameter",     windowHandler),  
-              new MenuItemLeaf(            "Coordinates",   windowHandler),
+              new MenuItemLeaf(            "Reflection",    windowHandler),
               new MenuItemLeaf(            "Pixel Viewer",  windowHandler), 
               new MenuItemLeaf(            "Comand Line",   windowHandler),
               new MenuItemLeaf(            "Log",           windowHandler)

@@ -37,8 +37,8 @@ public class MenuHandlerMainWindow extends MenuHandlerMainDefault {
     /*
      * mainWindow handlers
      */
-    public void mainWindowParameter()       { UIParameter.init(); }
-    public void mainWindowCoordinates()     { super.mainWindowCoordinates();  }
+    public void mainWindowParameter()       { UIParameter.init();             }
+    public void mainWindowReflection()      { super.mainWindowReflection();   }
     public void mainWindowPixelViewer()     { super.mainWindowPixelViewer();  }
     public void mainWindowComandLine()      { super.mainWindowComandLine();   }
     public void mainWindowLog()             { super.mainWindowLog();          }

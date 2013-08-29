@@ -34,21 +34,21 @@ public class MenuHandlerMainDraw extends MenuHandlerMainDefault {
      * Draw -> Circle
      */
     public void mainDrawCircle() { 
-        new DrawDialog("Circle", PatternProcessor.getInstance().getCurrentPattern());
+        new DrawDialog("Circle", PatternProcessor.getCurrentPattern());
     }
     
     /*
      * Draw -> Resolution
      */
     public void mainDrawResolution() { 
-        new DrawDialog("Resolution", PatternProcessor.getInstance().getCurrentPattern());
+        new DrawDialog("Resolution", PatternProcessor.getCurrentPattern());
     }
     
     /*
      * Draw -> Layerline
      */
     public void mainDrawLayerline() { 
-        new DrawDialog("Layerline", PatternProcessor.getInstance().getCurrentPattern());
+        new DrawDialog("Layerline", PatternProcessor.getCurrentPattern());
     }
     
     

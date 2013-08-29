@@ -49,7 +49,7 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
             File file = fc.getSelectedFile();
             String filePath = file.getAbsolutePath();
             System.out.println(filePath);
-            PatternProcessor.getInstance().createPatternImage(filePath);      
+            PatternProcessor.createPatternImage(filePath);      
             // user might have changed working directory, update it
             SystemSettings.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
         } 

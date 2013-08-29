@@ -28,6 +28,7 @@
 
 package us.fibernet.fiberj;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -62,7 +63,53 @@ public final class ImageReader {
      * Parse the pattern file extension and call accordingly a read method
      * Read pattern files that come with attributes not stored in itself
      */
-    public static int[][] readPattern(String[] args) {
+    public static Pattern readPattern(String[] args) {
+
+        if(args == null || args.length < 1) {
+            return null;
+        }
+            
+        String fname = args[0];
+        int[][] data = null;
+        Pattern pattern = null;
+        
+        if(args.length == 1) {
+            if (fname.toLowerCase().endsWith("tif")) {
+                data = readTif(fname);
+            } 
+            else if (fname.toLowerCase().endsWith("plr")) {
+                data = readPlr(fname);
+            } 
+            else if (fname.toLowerCase().endsWith("smv")) {
+                return ImageSmv.readSmvPattern(fname);
+            } 
+        }
+        else {
+            if (fname.toLowerCase().endsWith("dat")) {
+                int w = 0, h = 0;
+                try {
+                    w = Integer.parseInt(args[1]);
+                    h = Integer.parseInt(args[2]);
+                    data = readDat(fname, w, h);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("dat image width and height must be specified");
+                }
+            }
+        }
+        
+        if(data != null) {
+            pattern = new Pattern(data, new File(fname).getName(), false);
+        }
+
+        return pattern;
+    }
+    
+    /**
+     * Parse the pattern file extension and call accordingly a read method
+     * Read pattern files that come with attributes not stored in itself
+     */
+    public static int[][] readPatternData(String[] args) {
 
         if(args == null || args.length < 1) {
             return null;
@@ -76,6 +123,9 @@ public final class ImageReader {
             } 
             else if (fname.toLowerCase().endsWith("plr")) {
                 return readPlr(fname);
+            } 
+            else if (fname.toLowerCase().endsWith("smv")) {
+                return ImageSmv.readSmv(fname);
             } 
         }
         else {

@@ -298,7 +298,7 @@ public class ImageMatrixRotation {
         String[] testfile = { "/home/em/java/FiberJ/39.tif" };
         // System.out.println(testfile);
 
-        int[][] inputimage = ImageReader.readPattern(testfile);
+        int[][] inputimage = ImageReader.readPatternData(testfile);
 
         int[][] rotatimage = MatrixRotation(inputimage, dd, 0);
 

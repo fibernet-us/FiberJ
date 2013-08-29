@@ -46,6 +46,10 @@ public class Timer {
     public long getElapsedNanoSeconds() { 
         return (timeEnd - timeStart);
     }
+    
+    public long getElapsedMilliSeconds() { 
+        return (timeEnd - timeStart) / 1000000;
+    }
 
     public long getElapsedSeconds() { 
         return (timeEnd - timeStart) / 1000000000;
@@ -53,6 +57,10 @@ public class Timer {
     
     public void printElapsedNanoSeconds() { 
         System.out.println("Elapsed nano-seconds: " + getElapsedNanoSeconds());
+    }
+    
+    public void printElapsedMilliSeconds() { 
+        System.out.println("Elapsed milli-seconds: " + getElapsedMilliSeconds());
     }
     
     public void printElapsedSeconds() { 

@@ -99,10 +99,10 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
 		        cp.setPixelSize(v);
 		    }
 		    else if(s.startsWith("center x")) {
-		        cp.setxCenter(v);
+		        cp.setCenterX(v);
 		    }
 		    else if(s.startsWith("center y")) {
-		        cp.setyCenter(v);
+		        cp.setCenterY(v);
 		    }
 		    else if(s.startsWith("tilt")) {
 		        cp.setTilt(v);
@@ -152,8 +152,8 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
 		int i = -1;
 		((ParamListItemRecip) infoItemList.get(++i)).setGuiValue(cp.isRecip());
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getPixelSize()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getxCenter()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getyCenter()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getCenterX()));
+		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getCenterY()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getTilt()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getTwist()));
 	    ((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getRepeat()));
@@ -169,8 +169,8 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
     /*
      * @return the current Pattern object
      */
-    protected Pattern getCurrentPattern() {
-        return PatternProcessor.getInstance().getCurrentPattern();
+    private Pattern getCurrentPattern() {
+        return PatternProcessor.getCurrentPattern();
     }
     
 } // class ParamListCollectionItem

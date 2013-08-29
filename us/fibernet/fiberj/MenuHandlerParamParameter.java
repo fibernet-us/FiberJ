@@ -28,24 +28,24 @@
 
 package us.fibernet.fiberj;
 
+public class MenuHandlerParamParameter extends MenuHandlerParamDefault {
 
-/**
- * A menu handler for the Main menu bar, Process menu
- */
-public class MenuHandlerMainProcess extends MenuHandlerMainDefault {  
-     
-  
-    /*
-     * Process -> Transform
-     */
-    @Override
-    public void mainProcessTransform()  { 
-        new Transform(PatternProcessor.getCurrentPattern()).toReciprocal();
-    } 
- 
-    public void mainProcessBackground()     { super.mainProcessBackground();   }
-    public void mainProcessCorrection()     { super.mainProcessCorrection();   }
-    public void mainProcessFilter()         { super.mainProcessFilter();       }
-    public void mainProcessPlot()           { super.mainProcessPlot();         }
+    //public void paramParameterCenterfromReflection()    {  } 
     
-} // class MenuHandlerMainProcess
+    /** set pattern center to be the cursor location  */
+    @Override
+    public void paramParameterCenterfromCursor() { 
+        Pattern cp = PatternProcessor.getCurrentPattern();
+        cp.setCenterX(SystemSettings.getCursorX());
+        cp.setCenterY(SystemSettings.getCursorY());
+    }
+
+    //public void paramParameterDistancefromReflection()  {  } 
+    
+
+    public void paramParameterDistancefromRing() { super.paramParameterRefineSelected(); }     
+    public void paramParameterRefineSelected()   { super.paramParameterRefineSelected(); } 
+    public void paramParameterLoad()             { super.paramParameterRefineSelected(); } 
+    public void paramParameterSave()             { super.paramParameterRefineSelected(); } 
+    
+} 

@@ -43,7 +43,6 @@ public class MenuHandlerParamDefault implements MenuHandler {
      */
     public void paramWindowReflection()		{ popupWarning("paramWindowReflection()"); } 
     public void paramWindowParameter()		{ popupWarning("paramWindowParameter()"); } 
-    public void paramWindowClose()		    { popupWarning("paramWindowClose()"); } 
 
     
     /*
@@ -54,7 +53,6 @@ public class MenuHandlerParamDefault implements MenuHandler {
      * paramParameterCenterfrom handlers
      */
     public void paramParameterCenterfromReflection()	{ popupWarning("paramParameterCenterfromReflection()"); } 
-    public void paramParameterCenterfromRing()		    { popupWarning("paramParameterCenterfromRing()"); } 
     public void paramParameterCenterfromCursor()		{ popupWarning("paramParameterCenterfromCursor()"); } 
 
     /*
@@ -62,6 +60,7 @@ public class MenuHandlerParamDefault implements MenuHandler {
      */
     public void paramParameterDistancefromReflection()	{ popupWarning("paramParameterDistancefromReflection()"); } 
     public void paramParameterDistancefromRing()		{ popupWarning("paramParameterDistancefromRing()"); } 
+    
     public void paramParameterRefineSelected()		    { popupWarning("paramParameterRefineSelected()"); } 
     public void paramParameterLoad()		            { popupWarning("paramParameterLoad()"); } 
     public void paramParameterSave()		            { popupWarning("paramParameterSave()"); } 

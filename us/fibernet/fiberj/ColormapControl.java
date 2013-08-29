@@ -31,6 +31,7 @@ package us.fibernet.fiberj;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -58,6 +59,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.util.*;
 import javax.swing.JPopupMenu;
+import javax.swing.border.EmptyBorder;
 
 /**
  * A class provides colormap manipulations for image display
@@ -141,13 +143,19 @@ public class ColormapControl {
         frame.setResizable(false);
         frame.setTitle("Colormap Control");
 
-        JPanel panel = new JPanel();
-        frame.getContentPane().add(panel, BorderLayout.NORTH);
-        panel.setBounds(100, 100, 450, 20);
-        panel.setLayout(new BorderLayout(0, 0));
+        JPanel colormapSelectionPanel = new JPanel();
+        frame.getContentPane().add(colormapSelectionPanel, BorderLayout.NORTH);
+        //colormapSelectionPanel.setBounds(10, 10, 450, 30);
+        //colormapSelectionPanel.setPreferredSize(new Dimension(380, 40));
+        colormapSelectionPanel.setBorder(new EmptyBorder(10, 10, 10, 10) );
+        colormapSelectionPanel.setLayout(new BorderLayout(0, 0));
 
+        JLabel lblNewLabel = new JLabel("Colormap  ");
+        //lblNewLabel.setLabelFor(comboBox);
+        colormapSelectionPanel.add(lblNewLabel, BorderLayout.WEST);
+        
         JComboBox comboBox = new JComboBox(COLORMAPS);
-        panel.add(comboBox, BorderLayout.CENTER);
+        colormapSelectionPanel.add(comboBox, BorderLayout.CENTER);
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -156,9 +164,6 @@ public class ColormapControl {
             }
         });
 
-        JLabel lblNewLabel = new JLabel("Colormap");
-        lblNewLabel.setLabelFor(comboBox);
-        panel.add(lblNewLabel, BorderLayout.WEST);
 
         JPanel panel_1 = new JPanel();
         frame.getContentPane().add(panel_1, BorderLayout.SOUTH);
@@ -197,6 +202,7 @@ public class ColormapControl {
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.setBounds(0, 0, 200, 50);
         panel_2.add(popupMenu);
+        
         JMenuItem addBox = new JMenuItem("Add Box");
         addBox.setActionCommand("add");
 
@@ -251,14 +257,16 @@ public class ColormapControl {
 
         // min and max text area under histogram
         minArea = new JTextField();
-        minArea.setBounds(10, 372, 40, 20);
+        minArea.setBounds(10, 372, 70, 20);
+        minArea.setColumns(15);
         panel_2.add(minArea);
-        minArea.setColumns(10);
+        
 
         maxArea = new JTextField();
-        maxArea.setBounds(344, 372, 40, 20);
+        maxArea.setBounds(314, 372, 70, 20);
+        maxArea.setColumns(15);
         panel_2.add(maxArea);
-        maxArea.setColumns(10);
+        
 
         // ====================done with components========================
 

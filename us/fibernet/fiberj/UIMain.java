@@ -34,6 +34,7 @@ import java.awt.EventQueue;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -64,7 +65,8 @@ import javax.swing.SwingUtilities;
  */
 public final class UIMain {
 
-    private static final String FIBERJ_VS = "FiberJ 0.5";
+    private static final String FIBERJ_VS = "FiberJ 0.6";
+    private static Image myIcon;
     private static JFrame mainFrame;
     private static JScrollPane jScrollPane; // to scroll pattern when its display size is too big
     private static JPanel patternPanel; // to hold uiPattern
@@ -89,7 +91,6 @@ public final class UIMain {
     
     private static boolean isScrollPattern;  // if pattern is in a scrolled pane
     
-    private static PatternProcessor patternProcessor;
     private static InfoItemCollectionPixel currentPixelInfo;
 
     
@@ -124,12 +125,11 @@ public final class UIMain {
         mainFrame.setLocation(x, y);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        patternProcessor = PatternProcessor.getInstance();
         currentPixelInfo = new InfoItemCollectionPixel();
 
         uiMenubar = MenuBuilder.build(mainFrame, new MenuMain().getMenuItems());
         uiPattern = new UIPattern(mainFrame, wPattern, hPattern);
-        uiMessage = new UIMessage(mainFrame, wPattern, hMessage, patternProcessor);
+        uiMessage = new UIMessage(mainFrame, wPattern, hMessage);
         uiInfobar = new UIInfobar(mainFrame, wPattern, hInfobar, currentPixelInfo);
 
         Border lineBorder = BorderFactory.createLineBorder(Color.gray);
@@ -157,6 +157,10 @@ public final class UIMain {
             };
         });
 
+        java.net.URL url = ClassLoader.getSystemResource("us/fibernet/fiberj/image/x32.png");
+        myIcon = java.awt.Toolkit.getDefaultToolkit().createImage(url);
+        mainFrame.setIconImage(myIcon);
+        
         mainFrame.pack();
         mainFrame.setVisible(true);
         isScrollPattern = false;
@@ -166,19 +170,19 @@ public final class UIMain {
     /**
      * UI component getters, used by UI updater, massager, etc.
      */
-    public static JMenuBar getUIMenubar()  {  return uiMenubar;  }
+    public static JMenuBar getUIMenubar()   {  return uiMenubar;  }
     public static UIInfobar getUIInfobar()  {  return uiInfobar;  }
     public static UIPattern getUIPattern()  {  return uiPattern;  }
     public static UIMessage getUIMessage()  {  return uiMessage;  }
+    public static Image getMyIcon()         {  return myIcon;     }
     
     /** Get and set the main window title */
-    public static String getTitle()            { return mainFrame.getTitle(); }
+    public static String getTitle()            { return FIBERJ_VS; }
     public static void setTitle(String title)  { mainFrame.setTitle(title);   }
     
     /*
      * UI delegation methods. Pass calls from other component to sub UIs.
      */ 
-
     public static void openColormap()              { uiPattern.openColormap();              }
     public static void setMessage(String message)  { uiMessage.setMessage(message);         }
     public static void cursorUpdate(int x, int y)  { currentPixelInfo.updateLocation(x, y); }
@@ -223,7 +227,7 @@ public final class UIMain {
      * Resize pattern per user command line input. Add or remove scrollbar accordingly.
      */
     public static void resizeToHeight(int height)  {
-        double ratio = patternProcessor.getAspectRatio();       
+        double ratio = PatternProcessor.getAspectRatio();       
         if(isZero(ratio)) {  
             return;
         }
@@ -241,6 +245,14 @@ public final class UIMain {
     }
     
     /**
+     * Resize pattern to fit current window
+     */
+    public static void resizeToFit()  {
+        int height = mainFrame.getHeight() - nonPatternHeight;
+        resizeToHeight(height);
+    }
+    
+    /**
      * Maintain the pattern's aspect ratio in window resizing event
      */
     public static void onMainFrameResize() {    
@@ -248,7 +260,7 @@ public final class UIMain {
             return;
         }
         
-        double ratio = patternProcessor.getAspectRatio();
+        double ratio = PatternProcessor.getAspectRatio();
         if(isZero(ratio)) {  
             return;
         }
@@ -314,7 +326,7 @@ public final class UIMain {
 
                     SystemSettings.init();
                     UIMain.init(100, 100, 600, 600, 0, 0);
-                    patternProcessor.createPatternImage(600);
+                    PatternProcessor.createPatternImage(600);
                     
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -85,6 +85,7 @@ public class MenuHandlerMainDefault implements MenuHandler {
      * mainImageResize handlers
      */
     public void mainImageResizeActual()   { popupWarning("mainImageResizeActual"); }
+    public void mainImageResizeFit()      { popupWarning("mainImageResizeFit");    }
     public void mainImageResizeCustom()   { popupWarning("mainImageResizeCustom"); }
     public void mainImageRepair()         { popupWarning("mainImageRepair");       }
     public void mainImageRescale()        { popupWarning("mainImageRescale");      }
@@ -92,9 +93,10 @@ public class MenuHandlerMainDefault implements MenuHandler {
     /*
      * mainColormap handlers
      */
+    public void mainColormapCustomize()   { popupWarning("mainColormapCustomize"); }
     public void mainColormapLoad()        { popupWarning("mainColormapLoad");      }
     public void mainColormapSave()        { popupWarning("mainColormapSave");      }
-    public void mainColormapCustomize()   { popupWarning("mainColormapCustomize"); }
+
 
     /*
      * mainDraw handlers
@@ -120,7 +122,7 @@ public class MenuHandlerMainDefault implements MenuHandler {
      * mainWindow handlers
      */
     public void mainWindowParameter()       { popupWarning("mainWindowParameter");    }
-    public void mainWindowCoordinates()     { popupWarning("mainWindowCoordinates");  }
+    public void mainWindowReflection()     { popupWarning("mainWindowReflection");  }
     public void mainWindowPixelViewer()     { popupWarning("mainWindowPixelViewer");  }
     public void mainWindowComandLine()      { popupWarning("mainWindowComandLine");   }
     public void mainWindowLog()             { popupWarning("mainWindowLog");          }

@@ -53,7 +53,14 @@ public class MenuHandlerMainImage extends MenuHandlerMainDefault {
      * Image -> Resize -> Actual
      */
     public void mainImageResizeActual() {
-        PatternProcessor.getInstance().executeCommand("actual");
+        PatternProcessor.executeCommand("actual");
+    }
+    
+    /*
+     * Image -> Resize -> Fit
+     */
+    public void mainImageResizeFit() {
+        PatternProcessor.executeCommand("fit");
     }
     
     /*

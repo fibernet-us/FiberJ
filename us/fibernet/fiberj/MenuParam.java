@@ -42,28 +42,27 @@ public final class MenuParam {
     
     private static final String surName = "param";
     private static final MenuHandlerParamDefault fileHandler = new MenuHandlerParamDefault();
+    private static final MenuHandlerParamParameter parameterHandler = new MenuHandlerParamParameter();
     
     private static final MenuItem[] MENU_ITEMS = {
       
         new MenuItemComposite(surName,  "Window",    
               new MenuItemLeaf(            "Reflection",      fileHandler), 
-              new MenuItemLeaf(            "Parameter",       fileHandler), 
-              new MenuItemLeaf(            "Close",           fileHandler)
+              new MenuItemLeaf(            "Parameter",       fileHandler)
         ), 
 
         new MenuItemComposite(surName,  "Parameter",   
               new MenuItemComposite(       "Center from", 
-                    new MenuItemLeaf(         "Reflection",   fileHandler),
-                    new MenuItemLeaf(         "Ring",         fileHandler),
-                    new MenuItemLeaf(         "Cursor",       fileHandler)),
+                    new MenuItemLeaf(         "Reflection",   parameterHandler),
+                    new MenuItemLeaf(         "Cursor",       parameterHandler)),
               new MenuItemComposite(       "Distance from", 
-                    new MenuItemLeaf(         "Reflection",   fileHandler),
-                    new MenuItemLeaf(         "Ring",         fileHandler)), 
+                    new MenuItemLeaf(         "Reflection",   parameterHandler),
+                    new MenuItemLeaf(         "Ring",         parameterHandler)), 
               new MenuItemSeperator(),/////////////////////////////////////
-              new MenuItemLeaf(            "Refine Selected", fileHandler),
+              new MenuItemLeaf(            "Refine Selected", parameterHandler),
               new MenuItemSeperator(),/////////////////////////////////////
-              new MenuItemLeaf(            "Load",            fileHandler),
-              new MenuItemLeaf(            "Save",            fileHandler)
+              new MenuItemLeaf(            "Load",            parameterHandler),
+              new MenuItemLeaf(            "Save",            parameterHandler)
         ),  
 
         new MenuItemComposite(surName,  "Reflection",    

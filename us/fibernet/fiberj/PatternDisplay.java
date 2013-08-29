@@ -60,16 +60,17 @@ public class PatternDisplay {
     private int[][] imageDataArray;  // original data array. used in calc color index and colormap histogram
     private int[][] imageIndexArray; // color indexes calculated from original data array
     private ColormapControl control;
-    private PatternProcessor patternProcessor;
+    private Pattern myPattern;
 
-    public PatternDisplay(UIPattern panel, int[][] imageData, PatternProcessor processor) {
+    public PatternDisplay(UIPattern panel, Pattern pattern) {
         imagePanel       = panel;
-        patternProcessor = processor;
-        imageDataArray   = imageData;
+        myPattern        = pattern;
+        imageDataArray   = myPattern.getData();
         //imageDataArray = PatternUtil.shrinkArray(imageData);
         imageIndexArray  = PatternUtil.computerColorIndex(imageDataArray, 256);
         initialize();
         imagePanel.setPattern(this);
+        myPattern.setDisplay(this);
     }
 
     private void initialize() {
@@ -113,10 +114,10 @@ public class PatternDisplay {
     // called upon imagePanel resize event, resize according to new height and aspect ratio
     private void resizeImagePanel() {
         int newHeight = imagePanel.getHeight();
-        int newWidth = (int)(newHeight * patternProcessor.getAspectRatio());
+        int newWidth = (int)(newHeight * myPattern.getAspectRatio());
         imagePanel.setSize(newWidth, newHeight);
         imagePanel.setPreferredSize(new Dimension(newWidth, newHeight));
-        patternProcessor.recalcShrinkScale(newHeight); 
+        myPattern.recalcShrinkScale(newHeight); 
         reloadImageLabel();
     }
 

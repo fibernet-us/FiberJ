@@ -49,11 +49,9 @@ public class UIMessage extends JPanel {
     private JFrame parentFrame;  // might be useful down the road
     private JTextField[] textFields;   // two text fields, one for message, one for command
     private int messageFieldNumber = 0; // id of the textField used to display messages
-    PatternProcessor patternProcessor; // to which to pass user commands
     
-    public UIMessage(JFrame parent, int width, int height, PatternProcessor processor) {     
+    public UIMessage(JFrame parent, int width, int height) {     
         parentFrame = parent;
-        patternProcessor = processor;
         Dimension dim = new Dimension(width, height);      
         setPreferredSize(dim); 
         setMinimumSize(dim); 
@@ -99,7 +97,7 @@ public class UIMessage extends JPanel {
      */
     public void processCommand(String command) {
         if(command != null) {
-            patternProcessor.executeCommand(command);
+            PatternProcessor.executeCommand(command);
         }
     }
     

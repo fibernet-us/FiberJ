@@ -105,7 +105,7 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
     // compute all data from x and y, and update gui
     private void updateAll() {
         // TODO: compute other values
-        Pattern p = PatternProcessor.getInstance().getCurrentPattern();
+        Pattern p = PatternProcessor.getCurrentPattern();
         if(p == null) {
             return;
         }
