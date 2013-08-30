@@ -28,7 +28,6 @@
 
 package us.fibernet.fiberj;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,7 +35,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.JOptionPane;
 
 /**
@@ -161,21 +159,21 @@ public final class ImageSmv {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(fileName));
-            String line = reader.readLine();// read the beginning "{" and pass
+            String line = reader.readLine(); // read the beginning "{" and pass
 
-            while ((line = reader.readLine()) != null) {
+            while((line = reader.readLine()) != null) {
 
                 // break out of loop when read "}"
-                if (line.contains("}")) {
+                if(line.contains("}")) {
                     break;
                 }
 
                 String[] s = line.split("[=; ]+");
 
-                if (s.length == 1 && !s[0].isEmpty()) {
+                if(s.length == 1 && !s[0].isEmpty()) {
                     hashMap.put(s[0], "1");  // this parameter is set to be true
                 } 
-                else if (s.length > 1) {
+                else if(s.length > 1) {
                     hashMap.put(s[0], s[1]);
                 } 
                 else {
@@ -183,15 +181,15 @@ public final class ImageSmv {
                 }
             }
         } 
-        catch (IOException e) {
+        catch(IOException e) {
             e.printStackTrace();
         } 
         finally {
-            if (reader != null) {
+            if(reader != null) {
                 try {
                     reader.close();
                 } 
-                catch (Exception e) {
+                catch(Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -204,55 +202,59 @@ public final class ImageSmv {
     /*
      * Read the binary image data in SMV file 
      * 
-     * Use buffered stream to read all data in, then do appropriate conversion (data type & byte order)
-     * 
-     * Converting while reading takes too much time, for a 3072x3072 image it takes 25 seconds!!
-     * With buffer reading, it takes 0.2 seconds.
+     * Read data one row a time and do appropriate conversion (data type & byte order).
+     * Reading with DataInputStream is too slow, for a 3072x3072 image it takes 25 seconds!!
+     * In current way it takes 0.2 seconds.
      */
     private static int[][] readSmvData(String fileName, boolean isBigEndian, DataType type,
                                        int headerBytes, int imageWidth, int imageHeight)    {
 
-        BufferedInputStream bis = null;  
-        int[][] imageData = null;
-        int bytesRead=0;
-        
-        //Timer t = new Timer();
-        //t.startTimer();
+        FileInputStream fis = null;  
  
         try {
-            int nBytes = imageWidth * imageHeight * getPixelSize(type);
-            byte[] bytes = new byte[nBytes];
-  
-            bis = new BufferedInputStream((new FileInputStream(new File(fileName))));
-            bis.skip(headerBytes);
-            bytesRead = bis.read(bytes, 0, nBytes);
+            //Timer timer = new Timer();
+            //timer.startTimer();
             
-            if(bytesRead == nBytes) {
-                imageData = convertBytesToData(bytes, isBigEndian, type, imageWidth, imageHeight);
+            fis = new FileInputStream(new File(fileName));
+            fis.skip(headerBytes);
+            
+            int rowLengh = imageWidth * getPixelSize(type);
+            byte[] bytes = new byte[rowLengh];
+            int[][]imageData = new int[imageHeight][imageWidth];
+            
+            for(int i=0; i<imageHeight; i++) {
+                
+                int bytesRead = fis.read(bytes, 0, rowLengh);
+                
+                if(bytesRead == rowLengh) {
+                     convertBytesToData(imageData[i], bytes, isBigEndian, type, imageWidth);
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Image reading error. Expected bytes: " + 
+                            rowLengh + ". Read: " + bytesRead);
+                }
             }
-            else {
-                JOptionPane.showMessageDialog(null, "Image reading error. Expected bytes: " + 
-                                                     nBytes + ". Read: " + bytesRead);
-            }
+
+            //timer.endTimer();
+            //timer.printElapsedMilliSeconds();
+            fis.close();
+            return imageData;
         } 
-        catch (Exception e) {
+        catch(Exception e) {
             e.printStackTrace();
         } 
         finally {
-            if (bis != null) {
+            if(fis != null) {
                 try {
-                    bis.close();
+                    fis.close();
                 } 
-                catch (Exception e) {
+                catch(Exception e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        //t.endTimer();
-        //t.printElapsedMilliSeconds();
-        
-        return imageData;
+        return null;
     }
 
     /*
@@ -281,16 +283,13 @@ public final class ImageSmv {
     /*
      *  convert raw array of bytes to image data (data type & byte order)
      */
-    private static int[][] convertBytesToData(byte[] bytes, boolean isBigEndian, DataType type, 
-            int imageWidth, int imageHeight) {
+    private static void convertBytesToData(int[] data, byte[] bytes, boolean isBigEndian, DataType type, int imageWidth) {
 
-        int[][] data = new int[imageHeight][imageWidth];
-
-        // these are to save a branch inside for loops
+        // these are to save a branch inside for loop
         int shiftA = isBigEndian ? 8 : 0;
-        int shiftB = isBigEndian ? 0 : 8;
+        int shiftB = shiftA ^ 8;
 
-        // do switch before outside loop
+        // do switch outside for loop
         switch(type) {
             case INT: 
                 // TODO
@@ -307,17 +306,13 @@ public final class ImageSmv {
             case UNSIGNED_SHORT: 
                 // fall through. default SMV data type is UNSIGNED_SHORT
             default: 
-                for(int i=0, n=0; i<imageHeight; i++) {
-                    for(int j=0; j<imageWidth; j++) {
-                        int A = bytes[n++] & 0xFF;  // convert to int as unsigned byte
-                        int B = bytes[n++] & 0xFF;
-                        data[i][j] = (A << shiftA) | (B << shiftB);
-                    }
+                for(int j=0, n=0; j<imageWidth; j++) {
+                    int A = bytes[n++] & 0xFF;  // convert to int as unsigned byte
+                    int B = bytes[n++] & 0xFF;
+                    data[j] = (A << shiftA) | (B << shiftB);
                 }
                 break;                         
         }
-
-        return data;
     }
        
     
@@ -327,4 +322,6 @@ public final class ImageSmv {
     private static DataType getDataType(String type) {
         return DataType.valueOf(type.toUpperCase());
     }
-}
+    
+} // class ImageSmv
+
