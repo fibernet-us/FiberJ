@@ -99,23 +99,13 @@ public class MenuHandlerMainDefault implements MenuHandler {
 
 
     /*
-     * mainDraw handlers
-     */
-    public void mainDrawCircle()            { popupWarning("mainDrawCircle");      }
-    public void mainDrawResolution()        { popupWarning("mainDrawResolution");  }
-    public void mainDrawLayerline()         { popupWarning("mainDrawLayerline");   }
-    public void mainDrawMask()              { popupWarning("mainDrawMask");        }
-    public void mainDrawRefresh()           { popupWarning("mainDrawRefresh");     }
-    public void mainDrawClear()             { popupWarning("mainDrawClear");       }
-    public void mainDrawClearAll()          { popupWarning("mainDrawClearAll");    }
-
-    /*
      * mainProcess handlers
      */
+    public void mainProcessDraw()           { popupWarning("mainProcessDraw");         }
+    public void mainProcessPlot()           { popupWarning("mainProcessPlot");         }
+    public void mainProcessFilter()         { popupWarning("mainProcessFilter");       }
     public void mainProcessBackground()     { popupWarning("mainProcessBackground");   }
     public void mainProcessCorrection()     { popupWarning("mainProcessCorrection");   }
-    public void mainProcessFilter()         { popupWarning("mainProcessFilter");       }
-    public void mainProcessPlot()           { popupWarning("mainProcessPlot");         }
     public void mainProcessTransform()      { popupWarning("mainProcessTransform");    }
 
     /*

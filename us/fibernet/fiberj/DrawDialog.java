@@ -84,7 +84,7 @@ public class DrawDialog extends JDialog {
     
     private static ArrayList<Circle> circleList;
     
-    public DrawDialog(String drawType, Pattern curPattern) {
+    public DrawDialog(Pattern curPattern) {
 
         // get related parameters first
         if(curPattern == null) {
@@ -120,7 +120,7 @@ public class DrawDialog extends JDialog {
         
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
-        setTitle("Draw " + drawType);
+        setTitle("Draw");
         
         colorPanel = new JPanel();
         dataPanel = new JPanel();
@@ -130,11 +130,11 @@ public class DrawDialog extends JDialog {
         colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         dataPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         cntrlPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.gray),
-                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+                             BorderFactory.createLineBorder(Color.gray),
+                             BorderFactory.createEmptyBorder(5, 10, 5, 10)));
         
         createColorPanel(colorPanel);
-        createDataPanel(dataPanel, drawType);
+        createDataPanel(dataPanel, "Circle");
         createCntrlPanel(cntrlPanel);
         
         add(colorPanel);

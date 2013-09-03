@@ -42,7 +42,6 @@ public final class MenuMain {
     private static final MenuHandlerMainFile fileHandler = new MenuHandlerMainFile();
     private static final MenuHandlerMainImage imageHandler = new MenuHandlerMainImage();
     private static final MenuHandlerMainColormap colormapHandler = new MenuHandlerMainColormap();
-    private static final MenuHandlerMainDraw drawHandler = new MenuHandlerMainDraw();
     private static final MenuHandlerMainProcess processHandler = new MenuHandlerMainProcess();
     private static final MenuHandlerMainWindow windowHandler = new MenuHandlerMainWindow();
     private static final MenuHandlerMainHelp helpHandler = new MenuHandlerMainHelp();
@@ -93,23 +92,12 @@ public final class MenuMain {
               new MenuItemLeaf(            "Save",          colormapHandler)
         ),   
 
-        new MenuItemComposite(surName,  "Draw ",    
-              new MenuItemLeaf(            "Circle",        drawHandler), 
-              new MenuItemLeaf(            "Resolution",    drawHandler), 
-              new MenuItemLeaf(            "Layerline",     drawHandler), 
-              new MenuItemSeperator(),/////////////////////////////////////
-              new MenuItemLeaf(            "Mask",          drawHandler), 
-              new MenuItemSeperator(),/////////////////////////////////////
-              new MenuItemLeaf(            "Refresh",       drawHandler), 
-              new MenuItemLeaf(            "Clear",         drawHandler), 
-              new MenuItemLeaf(            "Clear All",     drawHandler)
-        ), 
-
         new MenuItemComposite(surName,  "Process ", 
+              new MenuItemLeaf(            "Draw",          processHandler), 
+              new MenuItemLeaf(            "Plot",          processHandler), 
+              new MenuItemLeaf(            "Filter",        processHandler), 
               new MenuItemLeaf(            "Background",    processHandler),
               new MenuItemLeaf(            "Correction",    processHandler), 
-              new MenuItemLeaf(            "Filter",        processHandler), 
-              new MenuItemLeaf(            "Plot",          processHandler), 
               new MenuItemLeaf(            "Transform",     processHandler)
         ),
 
