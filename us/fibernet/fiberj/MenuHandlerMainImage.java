@@ -28,13 +28,32 @@
 
 package us.fibernet.fiberj;
 
+/*
+ * mainImage handlers
+ */
 public class MenuHandlerMainImage extends MenuHandlerMainDefault {
 
     /*
-     * mainImage handlers
+     * Image -> View -> Actual
      */
-    public void mainImageCrop()           { super.mainImageCrop(); }
-
+    public void mainImageViewActual() {
+        PatternProcessor.executeCommand("actual");
+    }
+    
+    /*
+     * Image -> View -> Fit
+     */
+    public void mainImageViewFit() {
+        PatternProcessor.executeCommand("fit");
+    }
+    
+    /*
+     * Image -> View -> Custom
+     */
+    public void mainImageViewCustom() {
+        UIMain.setMessage("enter on right: width|height number");
+    }
+    
     /*
      * mainImageFlip handlers
      */
@@ -49,29 +68,8 @@ public class MenuHandlerMainImage extends MenuHandlerMainDefault {
     public void mainImageRotate270()      { super.mainImageRotate270();    }
     public void mainImageRotateCustom()   { super.mainImageRotateCustom(); }
 
-    /*
-     * Image -> Resize -> Actual
-     */
-    public void mainImageResizeActual() {
-        PatternProcessor.executeCommand("actual");
-    }
-    
-    /*
-     * Image -> Resize -> Fit
-     */
-    public void mainImageResizeFit() {
-        PatternProcessor.executeCommand("fit");
-    }
-    
-    /*
-     * Image -> Resize -> Custom
-     */
-    public void mainImageResizeCustom() {
-        UIMain.setMessage("enter on right: width|height number");
-    }
-    
-    
+    public void mainImageScale()          { super.mainImageScale();        }
+    public void mainImageCrop()           { super.mainImageCrop(); }
     public void mainImageRepair()         { super.mainImageRepair();       }
-    public void mainImageRescale()        { super.mainImageRescale();      }
     
 }

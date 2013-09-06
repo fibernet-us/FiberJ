@@ -53,7 +53,10 @@ public final class MenuMain {
               new MenuItemLeaf(            "Save",          fileHandler), 
               new MenuItemComposite(       "Save As", 
                     new MenuItemLeaf(         "TIF",        fileHandler),
-                    new MenuItemLeaf(         "SMV",        fileHandler)),
+                    new MenuItemLeaf(         "SMV",        fileHandler),
+                    new MenuItemSeperator(),////////////////////////////////// 
+                    new MenuItemLeaf(         "JPG",        fileHandler),
+                    new MenuItemLeaf(         "PNG",        fileHandler)),
               new MenuItemLeaf(            "Close",         fileHandler), 
               new MenuItemSeperator(),////////////////////////////////// 
               new MenuItemLeaf(            "Browse",        fileHandler), 
@@ -68,7 +71,11 @@ public final class MenuMain {
         ), 
 
         new MenuItemComposite(surName,  "Image ",   
-              new MenuItemLeaf(            "Crop",          imageHandler),
+              new MenuItemComposite(       "View", 
+                    new MenuItemLeaf(         "Actual",     imageHandler),
+                    new MenuItemLeaf(         "Fit",        imageHandler),
+                    new MenuItemLeaf(         "Custom",     imageHandler)),
+              new MenuItemSeperator(),/////////////////////////////////////
               new MenuItemComposite(       "Flip", 
                     new MenuItemLeaf(         "Horizontal", imageHandler),
                     new MenuItemLeaf(         "Vertical",   imageHandler)),
@@ -77,13 +84,9 @@ public final class MenuMain {
                     new MenuItemLeaf(         "180",        imageHandler),
                     new MenuItemLeaf(         "270",        imageHandler), 
                     new MenuItemLeaf(         "Custom",     imageHandler)), 
-              new MenuItemComposite(       "Resize", 
-                    new MenuItemLeaf(         "Actual",     imageHandler),
-                    new MenuItemLeaf(         "Fit",        imageHandler),
-                    new MenuItemLeaf(         "Custom",     imageHandler)),
-              new MenuItemSeperator(),/////////////////////////////////////
-              new MenuItemLeaf(            "Repair",        imageHandler),
-              new MenuItemLeaf(            "Rescale",       imageHandler)
+              new MenuItemLeaf(            "Scale",         imageHandler),
+              new MenuItemLeaf(            "Crop",          imageHandler),
+              new MenuItemLeaf(            "Repair",        imageHandler)
         ),  
 
         new MenuItemComposite(surName,  "Colormap ",

@@ -51,7 +51,7 @@ public class ParamListItemRecip implements InfoItem {
     private JLabel actionLabel; // the label that changes when click on the
                                 // radio buttons
     private InfoItemGuiCallBack callback;
-    private static final String MICRO_LABLE = "pixel size (μm)";
+    private static final String MICRO_LABLE = "pixel size (mm)";
     private static final String ANGST_LABLE = "pixel size (1/Å)";
 
     ParamListItemRecip(String labelStr, boolean isRecip, JLabel actionLabel,

@@ -88,10 +88,18 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
         super.mainFileSaveAsSMV();
     }
 
+    public void mainFileSaveAsJPG() {
+        super.mainFileSaveAsJPG();
+    }
+    public void mainFileSaveAsPNG() {
+        super.mainFileSaveAsPNG();
+    }
+    
+
     public void mainFileClose() {
         super.mainFileClose();
     }
-
+    
     public void mainFileBrowse() {
         super.mainFileBrowse();
     }

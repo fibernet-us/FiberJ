@@ -33,15 +33,15 @@ import static java.lang.Math.asin;
 import static java.lang.Math.tan;
 
 /**
- * A class to contain all information about a fiber diffraction pattern
+ * A class containing all information about a fiber diffraction pattern
  */
 public class Pattern {
     
-    private static final double EPS = 0.00001;  // values less than this are treated as 0
+    private static final double EPS = 0.000001;  // values less than this are treated as 0
     
     private String name;        // name or file name for this pattern
-    private int[][] data;       // diffracton intensity
-    private int[][] data0;      // original data read from file
+    private int[][] data;       // working pattern data: diffracton intensity
+    private int[][] data0;      // original pattern data read from file
     private int[][] mask;       // for pixels who are masked   
     private int dataMin;        // min value of intensity data
     private int dataMax;        // max value of intensity data
@@ -52,7 +52,7 @@ public class Pattern {
     private double wavelen;     // radiation wave length (angstrom)
     private double sdd;         // specimen to detector distance in (millimeter)
     //private double sddP;      // normalized sdd (in pixel) // always compute on fly
-    private double pixelSize;   // pixel size of pattern image (micrometer)
+    private double pixelSize;   // pixel size of pattern image (millimeter)
                                 // or step size in reciprocal space (1/angstrom)
     private double twist;       // fiber missetting angle: rotations about x axis (degree) 
     private double tilt;        // fiber missetting angle: rotations about y axis (degree)
@@ -65,31 +65,36 @@ public class Pattern {
     private double aspectRatio = 1.0;  // ratio of image display width to height
     private double shrinkScale = 1.0;  // scale factor, size1 of displayData / size1 of data       
 
-    private PatternDisplay myDisplay;
+    private PatternDisplay myDisplay;  
     
-    
-    public Pattern(int[][] data, String name, boolean isRecip) {
-        this.data = data;
-        this.name = name;
+
+    /**
+     * @param pdata    pattern data, a 2D array of pixels
+     * @param pname    pattern name
+     * @param isRecip  if this pattern is in reciprocal space
+     */
+    public Pattern(int[][] pdata, String pname, boolean isRecip) {
+        this.name = pname;
         this.isRecip = isRecip;
-        data0 = data.clone(); 
-        
+        setData(pdata);
+    }
+    
+    /**
+     * replace this pattern's data array with a new one, set center and create a new mask
+     */
+    public void setData(int[][] newData) {
+        data = newData;
+        data0 = data.clone();
         int height = data.length;
         int width = data[0].length;
         centerX = width / 2.0;
         centerY = height / 2.0; 
-        mask = new int[height][width];   
-        
-        /////////////////////////////////////////////////////////////////////////////////
-        // TODO: remove this later.  this is for comparing intensity values with WCEN  //
-        for(int i=0; i<height; i++) {                                                  //
-            for(int j=0; j<width; j++) {                                               //
-                data[i][j] /= 2;                                                       //
-            }                                                                          //
-        }                                                                              //
-        /////////////////////////////////////////////////////////////////////////////////
+        mask = new int[height][width];
     }
     
+    /**
+     * print out all parameters of this pattern
+     */
     public String toString() {
         return  "width = "      + getWidth()  + "\n" +  
                 "height = "     + getHeight() + "\n" +  
@@ -108,6 +113,7 @@ public class Pattern {
                 "dCalibrant = " + dCalibrant;
     }
   
+    
     /*------------------------------- getters -------------------------------*/
     
     public String  getName()        { return name;           }
@@ -167,7 +173,7 @@ public class Pattern {
             return -1;
         }     
 
-        return sdd * 1000 / pixelSize;
+        return sdd / pixelSize;
     }
     
     
@@ -192,36 +198,31 @@ public class Pattern {
     public void setAspectRatio(double r)      { aspectRatio = r;                       }
     public void setShrinkScale(double s)      { shrinkScale = s;                       }
     public void setDisplay(PatternDisplay d)  { myDisplay = d;                         }
-
+    // TODO: set according to scale factor
+    public void setCenterX0(double d)         { centerX = d;    UIParameter.refresh(); }
+    public void setCenterY0(double d)         { centerY = d;    UIParameter.refresh(); }
+    public void setPixelSize0(double d)       { pixelSize = d;  UIParameter.refresh(); }
     
     /** Recalculate shrinkScale based on new pattern display height  */
     public void recalcShrinkScale(double newHeight) {
         shrinkScale = data.length / newHeight;
     }
+
     
     /**
-     * replace this pattern's data array with a new one, set center and create a new mask
+     * update reciprocal info
      */
-    public void setData(int[][] newData) {
-        data = newData;
-        data0 = data.clone();
-        int height = data.length;
-        int width = data[0].length;
-        centerX = width / 2.0;
-        centerY = height / 2.0; 
-        mask = new int[height][width];
-        
-        /////////////////////////////////////////////////////////////////////////////////
-        // TODO: remove this later.  this is for comparing intensity values with WCEN  //
-        for(int i=0; i<height; i++) {                                                  //
-            for(int j=0; j<width; j++) {                                               //
-                data[i][j] /= 2;                                                       //
-            }                                                                          //
-        }                                                                              //
-        /////////////////////////////////////////////////////////////////////////////////
+    public void updateReciprocal(boolean verbose) {
+        // TODO        
+    }
+
+    /**
+     * calculate sdd from calibrant ring
+     */
+    public void calcSdd(double radius) {
+        // TODO 
     }
     
-
     /**
      * transform a point from detector space to reciprocal space (R & Z) 
      */
@@ -257,5 +258,5 @@ public class Pattern {
         return true; // TODO
     }
 
- 
+
 } // class Pattern

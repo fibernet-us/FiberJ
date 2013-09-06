@@ -61,7 +61,7 @@ public final class PatternProcessor {
      */
     public static synchronized void createPatternImage(int width) {
         if(width < 0) {
-            width = 500;
+            width = 600;
         }
         
         int[][] intensityData = new int[width][width];
@@ -71,7 +71,7 @@ public final class PatternProcessor {
             }
         }
         
-        currentPattern = new Pattern(intensityData, "~", false);
+        currentPattern = new Pattern(intensityData, "", false);
         createPatternImage(currentPattern);
     }
 
@@ -79,10 +79,12 @@ public final class PatternProcessor {
      * Create pattern image display for a Pattern
      */
     public static synchronized void createPatternImage(Pattern pattern) {    
-        if(pattern != null) {
+        if(pattern != null) {            
             currentDisplay = new PatternDisplay(UIMain.getUIPattern(), pattern);
-            UIMain.setTitle(UIMain.getTitle() + " - " + pattern.getName()); 
+            UIMain.setTitle(UIMain.getTitle() + "  " + pattern.getName()); 
             UIMain.updateSizeInfo();
+            UIMain.resizeToHeight(currentPattern.getHeight()); 
+            UIParameter.refresh();
         }
     }
     

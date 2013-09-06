@@ -42,8 +42,13 @@ public class MenuHandlerParamParameter extends MenuHandlerParamDefault {
 
     //public void paramParameterDistancefromReflection()  {  } 
     
-
-    public void paramParameterDistancefromRing() { super.paramParameterRefineSelected(); }     
+    /** compute specimen to detector distance using calibrant ring */
+    @Override
+    public void paramParameterDistancefromRing() { 
+        Pattern cp = PatternProcessor.getCurrentPattern();
+        cp.calcSdd(DrawDialog.getCurrentCircleRadius());
+    }
+    
     public void paramParameterRefineSelected()   { super.paramParameterRefineSelected(); } 
     public void paramParameterLoad()             { super.paramParameterRefineSelected(); } 
     public void paramParameterSave()             { super.paramParameterRefineSelected(); } 
