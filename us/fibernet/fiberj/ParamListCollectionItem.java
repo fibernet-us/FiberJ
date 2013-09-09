@@ -40,18 +40,18 @@ import java.util.ArrayList;
 public final class ParamListCollectionItem extends InfoItemCollection implements InfoItemGuiCallBack {		
 
     final static String[][] PARAM_DEF = {
-            { "pixel size (μm)",  "0",  "%.4f",    "editable" }, 
-            { "center x (pix)",   "0",  "%.4f",    "editable" },
-            { "center y (pix)",   "0",  "%.4f",    "editable" },
-            { "tilt (°)",         "0",  "%.4f",    "editable" },
-            { "twist (°)",        "0",  "%.4f",    "editable" },
-            { "repeat (Å)",       "0",  "%.4f",    "editable" },
-            { "distance (mm)",    "0",  "%.4f",    "editable" },
-            { "wavelength (Å)",   "0",  "%.4f",  "uneditable" },
-            { "oY (°)",           "0",  "%.4f",    "editable" },
-            { "oZ (°)",           "0",  "%.4f",    "editable" },
-            { "offset",           "0",  "%.4f",  "uneditable" },
-            { "calibrant (Å)",    "0",  "%.4f",  "uneditable" }
+            { "pixel size (mm)",  "0",  "%.6f",  "unrefinable" }, 
+            { "wavelength (Å)",   "0",  "%.6f",  "unrefinable" },
+            { "distance (mm)",    "0",  "%.4f",    "refinable" },
+            { "center x (pix)",   "0",  "%.4f",    "refinable" },
+            { "center y (pix)",   "0",  "%.4f",    "refinable" },
+            { "tilt (°)",         "0",  "%.4f",    "refinable" },
+            { "twist (°)",        "0",  "%.4f",    "refinable" },
+            { "repeat (Å)",       "0",  "%.4f",    "refinable" },
+            { "oY (°)",           "0",  "%.4f",    "refinable" },
+            { "oZ (°)",           "0",  "%.4f",    "refinable" },
+            { "offset",           "0",  "%.4f",  "unrefinable" },
+            { "calibrant (Å)",    "0",  "%.6f",  "unrefinable" }
     };
     
 	public ParamListCollectionItem() {
@@ -68,7 +68,7 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
 		infoItemList.add(reciprocal);
 		
 		for(String[] def : PARAM_DEF) {
-		    infoItemList.add(new ParamListItem(def[0], def[1], def[2], 10, def[3].equals("editable"), this));
+		    infoItemList.add(new ParamListItem(def[0], def[1], def[2], 10, def[3].equals("refinable"), this));
 		}
 		reciprocal.setActionLabel(((ParamListItem)infoItemList.get(1)).getLabel());
 		
@@ -152,17 +152,18 @@ public final class ParamListCollectionItem extends InfoItemCollection implements
 		int i = -1;
 		((ParamListItemRecip) infoItemList.get(++i)).setGuiValue(cp.isRecip());
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getPixelSize()));
+	    ((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getWavelen()));
+	    ((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getSdd()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getCenterX()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getCenterY()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getTilt()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getTwist()));
 	    ((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getRepeat()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getSdd()));
-		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getWavelen()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getBetaD()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getGammaD()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getOffset()));
 		((ParamListItem) infoItemList.get(++i)).setGuiValueNoCheck(String.format(PARAM_DEF[i-1][2], cp.getdCalibrant()));
+		cp.updateReciprocal(false);
 	}
 
 

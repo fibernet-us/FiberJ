@@ -156,8 +156,7 @@ public final class ImageReader {
         try {
 
             image = new int[height][width];
-            input = new EndianCorrectInputStream(new FileInputStream(fname),
-                    false);
+            input = new EndianCorrectInputStream(new FileInputStream(fname), false);
 
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {

@@ -57,17 +57,17 @@ public class PatternDisplay {
     private JLabel imageLabel;
     private BufferedImage currIndexImage;
     private BufferedImage origIndexImage;
-    private int[][] imageDataArray;  // original data array. used in calc color index and colormap histogram
+    //private int[][] imageDataArray;  // original data array. used in calc color index and colormap histogram
     private int[][] imageIndexArray; // color indexes calculated from original data array
-    private ColormapControl control;
+    private ColormapControl myColormapControl;
     private Pattern myPattern;
 
     public PatternDisplay(UIPattern panel, Pattern pattern) {
         imagePanel       = panel;
         myPattern        = pattern;
-        imageDataArray   = myPattern.getData();
+        //imageDataArray   = myPattern.getData();
         //imageDataArray = PatternUtil.shrinkArray(imageData);
-        imageIndexArray  = PatternUtil.computerColorIndex(imageDataArray, 256);
+        imageIndexArray  = PatternUtil.computerColorIndex(myPattern.getData(), 256);
         initialize();
         imagePanel.setPattern(this);
         myPattern.setDisplay(this);
@@ -98,7 +98,7 @@ public class PatternDisplay {
          });
         
         createColormapControlGUI();    
-        control.generatePatternImage();
+        myColormapControl.generatePatternImage();
         imagePanel.add(imageLabel);
 
         // listener for resizing the window
@@ -128,9 +128,9 @@ public class PatternDisplay {
         currIndexImage = PatternUtil.fitImage(imageLabel, origIndexImage);   // currIndexImage size might change
     }
     
-    // open the color map control panel
+    // open the color map myColormapControl panel
     private void createColormapControlGUI() {
-        control = new ColormapControl(imageIndexArray, imageDataArray, this);
+        myColormapControl = new ColormapControl(imageIndexArray, myPattern, this);
     }
 
     /**
@@ -150,7 +150,7 @@ public class PatternDisplay {
     }
 
     public void openColorControl() {
-        control.openColorMapControl();
+        myColormapControl.openColorMapControl();
     }
 
     // track mouse pointer and draw cursor

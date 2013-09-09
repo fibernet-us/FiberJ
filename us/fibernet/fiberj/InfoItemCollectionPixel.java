@@ -60,11 +60,11 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
         infoItemList.add(new InfoItemTextField("x", "0", "%d",   3, false, this));
         infoItemList.add(new InfoItemTextField("y", "0", "%d",   3, false, this));
         infoItemList.add(new InfoItemTextField("r", "0", "%.1f", 4, false, this));
-        infoItemList.add(new InfoItemTextField("I", "0", "%.1f", 4, false, this));
-        infoItemList.add(new InfoItemTextField("d", "0", "%.3f", 4, false, this));
-        infoItemList.add(new InfoItemTextField("D", "0", "%.4f", 4, false, this));
-        infoItemList.add(new InfoItemTextField("R", "0", "%.4f", 4, false, this));
-        infoItemList.add(new InfoItemTextField("Z", "0", "%.4f", 4, false, this));
+        infoItemList.add(new InfoItemTextField("I", "0", "%.1f", 5, false, this));
+        infoItemList.add(new InfoItemTextField("d", "0", "%.3f", 5, false, this));
+        infoItemList.add(new InfoItemTextField("D", "0", "%.4f", 5, false, this));
+        infoItemList.add(new InfoItemTextField("R", "0", "%.4f", 5, false, this));
+        infoItemList.add(new InfoItemTextField("Z", "0", "%.4f", 5, false, this));
     }
     
     /** implement InfoItemGuiCallBack. obtain user input from gui */

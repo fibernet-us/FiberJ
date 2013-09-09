@@ -76,16 +76,17 @@ public class ColormapControl {
     private JFrame frame;
     private BufferedImage rainbow;
     private BufferedImage rainbowCache;
-    private final PatternDisplay patternDisplay;
+    private Pattern myPattern;
+    private PatternDisplay patternDisplay;
     private int[][] indexArray; // input converted to color indexes
-    private int[][] dataArray;
+    //private int[][] dataArray;
     private int minOriginalColor;
     private int maxOriginalColor;
     private BufferedImage histogram;
     private BufferedImage histogramCache;
     private List<Point2D> pts;
     private Point2D selectedP;
-    private final Point2D lastClicked = new Point(0, 0);
+    private Point2D lastClicked = new Point(0, 0);
     // components
     private JLabel rainbowLabel;
     private JLabel histoLabel;
@@ -105,13 +106,12 @@ public class ColormapControl {
 
     /**
      * @param indexArray array of color indexes 
-     * @param dataArray  array of data used to compute color indexes
-     * @param p          PatternDisplay on which image will be generated
+     * @param pd PatternDisplay on which image will be generated
      */
-    public ColormapControl(int[][] indexArray, int[][] dataArray, PatternDisplay p) {
+    public ColormapControl(int[][] indexArray, Pattern pattern, PatternDisplay pd) {
         this.indexArray = indexArray;
-        this.dataArray = dataArray;
-        this.patternDisplay = p;
+        this.myPattern = pattern;
+        this.patternDisplay = pd;
         initialize();
     }
 
@@ -422,11 +422,12 @@ public class ColormapControl {
     private BufferedImage generateHistogram() {
         
         TreeMap<Integer, Integer> colors = new TreeMap<Integer, Integer>();
+        int[][] dataArray = myPattern.getData();
         int max = -1; // height
         int minThre = Integer.MAX_VALUE;
         int maxThre = Integer.MIN_VALUE;
-        for (int i = 0; i < indexArray.length; i++) {
-            for (int j = 0; j < indexArray[0].length; j++) {
+        for (int i=0; i < indexArray.length; i++) {
+            for (int j=0; j < indexArray[0].length; j++) {
                 
                 if (dataArray[i][j] < minThre && dataArray[i][j] > 0) {
                     minThre = dataArray[i][j];
@@ -696,6 +697,7 @@ public class ColormapControl {
     // generate new image array and make pattern GUI to update image based on this image.
     void generatePatternImage() {
 
+        int[][] dataArray = myPattern.getData();
         int[][] output = new int[dataArray.length][dataArray[0].length];
         int min = Integer.valueOf(minArea.getText());
         int max = Integer.valueOf(maxArea.getText());
