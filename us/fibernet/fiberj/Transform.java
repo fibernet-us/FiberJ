@@ -1,5 +1,5 @@
 /*
- * Copyright Billy Zheng. All rights reserved.
+ * Copyright Wen Bian. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -34,18 +34,20 @@ package us.fibernet.fiberj;
  */
 public class Transform {
 
-    enum TransformType {CART, POLAR, RAD};
-    TransformType transType;
-    Pattern pattern;
+    private enum TransformType {CART, POLAR, RAD};
+    private TransformType transformType;
+    private Pattern myPattern;
 
     public Transform(Pattern pattern) {
-        this.pattern = pattern;
+        myPattern = pattern;
     }
     
-    void toReciprocal()  {
+    // TODO
+    public void toReciprocal()  {
     }
 
-    void toPolarReciprocal() {
+    // TODO
+    public void toPolarReciprocal() {
     }
 
-} 
+} // class Transform

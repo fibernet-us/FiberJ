@@ -64,21 +64,7 @@ public final class ImageSmv {
             double centerx  = 0;
             double centery  = 0;
 
-            try {
-                // SIZE1, 2 always exist
-                centerx = Double.parseDouble(parameters.get("SIZE1")) / 2;
-                centery = Double.parseDouble(parameters.get("SIZE2")) / 2;
-                
-                // if BEAM_CENTER_X, Y do not exist, then centerx, y not updated
-                centerx = Double.parseDouble(parameters.get("BEAM_CENTER_X")); 
-                centery = Double.parseDouble(parameters.get("BEAM_CENTER_Y")); 
-            }
-            catch(Exception e) {}
-
             try { isrecip = parameters.get("IsRecip").equals("1"); } 
-            catch(Exception e) {}
-
-            try { pixsize = Double.parseDouble(parameters.get("PIXEL_SIZE")); } 
             catch(Exception e) {}
 
             try { wlength = Double.parseDouble(parameters.get("WAVELENGTH")); }
@@ -90,17 +76,38 @@ public final class ImageSmv {
             try { offset = Double.parseDouble(parameters.get("ZeroOffset")); }
             catch(Exception e) {}
 
+            try { pixsize = Double.parseDouble(parameters.get("PIXEL_SIZE")); } 
+            catch(Exception e) {}
+            
+            try {
+                // SIZE1, 2 always exist
+                centerx = Double.parseDouble(parameters.get("SIZE1")) / 2;
+                centery = Double.parseDouble(parameters.get("SIZE2")) / 2;
+                
+                // if BEAM_CENTER_X, Y do not exist, then centerx, y not updated
+                centerx = Double.parseDouble(parameters.get("BEAM_CENTER_X")); 
+                centery = Double.parseDouble(parameters.get("BEAM_CENTER_Y")); 
+                
+                // CENTER values are highly likely in mm unit. Convert it to pixel
+                if(pixsize > 0) {
+                    centerx /= pixsize;
+                    centery /= pixsize;
+                }
+                
+            }
+            catch(Exception e) {}
+            
             int[][] data = readSmv(fileName);
 
             if(data != null) {
                 Pattern p = new Pattern(data, new File(fileName).getName(), isrecip);
-                p.setCenterX(centerx);
-                p.setCenterY(centery);
-                p.setPixelSize(pixsize);
+                p.setCenterX0(centerx);
+                p.setCenterY0(centery);
+                p.setPixelSize0(pixsize);
                 p.setWavelen(wlength);
                 p.setSdd(distance);
                 p.setOffset(offset);
-
+                p.updateReciprocal(false);
                 return p;
             }
         }

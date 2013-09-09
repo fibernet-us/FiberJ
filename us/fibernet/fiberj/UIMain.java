@@ -175,6 +175,8 @@ public final class UIMain {
     public static UIPattern getUIPattern()  {  return uiPattern;  }
     public static UIMessage getUIMessage()  {  return uiMessage;  }
     public static Image getMyIcon()         {  return myIcon;     }
+    public static int getAvailableScreenWidth()    {  return availableScreenWidth - nonPatternWidth;  };
+    public static int getAvailableScreenHeight()   {  return availableScreenHeight - nonPatternHeight; };
     
     /** Get and set the main window title */
     public static String getTitle()            { return FIBERJ_VS; }
@@ -186,7 +188,7 @@ public final class UIMain {
     public static void openColormap()              { uiPattern.openColormap();              }
     public static void setMessage(String message)  { uiMessage.setMessage(message);         }
     public static void cursorUpdate(int x, int y)  { currentPixelInfo.updateLocation(x, y); }
-    
+
 
     /** Refresh the main window in case of UI add/remove/update. */
     public static void refresh()  {
@@ -214,12 +216,14 @@ public final class UIMain {
      * Add a scrollbar to pattern display
      */
     public static synchronized void scrollPattern() {
-        mainFrame.remove(patternPanel);
-        jScrollPane = new JScrollPane(patternPanel);
-        jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        mainFrame.add(jScrollPane, BorderLayout.CENTER);
-        isScrollPattern = true;     
+        if(!isScrollPattern) {
+            mainFrame.remove(patternPanel);
+            jScrollPane = new JScrollPane(patternPanel);
+            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            mainFrame.add(jScrollPane, BorderLayout.CENTER);
+            isScrollPattern = true;     
+        }
         refresh();
     }
     
@@ -291,6 +295,7 @@ public final class UIMain {
     }
     
 
+
     
     /**
      * <pre>
@@ -321,8 +326,8 @@ public final class UIMain {
                     
                     // get available screen size
                     Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-                    availableScreenWidth = (int)r.getWidth() - 10;
-                    availableScreenHeight = (int)r.getHeight() - 10;
+                    availableScreenWidth = (int)r.getWidth() - 50;
+                    availableScreenHeight = (int)r.getHeight() - 50;
 
                     SystemSettings.init();
                     UIMain.init(100, 100, 600, 600, 0, 0);

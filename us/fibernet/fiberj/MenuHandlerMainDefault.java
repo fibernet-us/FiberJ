@@ -49,6 +49,8 @@ public class MenuHandlerMainDefault implements MenuHandler {
      */
     public void mainFileSaveAsTIF()    { popupWarning("mainFileSaveAsTIF"); }
     public void mainFileSaveAsSMV()    { popupWarning("mainFileSaveAsSMV"); }
+    public void mainFileSaveAsJPG()    { popupWarning("mainFileSaveAsJPG"); }
+    public void mainFileSaveAsPNG()    { popupWarning("mainFileSaveAsPNG"); }
     public void mainFileClose()        { popupWarning("mainFileClose");     }
     public void mainFileBrowse()       { popupWarning("mainFileBrowse");    }
     public void mainFileConvert()      { popupWarning("mainFileConvert");   }
@@ -65,7 +67,13 @@ public class MenuHandlerMainDefault implements MenuHandler {
     /*
      * mainImage handlers
      */
-    public void mainImageCrop()           { popupWarning("mainImageCrop"); }
+
+    /*
+     * mainImageView handlers
+     */
+    public void mainImageViewActual()   { popupWarning("mainImageViewActual"); }
+    public void mainImageViewFit()      { popupWarning("mainImageViewFit");    }
+    public void mainImageViewCustom()   { popupWarning("mainImageViewCustom"); }
 
     /*
      * mainImageFlip handlers
@@ -81,15 +89,10 @@ public class MenuHandlerMainDefault implements MenuHandler {
     public void mainImageRotate270()      { popupWarning("mainImageRotate270");    }
     public void mainImageRotateCustom()   { popupWarning("mainImageRotateCustom"); }
 
-    /*
-     * mainImageResize handlers
-     */
-    public void mainImageResizeActual()   { popupWarning("mainImageResizeActual"); }
-    public void mainImageResizeFit()      { popupWarning("mainImageResizeFit");    }
-    public void mainImageResizeCustom()   { popupWarning("mainImageResizeCustom"); }
-    public void mainImageRepair()         { popupWarning("mainImageRepair");       }
-    public void mainImageRescale()        { popupWarning("mainImageRescale");      }
-
+    public void mainImageScale()        { popupWarning("mainImageRescale");    }
+    public void mainImageCrop()         { popupWarning("mainImageCrop");       }
+    public void mainImageRepair()       { popupWarning("mainImageRepair");     }
+    
     /*
      * mainColormap handlers
      */
