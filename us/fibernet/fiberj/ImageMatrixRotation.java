@@ -1,4 +1,5 @@
 package us.fibernet.fiberj;
+
 import java.awt.image.BufferedImage;
 
 import java.awt.image.WritableRaster;
@@ -20,28 +21,33 @@ import javax.imageio.ImageIO;
 public class ImageMatrixRotation {
 
 	// Image 2D array rotation and scale
-	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor) {
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree,
+			double defaultcolor) {
 
 		return MatrixRotation(ImageMatrix, degree, defaultcolor, 2, 2, 0);
 	}
 
-	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor, int method) {
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree,
+			double defaultcolor, int method) {
 
 		return MatrixRotation(ImageMatrix, degree, defaultcolor, 2, 2, method);
 	}
 
-	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor, int centerRow, int centerCol) {
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree,
+			double defaultcolor, int centerRow, int centerCol) {
 
 		return MatrixRotation(ImageMatrix, degree, defaultcolor, centerRow, centerCol, 0);
 	}
 
 	// use int for test image, because the output of ImageReader.readTif is int
-	public static int[][] MatrixRotation(int[][] ImageMatrix, double degree, int defaultcolor, int method) {
+	public static int[][] MatrixRotation(int[][] ImageMatrix, double degree, int defaultcolor,
+			int method) {
 
 		return MatrixRotation(ImageMatrix, degree, defaultcolor, 2, 2, method);
 	}
 
-	public static int[][] MatrixRotation(int[][] ImageMatrix, double degree, int defaultcolor, int centerRow, int centerCol, int method) {
+	public static int[][] MatrixRotation(int[][] ImageMatrix, double degree, int defaultcolor,
+			int centerRow, int centerCol, int method) {
 		int width = ImageMatrix.length;
 		int heigth = ImageMatrix[0].length;
 
@@ -67,7 +73,8 @@ public class ImageMatrixRotation {
 	}
 
 	// two methods: nearest interpolation and bilinear interpolation
-	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor, int centerRow, int centerCol, String method) {
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree,
+			double defaultcolor, int centerRow, int centerCol, String method) {
 
 		int methodway = 0;
 		if (method.equals("bilinear")) {
@@ -76,8 +83,10 @@ public class ImageMatrixRotation {
 		return MatrixRotation(ImageMatrix, degree, defaultcolor, centerRow, centerCol, methodway);
 	}
 
-	// two methods: nearest interpolation 0 (default) and bilinear interpolation 1; maybe add more methods;
-	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor, int centerRow, int centerCol, int method) {
+	// two methods: nearest interpolation 0 (default) and bilinear interpolation 1; maybe add more
+	// methods;
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree,
+			double defaultcolor, int centerRow, int centerCol, int method) {
 
 		double angle = degree * Math.PI / 180;
 		double sinma = Math.sin(-angle);
@@ -96,12 +105,12 @@ public class ImageMatrixRotation {
 		}
 
 		// calculate new image's dimension, from four corner point
-		double x1 = cosma * (0 - halfwidth)         - sinma * (0 - halfheigth) + halfwidth;
+		double x1 = cosma * (0 - halfwidth) - sinma * (0 - halfheigth) + halfwidth;
 
-		double y1 = sinma * (0 - halfwidth)         + cosma * (0 - halfheigth) + halfheigth;
+		double y1 = sinma * (0 - halfwidth) + cosma * (0 - halfheigth) + halfheigth;
 
-		double x2 = cosma * (0 - halfwidth)         - sinma * (heigth - halfheigth - 1) + halfwidth;
-		double y2 = sinma * (0 - halfwidth)         + cosma * (heigth - halfheigth - 1) + halfheigth;
+		double x2 = cosma * (0 - halfwidth) - sinma * (heigth - halfheigth - 1) + halfwidth;
+		double y2 = sinma * (0 - halfwidth) + cosma * (heigth - halfheigth - 1) + halfheigth;
 
 		double x3 = cosma * (width - halfwidth - 1) - sinma * (0 - halfheigth) + halfwidth;
 		double y3 = sinma * (width - halfwidth - 1) + cosma * (0 - halfheigth) + halfheigth;
@@ -126,18 +135,13 @@ public class ImageMatrixRotation {
 		int newHeigth = (int) Math.round(MaxY - MinY + 1);
 
 		/*
-		 * // calculate scale double scale = 1; 
-		 * int maxOldlength = Math.max(width, heigth);
-		 *  int maxNewlength = Math.max(newWidth, newHeigth);
+		 * // calculate scale double scale = 1; int maxOldlength = Math.max(width, heigth); int
+		 * maxNewlength = Math.max(newWidth, newHeigth);
 		 * 
-		 * if (maxNewlength > maxOldlength) {
-		 *  scale = Math.max((double) newWidth / width, (double) newHeigth / heigth);
-		 *   // System.out.println(scale); 
-		 *   // System.out.println(newWidth + " " + width +
-		 * ", " + newHeigth + // " " + heigth); 
-		 * scale = 1; 
-		 * newWidth = (int) Math.round(newWidth / scale + 1); 
-		 * newHeigth = (int) Math.round(newHeigth / scale + 1);
+		 * if (maxNewlength > maxOldlength) { scale = Math.max((double) newWidth / width, (double)
+		 * newHeigth / heigth); // System.out.println(scale); // System.out.println(newWidth + " " +
+		 * width + ", " + newHeigth + // " " + heigth); scale = 1; newWidth = (int)
+		 * Math.round(newWidth / scale + 1); newHeigth = (int) Math.round(newHeigth / scale + 1);
 		 * 
 		 * }
 		 */
@@ -157,7 +161,7 @@ public class ImageMatrixRotation {
 				double xt = x - halfwidth + MinX;
 				double yt = y - halfheigth + MinY;
 
-				double xs = ((( cosma * xt + sinma * yt) + halfwidth));
+				double xs = (((cosma * xt + sinma * yt) + halfwidth));
 				double ys = (((-sinma * xt + cosma * yt) + halfheigth));
 
 				int xx = (int) Math.round(xs);
@@ -189,7 +193,8 @@ public class ImageMatrixRotation {
 						double Q21 = ImageMatrix[xx2][yy1];
 						double Q22 = ImageMatrix[xx2][yy2];
 
-						double newvalue = bilinearinterpolation(xx1, xx2, xs, yy1, yy2, ys, Q11, Q12, Q21, Q22);
+						double newvalue = bilinearinterpolation(xx1, xx2, xs, yy1, yy2, ys, Q11,
+								Q12, Q21, Q22);
 						newImageMatrix[x][y] = newvalue;
 					} else if (xx >= 0 && yy >= 0 && xx < width && yy < heigth) {
 						newImageMatrix[x][y] = ImageMatrix[xx][yy];
@@ -204,7 +209,8 @@ public class ImageMatrixRotation {
 
 	// bilinear interpolation
 	// http://supercomputingblog.com/graphics/coding-bilinear-interpolation/
-	private static double bilinearinterpolation(int x1, int x2, double x, int y1, int y2, double y, double Q11, double Q12, double Q21, double Q22) {
+	private static double bilinearinterpolation(int x1, int x2, double x, int y1, int y2, double y,
+			double Q11, double Q12, double Q21, double Q22) {
 		double R1 = ((x2 - x) / (x2 - x1)) * Q11 + ((x - x1) / (x2 - x1)) * Q21;
 		double R2 = ((x2 - x) / (x2 - x1)) * Q12 + ((x - x1) / (x2 - x1)) * Q22;
 
