@@ -1,33 +1,4 @@
-/*
- * Copyright Juan Ren. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are
- * permitted provided that the following conditions are met:
- *
- * - Redistributions of source code must retain the above copyright notice, this list
- *   of conditions and the following disclaimer.
- * 
- * - Redistributions in binary form must reproduce the above copyright notice, this
- *   list of conditions and the following disclaimer listed in this license in the
- *   documentation and/or other materials provided with the distribution.
- *
- * - Neither the name of the copyright holders nor the names of its contributors may
- *   be used to endorse or promote products derived from this software without specific
- *   prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
- * THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
- * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package us.fibernet.fiberj;
-
 import java.awt.image.BufferedImage;
 
 import java.awt.image.WritableRaster;
@@ -43,271 +14,254 @@ import javax.imageio.ImageIO;
 
 /**
  * 
- *  Image rotation function
+ * @author Juan Ren Image rotation function
  * 
  */
 public class ImageMatrixRotation {
 
-    // Image 2D array rotation and scale
-    public static double[][] MatrixRotation(double[][] ImageMatrix,
-            double degree, double defaultcolor) {
-        double angle = degree * Math.PI / 180;
-        double sinma = Math.sin(-angle);
-        double cosma = Math.cos(-angle);
+	// Image 2D array rotation and scale
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor) {
 
-        int width = ImageMatrix.length;
-        int heigth = ImageMatrix[0].length;
+		return MatrixRotation(ImageMatrix, degree, defaultcolor, 2, 2, 0);
+	}
 
-        // in order to improve accuracy, use double instead of int
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor, int method) {
 
-        double halfwidth = width / 2;
-        double halfheigth = heigth / 2;
+		return MatrixRotation(ImageMatrix, degree, defaultcolor, 2, 2, method);
+	}
 
-        // calculate new image's dimension, from four corner point
-        double x1 = cosma * (0 - halfwidth) - sinma * (0 - halfheigth)
-                + halfwidth;
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor, int centerRow, int centerCol) {
 
-        double y1 = sinma * (0 - halfwidth) + cosma * (0 - halfheigth)
-                + halfheigth;
+		return MatrixRotation(ImageMatrix, degree, defaultcolor, centerRow, centerCol, 0);
+	}
 
-        double x2 = cosma * (0 - halfwidth) - sinma * (heigth - halfheigth - 1)
-                + halfwidth;
-        double y2 = sinma * (0 - halfwidth) + cosma * (heigth - halfheigth - 1)
-                + halfheigth;
+	// use int for test image, because the output of ImageReader.readTif is int
+	public static int[][] MatrixRotation(int[][] ImageMatrix, double degree, int defaultcolor, int method) {
 
-        double x3 = cosma * (width - halfwidth - 1) - sinma * (0 - halfheigth)
-                + halfwidth;
-        double y3 = sinma * (width - halfwidth - 1) + cosma * (0 - halfheigth)
-                + halfheigth;
+		return MatrixRotation(ImageMatrix, degree, defaultcolor, 2, 2, method);
+	}
 
-        double x4 = cosma * (width - halfwidth - 1) - sinma
-                * (heigth - halfheigth - 1) + halfwidth;
-        double y4 = sinma * (width - halfwidth - 1) + cosma
-                * (heigth - halfheigth - 1) + halfheigth;
+	public static int[][] MatrixRotation(int[][] ImageMatrix, double degree, int defaultcolor, int centerRow, int centerCol, int method) {
+		int width = ImageMatrix.length;
+		int heigth = ImageMatrix[0].length;
 
-        double MaxX = Math.max(Math.max(x1, x2), Math.max(x3, x4));
-        double MinX = Math.min(Math.min(x1, x2), Math.min(x3, x4));
+		double[][] matrix = new double[width][heigth];
 
-        double MaxY = Math.max(Math.max(y1, y2), Math.max(y3, y4));
-        double MinY = Math.min(Math.min(y1, y2), Math.min(y3, y4));
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < heigth; y++) {
+				matrix[x][y] = ImageMatrix[x][y];
+			}
+		}
 
-        /*
-         * System.out.println(x1 + " " + y1); System.out.println(x2 + " " + y2);
-         * System.out.println(x3 + " " + y3); System.out.println(x4 + " " + y4);
-         */
+		double dcolor = defaultcolor;
+		double[][] newmatrix = MatrixRotation(matrix, degree, dcolor, centerRow, centerCol, method);
 
-        System.out.println(MaxX + " " + MinX + ", " + MaxY + " " + MinY);
+		int[][] newImageMatrix = new int[newmatrix.length][newmatrix[0].length];
+		for (int x = 0; x < newmatrix.length; x++) {
+			for (int y = 0; y < newmatrix[0].length; y++) {
+				newImageMatrix[x][y] = (int) Math.round(newmatrix[x][y]);
+			}
+		}
 
-        int newWidth = (int) Math.round(MaxX - MinX + 1);
-        int newHeigth = (int) Math.round(MaxY - MinY + 1);
+		return newImageMatrix;
+	}
 
-        // calculate scale
-        double scale = 1;
-        int maxOldlength = Math.max(width, heigth);
-        int maxNewlength = Math.max(newWidth, newHeigth);
+	// two methods: nearest interpolation and bilinear interpolation
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor, int centerRow, int centerCol, String method) {
 
-        if (maxNewlength > maxOldlength) {
-            scale = Math.max((double) newWidth / width, (double) newHeigth
-                    / heigth);
-            // System.out.println(scale);
-            // System.out.println(newWidth + " " + width + ", " + newHeigth +
-            // " " + heigth);
+		int methodway = 0;
+		if (method.equals("bilinear")) {
+			methodway = 1;
+		}
+		return MatrixRotation(ImageMatrix, degree, defaultcolor, centerRow, centerCol, methodway);
+	}
 
-            newWidth = (int) Math.round(newWidth / scale + 1);
-            newHeigth = (int) Math.round(newHeigth / scale + 1);
+	// two methods: nearest interpolation 0 (default) and bilinear interpolation 1; maybe add more methods;
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree, double defaultcolor, int centerRow, int centerCol, int method) {
 
-        }
+		double angle = degree * Math.PI / 180;
+		double sinma = Math.sin(-angle);
+		double cosma = Math.cos(-angle);
 
-        // image matrix after rotation
-        double[][] newImageMatrix = new double[newWidth][newHeigth];
+		int width = ImageMatrix.length;
+		int heigth = ImageMatrix[0].length;
 
-        for (int x = 0; x < newWidth; x++) {
-            for (int y = 0; y < newHeigth; y++) {
-                newImageMatrix[x][y] = defaultcolor;
-            }
-        }
+		double halfwidth = centerRow;
+		double halfheigth = centerCol;
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < heigth; y++) {
+		// half row and half column
+		if (centerRow == 2 && centerCol == 2) {
+			halfwidth = width / 2;
+			halfheigth = heigth / 2;
+		}
 
-                double xt = x - halfwidth;
-                double yt = y - halfheigth;
-                int xs = (int) Math.round(((cosma * xt - sinma * yt)
-                        + halfwidth - MinX)
-                        / scale);
-                int ys = (int) Math.round(((sinma * xt + cosma * yt)
-                        + halfheigth - MinY)
-                        / scale);
-                // System.out.println(xs + " " + ys);
-                if (xs >= 0 && xs < newWidth && ys >= 0 && ys < newHeigth) {
-                    newImageMatrix[xs][ys] = ImageMatrix[x][y];
-                } else {
-                    newImageMatrix[xs][ys] = defaultcolor;
-                }
+		// calculate new image's dimension, from four corner point
+		double x1 = cosma * (0 - halfwidth)         - sinma * (0 - halfheigth) + halfwidth;
 
-            }
-        }
+		double y1 = sinma * (0 - halfwidth)         + cosma * (0 - halfheigth) + halfheigth;
 
-        return newImageMatrix;
-    }
+		double x2 = cosma * (0 - halfwidth)         - sinma * (heigth - halfheigth - 1) + halfwidth;
+		double y2 = sinma * (0 - halfwidth)         + cosma * (heigth - halfheigth - 1) + halfheigth;
 
-    // use int[][] for test image, because the output of ImageReader.readTif is
-    // int[][]
-    public static int[][] MatrixRotation(int[][] ImageMatrix, double degree,
-            int defaultcolor) {
+		double x3 = cosma * (width - halfwidth - 1) - sinma * (0 - halfheigth) + halfwidth;
+		double y3 = sinma * (width - halfwidth - 1) + cosma * (0 - halfheigth) + halfheigth;
 
-        double angle = degree * Math.PI / 180;
-        double sinma = Math.sin(-angle);
-        double cosma = Math.cos(-angle);
+		double x4 = cosma * (width - halfwidth - 1) - sinma * (heigth - halfheigth - 1) + halfwidth;
+		double y4 = sinma * (width - halfwidth - 1) + cosma * (heigth - halfheigth - 1) + halfheigth;
 
-        int width = ImageMatrix.length;
-        int heigth = ImageMatrix[0].length;
+		double MaxX = Math.max(Math.max(x1, x2), Math.max(x3, x4));
+		double MinX = Math.min(Math.min(x1, x2), Math.min(x3, x4));
 
-        // in order to improve accuracy, use double instead of int
+		double MaxY = Math.max(Math.max(y1, y2), Math.max(y3, y4));
+		double MinY = Math.min(Math.min(y1, y2), Math.min(y3, y4));
 
-        double halfwidth = width / 2;
-        double halfheigth = heigth / 2;
+		// System.out.println(x1 + " " + y1);
+		// System.out.println(x2 + " " + y2);
+		// System.out.println(x3 + " " + y3);
+		// System.out.println(x4 + " " + y4);
 
-        // calculate new image's dimension, from four corner point
-        double x1 = cosma * (0 - halfwidth) - sinma * (0 - halfheigth)
-                + halfwidth;
+		// System.out.println(MaxX + " " + MinX + ", " + MaxY + " " + MinY);
 
-        double y1 = sinma * (0 - halfwidth) + cosma * (0 - halfheigth)
-                + halfheigth;
+		int newWidth = (int) Math.round(MaxX - MinX + 1);
+		int newHeigth = (int) Math.round(MaxY - MinY + 1);
 
-        double x2 = cosma * (0 - halfwidth) - sinma * (heigth - halfheigth - 1)
-                + halfwidth;
-        double y2 = sinma * (0 - halfwidth) + cosma * (heigth - halfheigth - 1)
-                + halfheigth;
+		/*
+		 * // calculate scale double scale = 1; 
+		 * int maxOldlength = Math.max(width, heigth);
+		 *  int maxNewlength = Math.max(newWidth, newHeigth);
+		 * 
+		 * if (maxNewlength > maxOldlength) {
+		 *  scale = Math.max((double) newWidth / width, (double) newHeigth / heigth);
+		 *   // System.out.println(scale); 
+		 *   // System.out.println(newWidth + " " + width +
+		 * ", " + newHeigth + // " " + heigth); 
+		 * scale = 1; 
+		 * newWidth = (int) Math.round(newWidth / scale + 1); 
+		 * newHeigth = (int) Math.round(newHeigth / scale + 1);
+		 * 
+		 * }
+		 */
 
-        double x3 = cosma * (width - halfwidth - 1) - sinma * (0 - halfheigth)
-                + halfwidth;
-        double y3 = sinma * (width - halfwidth - 1) + cosma * (0 - halfheigth)
-                + halfheigth;
+		// image matrix after rotation
+		double[][] newImageMatrix = new double[newWidth][newHeigth];
 
-        double x4 = cosma * (width - halfwidth - 1) - sinma
-                * (heigth - halfheigth - 1) + halfwidth;
-        double y4 = sinma * (width - halfwidth - 1) + cosma
-                * (heigth - halfheigth - 1) + halfheigth;
+		for (int x = 0; x < newWidth; x++) {
+			for (int y = 0; y < newHeigth; y++) {
+				newImageMatrix[x][y] = defaultcolor;
+			}
+		}
 
-        double MaxX = Math.max(Math.max(x1, x2), Math.max(x3, x4));
-        double MinX = Math.min(Math.min(x1, x2), Math.min(x3, x4));
+		for (int x = 0; x < newWidth; x++) {
+			for (int y = 0; y < newHeigth; y++) {
 
-        double MaxY = Math.max(Math.max(y1, y2), Math.max(y3, y4));
-        double MinY = Math.min(Math.min(y1, y2), Math.min(y3, y4));
+				double xt = x - halfwidth + MinX;
+				double yt = y - halfheigth + MinY;
 
-        // System.out.println(x1 + " " + y1);
-        // System.out.println(x2 + " " + y2);
-        // System.out.println(x3 + " " + y3);
-        // System.out.println(x4 + " " + y4);
+				double xs = ((( cosma * xt + sinma * yt) + halfwidth));
+				double ys = (((-sinma * xt + cosma * yt) + halfheigth));
 
-        // System.out.println(MaxX + " " + MinX + ", " + MaxY + " " + MinY);
+				int xx = (int) Math.round(xs);
+				int yy = (int) Math.round(ys);
 
-        int newWidth = (int) Math.round(MaxX - MinX + 1);
-        int newHeigth = (int) Math.round(MaxY - MinY + 1);
+				if (method == 0) {// nearest interpolation
+					if (xx >= 0 && yy >= 0 && xx < width && yy < heigth) {
+						newImageMatrix[x][y] = ImageMatrix[xx][yy];
+					}
+				} else if (method == 1) {// bilinear interpolation begin
+					int xx1 = xx - 1;
+					int yy1 = yy - 1;
+					int xx2 = xx;
+					int yy2 = yy;
 
-        // calculate scale
-        double scale = 1;
-        int maxOldlength = Math.max(width, heigth);
-        int maxNewlength = Math.max(newWidth, newHeigth);
+					if (xs > xx) {
+						xx1 = xx;
+						xx2 = xx + 1;
+					}
 
-        if (maxNewlength > maxOldlength) {
-            scale = Math.max((double) newWidth / width, (double) newHeigth
-                    / heigth);
-            // System.out.println(scale);
-            // System.out.println(newWidth + " " + width + ", " + newHeigth +
-            // " " + heigth);
+					if (ys > yy) {
+						yy1 = yy;
+						yy2 = yy + 1;
+					}
 
-            newWidth = (int) Math.round(newWidth / scale + 1);
-            newHeigth = (int) Math.round(newHeigth / scale + 1);
+					if (xx1 >= 0 && yy1 >= 0 && xx2 < width && yy2 < heigth) {
+						double Q11 = ImageMatrix[xx1][yy1];
+						double Q12 = ImageMatrix[xx1][yy2];
+						double Q21 = ImageMatrix[xx2][yy1];
+						double Q22 = ImageMatrix[xx2][yy2];
 
-        }
+						double newvalue = bilinearinterpolation(xx1, xx2, xs, yy1, yy2, ys, Q11, Q12, Q21, Q22);
+						newImageMatrix[x][y] = newvalue;
+					} else if (xx >= 0 && yy >= 0 && xx < width && yy < heigth) {
+						newImageMatrix[x][y] = ImageMatrix[xx][yy];
+					}
+				}// bilinear interpolation end
 
-        // image matrix after rotation
-        int[][] newImageMatrix = new int[newWidth][newHeigth];
+			}
+		}
 
-        for (int x = 0; x < newWidth; x++) {
-            for (int y = 0; y < newHeigth; y++) {
-                newImageMatrix[x][y] = defaultcolor;
-            }
-        }
+		return newImageMatrix;
+	}
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < heigth; y++) {
+	// bilinear interpolation
+	// http://supercomputingblog.com/graphics/coding-bilinear-interpolation/
+	private static double bilinearinterpolation(int x1, int x2, double x, int y1, int y2, double y, double Q11, double Q12, double Q21, double Q22) {
+		double R1 = ((x2 - x) / (x2 - x1)) * Q11 + ((x - x1) / (x2 - x1)) * Q21;
+		double R2 = ((x2 - x) / (x2 - x1)) * Q12 + ((x - x1) / (x2 - x1)) * Q22;
 
-                double xt = x - halfwidth;
-                double yt = y - halfheigth;
-                int xs = (int) Math.round(((cosma * xt - sinma * yt)
-                        + halfwidth - MinX)
-                        / scale);
-                int ys = (int) Math.round(((sinma * xt + cosma * yt)
-                        + halfheigth - MinY)
-                        / scale);
+		double P = ((y2 - y) / (y2 - y1)) * R1 + ((y - y1) / (y2 - y1)) * R2;
 
-                // System.out.println(xs + " " + ys);
-                if (xs >= 0 && xs < newWidth && ys >= 0 && ys < newHeigth) {
-                    newImageMatrix[xs][ys] = ImageMatrix[x][y];
-                } else {
-                    newImageMatrix[xs][ys] = defaultcolor;
-                }
+		// System.out.println(R1 + " ,"+R2+" ,"+P);
+		return P;
+	}
 
-            }
-        }
+	// default pixel is 0
+	public static double[][] MatrixRotation(double[][] ImageMatrix, double degree) {
+		return MatrixRotation(ImageMatrix, degree, 0);
+	}
 
-        return newImageMatrix;
-    }
+	// save image for test
+	public static void displayImage(int[][] imageArray) throws IOException {
 
-    // default pixel is 0
-    public static double[][] MatrixRotation(double[][] ImageMatrix,
-            double degree) {
-        return MatrixRotation(ImageMatrix, degree, 0);
-    }
+		// Dimensions of the image
+		int heigth = imageArray.length;
 
-    // save image for test
-    public static void displayImage(int[][] imageArray) throws IOException {
+		int width = imageArray[0].length;
+		System.out.println(heigth + " " + width);
 
-        // Dimensions of the image
-        int heigth = imageArray.length;
+		// Let's create a BufferedImage for a gray level image.
+		BufferedImage im = new BufferedImage(width, heigth, BufferedImage.TYPE_BYTE_GRAY);
+		// We need its raster to set the pixels' values.
+		WritableRaster raster = im.getRaster();
+		// Put the pixels on the raster, using values between 0 and 255.
+		for (int h = 0; h < heigth; h++)
+			for (int w = 0; w < width; w++) {
+				// int value = 127 + (int) (128 * Math.sin(w / 32.) * Math
+				// .sin(h / 32.)); // Weird sin pattern.
 
-        int width = imageArray[0].length;
-        System.out.println(heigth + " " + width);
+				int value = imageArray[h][w];
+				raster.setSample(w, h, 0, value);
+			}
+		// Store the image using the JPG format.
+		ImageIO.write(im, "JPG", new File("/home/Downloads/sss3.jpg"));
 
-        // Let's create a BufferedImage for a gray level image.
-        BufferedImage im = new BufferedImage(width, heigth,
-                BufferedImage.TYPE_BYTE_GRAY);
-        // We need its raster to set the pixels' values.
-        WritableRaster raster = im.getRaster();
-        // Put the pixels on the raster, using values between 0 and 255.
-        for (int h = 0; h < heigth; h++)
-            for (int w = 0; w < width; w++) {
-                // int value = 127 + (int) (128 * Math.sin(w / 32.) * Math
-                // .sin(h / 32.)); // Weird sin pattern.
+	}
 
-                int value = imageArray[h][w];
-                raster.setSample(w, h, 0, value);
-            }
-        // Store the image using the PNG format.
-        ImageIO.write(im, "JPG", new File(
-                "/home/em/java/FiberJ/39a.jpg"));
+	// test
+	public static void main(String[] arg0) {
+		double dd = 160;
+		String[] testfile = { "/home/Downloads/MARBIBM.tif" };
+		// System.out.println(testfile);
 
-    }
+		int[][] inputimage = ImageReader.readPattern(testfile);
 
-    // test
-    public static void main(String[] arg0) {
-        double dd = 60;
-        String[] testfile = { "/home/em/java/FiberJ/39.tif" };
-        // System.out.println(testfile);
+		int[][] rotatimage = MatrixRotation(inputimage, dd, 0, 100, 100, 0);
+		// int[][] rotatimage = MatrixRotation(inputimage,dd,0);
+		try {
+			displayImage(rotatimage);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-        int[][] inputimage = ImageReader.readPatternData(testfile);
-
-        int[][] rotatimage = MatrixRotation(inputimage, dd, 0);
-
-        try {
-            displayImage(rotatimage);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
+	}
 }
