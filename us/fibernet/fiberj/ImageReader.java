@@ -74,18 +74,18 @@ public final class ImageReader {
         Pattern pattern = null;
         
         if(args.length == 1) {
-            if (fname.toLowerCase().endsWith("tif")) {
+            if(fname.toLowerCase().endsWith("tif")) {
                 data = readTif(fname);
             } 
-            else if (fname.toLowerCase().endsWith("plr")) {
+            else if(fname.toLowerCase().endsWith("plr")) {
                 data = readPlr(fname);
             } 
-            else if (fname.toLowerCase().endsWith("smv")) {
+            else if(fname.toLowerCase().endsWith("smv")) {
                 return ImageSmv.readSmvPattern(fname);
             } 
         }
         else {
-            if (fname.toLowerCase().endsWith("dat")) {
+            if(fname.toLowerCase().endsWith("dat")) {
                 int w = 0, h = 0;
                 try {
                     w = Integer.parseInt(args[1]);
@@ -118,18 +118,18 @@ public final class ImageReader {
         String fname = args[0];
         
         if(args.length == 1) {
-            if (fname.toLowerCase().endsWith("tif")) {
+            if(fname.toLowerCase().endsWith("tif")) {
                 return readTif(fname);
             } 
-            else if (fname.toLowerCase().endsWith("plr")) {
+            else if(fname.toLowerCase().endsWith("plr")) {
                 return readPlr(fname);
             } 
-            else if (fname.toLowerCase().endsWith("smv")) {
+            else if(fname.toLowerCase().endsWith("smv")) {
                 return ImageSmv.readSmv(fname);
             } 
         }
         else {
-            if (fname.toLowerCase().endsWith("dat")) {
+            if(fname.toLowerCase().endsWith("dat")) {
                 int w = 0, h = 0;
                 try {
                     w = Integer.parseInt(args[1]);
@@ -166,7 +166,7 @@ public final class ImageReader {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (input != null) {
+            if(input != null) {
                 try {
                     input.close();
                 } catch (Exception e) {
@@ -272,7 +272,7 @@ class EndianCorrectInputStream extends DataInputStream {
         short val;
 
         val = readShort();
-        if (bigendian) {
+        if(bigendian) {
             return (val);
         } else {
             int byte0 = (int) val & 0xff;
@@ -294,7 +294,7 @@ class EndianCorrectInputStream extends DataInputStream {
         int val;
 
         val = readInt();
-        if (bigendian) {
+        if(bigendian) {
             return (val);
         }
 
@@ -323,7 +323,7 @@ class EndianCorrectInputStream extends DataInputStream {
         long val;
 
         val = readLong();
-        if (bigendian) {
+        if(bigendian) {
             return (val);
         }
 
@@ -351,7 +351,7 @@ class EndianCorrectInputStream extends DataInputStream {
     public float readFloatCorrect() throws IOException {
         float val;
 
-        if (bigendian) {
+        if(bigendian) {
             val = readFloat();
         }
 
@@ -375,7 +375,7 @@ class EndianCorrectInputStream extends DataInputStream {
 
     public double readDoubleCorrect() throws IOException {
         double val;
-        if (bigendian) {
+        if(bigendian) {
             val = readDouble();
         } else {
             long x = readUnsignedByte();

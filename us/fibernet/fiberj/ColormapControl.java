@@ -305,12 +305,12 @@ public class ColormapControl {
         int n = pts.size();
         double[][] xmatrix = new double[n][n];
         double[] ymatrix = new double[n];
-        for (int w = 0; w < n; w++) {
-            for (int h = 0; h < n; h++) {
+        for(int w = 0; w < n; w++) {
+            for(int h = 0; h < n; h++) {
                 xmatrix[w][h] = Math.pow(pts.get(w).getX(), n - h - 1);
             }
         }
-        for (int y = 0; y < n; y++) {
+        for(int y = 0; y < n; y++) {
             ymatrix[y] = pts.get(y).getY();
         }
         curveParam = PatternUtil.gaussian(xmatrix, ymatrix);
@@ -335,13 +335,13 @@ public class ColormapControl {
     // the curve function in the color table
     private double curveFunction(double x) {
         double result = 0;
-        for (int i = 0; i < curveParam.length; i++) {
+        for(int i = 0; i < curveParam.length; i++) {
             result = result * x + curveParam[i];
         }
         // set upper and lower bounds
-        if (result > rainbowLabel.getHeight()) {
+        if(result > rainbowLabel.getHeight()) {
             result = rainbowLabel.getHeight();
-        } else if (result < 0) {
+        } else if(result < 0) {
             result = 0;
         }
         return result;
@@ -353,7 +353,7 @@ public class ColormapControl {
 
         Graphics2D g2 = rainbow.createGraphics();
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN));
-        for (int i = 1; i < colorPaneWidth; i++) {
+        for(int i = 1; i < colorPaneWidth; i++) {
             g2.draw(new Line2D.Double(i - 1, curveFunction(i - 1), i,  curveFunction(i)));
         }
         g2.dispose();
@@ -367,7 +367,7 @@ public class ColormapControl {
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_IN));
         Point2D[] points = new Point2D[pts.size()];
         pts.toArray(points);
-        for (Point2D p : points) {
+        for(Point2D p : points) {
             // System.out.println(p);
 
             double x = p.getX() - boxEdgeLength / 2;
@@ -426,21 +426,21 @@ public class ColormapControl {
         int max = -1; // height
         int minThre = Integer.MAX_VALUE;
         int maxThre = Integer.MIN_VALUE;
-        for (int i=0; i < indexArray.length; i++) {
-            for (int j=0; j < indexArray[0].length; j++) {
+        for(int i=0; i < indexArray.length; i++) {
+            for(int j=0; j < indexArray[0].length; j++) {
                 
-                if (dataArray[i][j] < minThre && dataArray[i][j] > 0) {
+                if(dataArray[i][j] < minThre && dataArray[i][j] > 0) {
                     minThre = dataArray[i][j];
                 }
                 
-                if (dataArray[i][j] > maxThre) {
+                if(dataArray[i][j] > maxThre) {
                     maxThre = dataArray[i][j];
                 }
 
-                if (colors.containsKey(indexArray[i][j])) {
+                if(colors.containsKey(indexArray[i][j])) {
                     colors.put(indexArray[i][j], colors.get(indexArray[i][j]) + 1);
                     
-                    if (colors.get(indexArray[i][j]) > max  && indexArray[i][j] != 0) {
+                    if(colors.get(indexArray[i][j]) > max  && indexArray[i][j] != 0) {
                         max = colors.get(indexArray[i][j]);
                     }
                 } 
@@ -479,8 +479,8 @@ public class ColormapControl {
         raster.setSamples(0, 0, w, h, 1, g);
         raster.setSamples(0, 0, w, h, 2, b);
 
-        for (int i = 10; i < 2560; i += 10) {
-            if (colors.containsKey(i / 10)) {
+        for(int i = 10; i < 2560; i += 10) {
+            if(colors.containsKey(i / 10)) {
                 int height = (int) (colors.get(i / 10) / factor);// ---------------------
                 // System.out.println(i/10+" height is "+height);
                 int gap = h - height;
@@ -503,7 +503,7 @@ public class ColormapControl {
     private void generateThreLines() {
         Graphics2D g = histogram.createGraphics();
         g.setColor(Color.BLACK);
-        for (int i = 0; i < 2; i++) {
+        for(int i = 0; i < 2; i++) {
             g.draw(new Line2D.Double(minThreshold + i, 0,
                     minThreshold + i, histogram.getHeight()));
             g.draw(new Line2D.Double(maxThreshold - 3 - i, 0,
@@ -536,8 +536,8 @@ public class ColormapControl {
 
     // select a box
     private void selectBox(int x, int y) {
-        for (Point2D p : pts) {
-            if (isSelected(x, y, p)) {
+        for(Point2D p : pts) {
+            if(isSelected(x, y, p)) {
                 selectedP = p;
                 return;
             }
@@ -561,17 +561,17 @@ public class ColormapControl {
     // drag box to a position on the color table.
     private void boxMove(String eventName, MouseEvent e) {
         
-        if (eventName.equals("dragged")) {
+        if(eventName.equals("dragged")) {
             
-            if (selectedP != null) {
+            if(selectedP != null) {
                 int x = e.getX();
                 int y = e.getY();
                 
                 // make sure that x and y does not go outside the label
-                if (x < 0)               x = 0;
-                if (x > colorPaneWidth)  x = colorPaneWidth;
-                if (y < 0)               y = 0;
-                if (y > colorPaneHeight) y = colorPaneHeight;
+                if(x < 0)               x = 0;
+                if(x > colorPaneWidth)  x = colorPaneWidth;
+                if(y < 0)               y = 0;
+                if(y > colorPaneHeight) y = colorPaneHeight;
                 
                 selectedP.setLocation(x, y);
                 refreshRainbow();
@@ -598,13 +598,13 @@ public class ColormapControl {
     private void addPopup(Component component, final JPopupMenu popup) {
         component.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                if (e.isPopupTrigger()) {
+                if(e.isPopupTrigger()) {
                     showMenu(e);
                 }
             }
 
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
+                if(e.isPopupTrigger()) {
                     showMenu(e);
                 }
             }
@@ -643,9 +643,9 @@ public class ColormapControl {
 
     // check which threshold is selected. Similar to boxSelected
     private void thresholdSelected(int x) {
-        if (Math.abs(minThreshold - x) <= 10) {
+        if(Math.abs(minThreshold - x) <= 10) {
             thresholdSelected = 0;
-        } else if (Math.abs(maxThreshold - x) <= 10) {
+        } else if(Math.abs(maxThreshold - x) <= 10) {
             thresholdSelected = 1;
         } else {
             thresholdSelected = -1;
@@ -660,18 +660,18 @@ public class ColormapControl {
     // redraw the threshold lines on histogram if it is moved
     private void thresholdMove(int x) {
         // histogram = fitImage(histoLabel,histogramCache);
-        if (thresholdSelected == 0) {
+        if(thresholdSelected == 0) {
             minThreshold = x;
         } 
-        else if (thresholdSelected == 1) {
+        else if(thresholdSelected == 1) {
             maxThreshold = x;
         }
         
-        if (x > histogram.getWidth()) {
+        if(x > histogram.getWidth()) {
             maxThreshold = histogram.getWidth();
         }
         
-        if (x < 0) {
+        if(x < 0) {
             minThreshold = 0;
         }
         refreshHistogram();
@@ -703,13 +703,13 @@ public class ColormapControl {
         int max = Integer.valueOf(maxArea.getText());
         double scale = (double) (max - min) / colorPaneWidth;
         
-        for (int h = 0; h < dataArray.length; h++) {
-            for (int w = 0; w < dataArray[0].length; w++) {
+        for(int h = 0; h < dataArray.length; h++) {
+            for(int w = 0; w < dataArray[0].length; w++) {
                 
-                if (dataArray[h][w] <= min) {
+                if(dataArray[h][w] <= min) {
                     output[h][w] = 0; // first color
                 } 
-                else if (dataArray[h][w] >= max) {
+                else if(dataArray[h][w] >= max) {
                     output[h][w] = 255; // last color
                 } 
                 else {

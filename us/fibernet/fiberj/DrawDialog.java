@@ -28,6 +28,7 @@
 
 package us.fibernet.fiberj;
 
+import java.util.ArrayList;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,7 +37,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
@@ -49,6 +49,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.JButton;
@@ -62,91 +63,146 @@ import javax.swing.SwingConstants;
  */
 public class DrawDialog extends JDialog {
 
-    private enum OBJTYPE { CIRCLE, RESOLUTION, LAYERLINE };
-    private OBJTYPE objType;
+    private final int CIRCLE = 0;
+    private final int RESOLUTION = 1;
+    private final int LAYERLINE = 2;
     private static final long serialVersionUID = 1L;
     private static final int DIALOG_WIDTH = 400;
+
+    private JPanel[] tabPages;
     private JPanel colorPanel;
-    //private JPanel radiusPanel;
-    //private JPanel centerPanel;
     private JPanel dataPanel;
     private JPanel cntrlPanel;
     private JLabel colorLabel;
     private Color penColor = Color.BLUE;
     
+    private JLabel spinLabel;
+    private String[] labelStrings = {"resolution ", "resolution ", "repeat "};
     private JSpinner rSpin;
     private SpinnerNumberModel rModel;
-    private double rMin, rMax, rDefault, rStep;
-
+    private ChangeListener rListener;
+    
+    // data default for circle, resolution, layerline
+    private double[] rMin   = { 10,  2,   1   };
+    private double[] rMax   = { 900, 200, 500 };
+    private double[] rValue = { 100, 10,  70  };
+    private double[] rStep  = { 1,   1,   1   };
+    
     private JSpinner xSpin, ySpin;
     private SpinnerNumberModel xModel, yModel;
-    private double xMin, xMax, xDefault, yMin, yMax, yDefault, xyStep;
+    private double xMin   = 0;
+    private double xMax   = 600;
+    private double xStart = 300;
+    private double yMin   = 0;
+    private double yMax   = 600;
+    private double yStart = 300;
+    private double xyStep = 1;
     
     private static ArrayList<Circle> circleList;
+    private static ArrayList<Resolution> resolutionList;
+    private static ArrayList<Layerline> layerlineList;
+    
+    private int curTabIndex = 0;
+
     
     public DrawDialog(Pattern curPattern) {
-
-        // get related parameters first
-        if(curPattern == null) {
-            rMin = 10;
-            rMax = 900;
-            rDefault = 100;
-            rStep = 1;
+        if(curPattern != null) {
+            rMin[CIRCLE] = 10;
+            rMax[CIRCLE] = curPattern.getMaxDimension();
+            rValue[CIRCLE] = 100;
+            rStep[CIRCLE] = 1;
             xMin = 0;
-            xMax = 600;
-            xDefault = 300;
+            xMax = curPattern.getWidth();
+            xStart = curPattern.getCenterX();
             yMin = 0;
-            yMax = 600;
-            yDefault = 300;    
-            xyStep = 1;       
-        }
-        else {
-            // TODO
-            Pattern cp = getCurrentPattern();
-            rMin = 10;
-            rMax = cp.getMaxDimension();
-            rDefault = 100;
-            rStep = 1;
-            xMin = 0;
-            xMax = cp.getWidth();
-            xDefault = cp.getCenterX();
-            yMin = 0;
-            yMax = cp.getHeight();
-            yDefault = cp.getCenterY();    
+            yMax = curPattern.getHeight();
+            yStart = curPattern.getCenterY();    
             xyStep = 1;   
         }
-        
         circleList = new ArrayList<Circle>();
+        resolutionList = new ArrayList<Resolution>();
+        layerlineList = new ArrayList<Layerline>();
         
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
         setTitle("Draw");
+        initialize();
+    }
+
+
+    //Initialize the contents of the control panels.
+    private void initialize() {
+
+        setLayout(new BorderLayout());
+         
+        // Create tab pages
+        tabPages = new JPanel[3];
+        createTabCircle(tabPages[CIRCLE] = new JPanel());
+        createTabResolution(tabPages[RESOLUTION] = new JPanel());
+        createTabLayerline(tabPages[LAYERLINE] = new JPanel());
+
         
-        colorPanel = new JPanel();
-        dataPanel = new JPanel();
-        cntrlPanel = new JPanel();
-              
-        // createEmptyBorder(top, left, bottom, right)
-        colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        dataPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        cntrlPanel.setBorder(BorderFactory.createCompoundBorder(
-                             BorderFactory.createLineBorder(Color.gray),
-                             BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+        // Create tabs
+        final JTabbedPane controlTabs = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        //controlTabs.setAlignmentX(CENTER_ALIGNMENT);
+        controlTabs.addTab("Circle", tabPages[CIRCLE]);
+        controlTabs.addTab("Resolution", tabPages[RESOLUTION]);
+        controlTabs.addTab("Layerline", tabPages[LAYERLINE]);
+        controlTabs.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                curTabIndex = controlTabs.getSelectedIndex();
+                showTab(curTabIndex);
+            }
+        });
         
-        createColorPanel(colorPanel);
-        createDataPanel(dataPanel, "Circle");
-        createCntrlPanel(cntrlPanel);
-        
-        add(colorPanel);
-        add(dataPanel);
-        add(cntrlPanel);
+        add(controlTabs, BorderLayout.CENTER);
 
         pack();
         setVisible(true);
     }
-
+    
+    private void showTab(int index) {
+        rSpin.removeChangeListener(rListener);
+        tabPages[index].add(colorPanel, BorderLayout.PAGE_START);
+        tabPages[index].add(dataPanel, BorderLayout.CENTER);
+        tabPages[index].add(cntrlPanel, BorderLayout.PAGE_END);
+        spinLabel.setText(labelStrings[index]);
+        rModel.setMinimum(rMin[index]);
+        rModel.setMaximum(rMax[index]);
+        rModel.setValue(rValue[index]);
+        rModel.setStepSize(rStep[index]);
+        rSpin.setModel(rModel);
+        pack();
+        rSpin.addChangeListener(rListener);
+    }
+    
+    private void createTabCircle(JPanel parent) {        
+        createColorPanel(colorPanel = new JPanel());
+        createCntrlPanel(cntrlPanel = new JPanel());
+        // createEmptyBorder(top, left, bottom, right)
+        colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        cntrlPanel.setBorder(BorderFactory.createCompoundBorder(
+                               BorderFactory.createLineBorder(Color.gray),
+                               BorderFactory.createEmptyBorder(5, 10, 5, 10)));        
+        createDataPanel(dataPanel = new JPanel());
+        dataPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        
+        parent.setLayout(new BorderLayout());
+        parent.add(colorPanel, BorderLayout.PAGE_START);
+        parent.add(dataPanel, BorderLayout.CENTER);
+        parent.add(cntrlPanel, BorderLayout.PAGE_END);
+    }
+    
+    private void createTabResolution(JPanel parent) {
+        parent.setLayout(new BorderLayout());
+    }
+ 
+    private void createTabLayerline(JPanel parent) {
+        parent.setLayout(new BorderLayout());
+    }
+    
     /**
-     * @return the radius of the current circle for computing sdd.
+     * @return the resolution of the current circle for computing sdd.
      *         assuming the circle is drawn on calibrant ring and
      *         assuming the center is determined correctly.
      *         
@@ -192,21 +248,10 @@ public class DrawDialog extends JDialog {
     /*
      * Object data panel
      */
-    private void createDataPanel(JPanel parent, String drawType) {
-        if(drawType.equals("Circle")) {
-            objType = OBJTYPE.CIRCLE;
-            dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.PAGE_AXIS));
-            dataPanel.add(createRadiusPanel());
-            dataPanel.add(createCenterPanel());
-        }
-        else if(drawType.equals("Resolution")) {
-        // TODO
-            objType = OBJTYPE.RESOLUTION;
-        }
-        else if(drawType.equals("Layerline")) {
-        // TODO
-            objType = OBJTYPE.LAYERLINE;
-        }
+    private void createDataPanel(JPanel parent) {
+        dataPanel.setLayout(new BoxLayout(dataPanel, BoxLayout.PAGE_AXIS));
+        dataPanel.add(createRadiusPanel());
+        dataPanel.add(createCenterPanel());
     }
     
     /*
@@ -261,27 +306,29 @@ public class DrawDialog extends JDialog {
         Dimension dim = new Dimension(DIALOG_WIDTH, 40);
         panel.setPreferredSize(dim);
         panel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel radiusLabel = new JLabel("radius ");
+        spinLabel = new JLabel(labelStrings[curTabIndex]);
         
-        rModel = new SpinnerNumberModel(rDefault, rMin, rMax, rStep);  
+        rModel = new SpinnerNumberModel(rValue[curTabIndex], rMin[curTabIndex], rMax[curTabIndex], rStep[curTabIndex]);  
         rSpin = new JSpinner(rModel);
         //JComponent sfield = rSpin.getEditor();
         //JFormattedTextField tfield = (JFormattedTextField) sfield.getComponent(0);
         //DefaultFormatter formatter = (DefaultFormatter) tfield.getFormatter();
         //formatter.setCommitsOnValidEdit(true);
-        rSpin.addChangeListener(new ChangeListener() {
+        
+        rListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 try {
-                    rDefault = Double.parseDouble(rSpin.getValue().toString());
-                    rChanged(rDefault);
+                    double v = Double.parseDouble(rSpin.getValue().toString());
+                    rChanged(v);
                 }
                 catch(NumberFormatException nfe) {
                     String err = "invalud decimal number format. reset.";
                     JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
                 } 
             }
-        });
+        };
+        rSpin.addChangeListener(rListener);
         
         JLabel stepLabel = new JLabel("   step ");
         JTextField stepText = new JTextField();
@@ -289,23 +336,23 @@ public class DrawDialog extends JDialog {
         ((JSpinner.DefaultEditor) rSpin.getEditor()).setPreferredSize(dim);
         stepText.setPreferredSize(dim); 
         stepText.setColumns(4);
-        stepText.setText(rStep+"");
+        stepText.setText(rStep[curTabIndex] + "");
         stepText.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JTextField jt = (JTextField)e.getSource();
                 try {
-                        rStep = Double.parseDouble(jt.getText());
-                        rModel.setStepSize(rStep);    
+                        double v = Double.parseDouble(jt.getText());
+                        rStepChanged(v);
                 }
                 catch(NumberFormatException nfe) {
                     String err = "invalud decimal number format. reset.";
                     JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
-                    jt.setText(rStep+""); 
+                    jt.setText(rStep[curTabIndex] + ""); 
                 }    
             }
         });
         
-        panel.add(radiusLabel);
+        panel.add(spinLabel);
         panel.add(rSpin);
         panel.add(stepLabel);
         panel.add(stepText);
@@ -324,22 +371,22 @@ public class DrawDialog extends JDialog {
         JLabel xLabel = new JLabel("center   x ");
         JLabel yLabel = new JLabel("   y ");
         
-        xModel = new SpinnerNumberModel(xDefault, xMin, xMax, xyStep); 
-        yModel = new SpinnerNumberModel(yDefault, yMin, yMax, rStep); 
+        xModel = new SpinnerNumberModel(xStart, xMin, xMax, xyStep); 
+        yModel = new SpinnerNumberModel(yStart, yMin, yMax, xyStep); 
         xSpin = new JSpinner(xModel);
         ySpin = new JSpinner(yModel);
-        
+              
         xSpin.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 try {
-                    xDefault = Double.parseDouble(xSpin.getValue().toString());
-                    xChanged(xDefault);
+                    xStart = Double.parseDouble(xSpin.getValue().toString());
+                    xChanged(xStart);
                 }
                 catch(NumberFormatException nfe) {
                     String err = "invalud decimal number format. reset.";
                     JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
-                    xSpin.setValue(xDefault+"");
+                    xSpin.setValue(xStart+"");
                 } 
             }
         });       
@@ -348,13 +395,13 @@ public class DrawDialog extends JDialog {
             @Override
             public void stateChanged(ChangeEvent e) {
                 try {
-                    yDefault = Double.parseDouble(ySpin.getValue().toString());
-                    yChanged(yDefault);
+                    yStart = Double.parseDouble(ySpin.getValue().toString());
+                    yChanged(yStart);
                 }
                 catch(NumberFormatException nfe) {
                     String err = "invalud decimal number format. reset.";
                     JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
-                    ySpin.setValue(yDefault+"");
+                    ySpin.setValue(yStart+"");
                 } 
             }
         });               
@@ -394,17 +441,18 @@ public class DrawDialog extends JDialog {
         return panel;
     }
     
-    // TODO: if there's a circle in circle queue, change its radius to current r
+    // TODO: if there's a circle in circle queue, change its resolution to current r
     //       else do nothing (user need to click draw button to draw)
     private void rChanged(double r) {
-        switch(objType) {
+        rValue[curTabIndex] = r;
+        switch(curTabIndex) {
             case CIRCLE: 
                 if(!circleList.isEmpty()) {
                     circleList.get(circleList.size() - 1).setR(r);
                     drawCircles();
                 }
                 else {
-                    Circle c = new Circle(r, xDefault, yDefault, penColor);
+                    Circle c = new Circle(r, xStart, yStart, penColor);
                     circleList.add(c);
                     drawCircles();   
                 }
@@ -419,9 +467,15 @@ public class DrawDialog extends JDialog {
         }  
     }
     
+    private void rStepChanged(double s) {
+        rStep[curTabIndex] = s;
+        rModel.setStepSize(s);    
+    }
+    
+    
     // TODO: center changed so redrawn all objects
     private void xChanged(double x) {
-        switch(objType) {
+        switch(curTabIndex) {
             case CIRCLE: 
                 if(!circleList.isEmpty()) {
                     for(Circle c : circleList) {
@@ -443,7 +497,7 @@ public class DrawDialog extends JDialog {
     
     // TODO: center changed so redrawn all objects
     private void yChanged(double y) {
-        switch(objType) {
+        switch(curTabIndex) {
             case CIRCLE: 
                 if(!circleList.isEmpty()) {
                     for(Circle c : circleList) {
@@ -467,9 +521,9 @@ public class DrawDialog extends JDialog {
     //////////////////////////////////////////////////////////////////////
     
     private void draw() {
-        switch(objType) {
+        switch(curTabIndex) {
             case CIRCLE: 
-                Circle c = new Circle(rDefault, xDefault, yDefault, penColor);
+                Circle c = new Circle(rValue[curTabIndex], xStart, yStart, penColor);
                 circleList.add(c);
                 drawCircles();                
                 break;
@@ -483,7 +537,7 @@ public class DrawDialog extends JDialog {
     }
     
     private void listObjects() {
-        switch(objType) {
+        switch(curTabIndex) {
             case CIRCLE: 
                 for(Circle c : circleList) {
                     System.out.println(c);
@@ -499,7 +553,7 @@ public class DrawDialog extends JDialog {
     }
     
     private void clear() {
-        switch(objType) {
+        switch(curTabIndex) {
             case CIRCLE: 
                 if(!circleList.isEmpty()) {
                     circleList.remove(circleList.size() - 1);
@@ -521,7 +575,7 @@ public class DrawDialog extends JDialog {
     }
     
     private void clearAll() {
-        switch(objType) {
+        switch(curTabIndex) {
             case CIRCLE: 
                 if(!circleList.isEmpty()) {
                     circleList.clear();
@@ -549,6 +603,26 @@ public class DrawDialog extends JDialog {
     // draw on pattern UI all circles in circleList
     private void drawCircles() {
         UIMain.getUIPattern().drawCircles(circleList);
+    }
+    
+    // not used
+    private void drawResolution(Resolution r) {
+        UIMain.getUIPattern().drawResolution(r);
+    }
+    
+    // draw on pattern UI all resolutions in resolutionList
+    private void drawResolutions() {
+        UIMain.getUIPattern().drawResolutions(resolutionList);
+    }
+    
+    // not used
+    private void drawLayerline(Layerline l) {
+        UIMain.getUIPattern().drawLayerline(l);
+    }
+    
+    // draw on pattern UI all layerlines in layerlineList
+    private void drawLayerlines() {
+        UIMain.getUIPattern().drawLayerlines(layerlineList);
     }
     
     /*
