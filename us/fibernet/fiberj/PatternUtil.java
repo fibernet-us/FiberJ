@@ -72,7 +72,7 @@ public class PatternUtil {
     public static ColorTable getColorTable(String file) throws IOException {
 
         List<List<Byte>> rgbColorTable = new ArrayList<List<Byte>>();
-        for (int i = 0; i < 3; i++) {
+        for(int i = 0; i < 3; i++) {
             rgbColorTable.add(new ArrayList<Byte>());
         }
         Scanner scan = new Scanner(new File(file));
@@ -88,7 +88,7 @@ public class PatternUtil {
         byte[] green = ct.getGreen();
         byte[] blue = ct.getBlue();
 
-        for (int i = 0; i < rgbColorTable.get(0).size(); i++) {
+        for(int i = 0; i < rgbColorTable.get(0).size(); i++) {
             red[i] = rgbColorTable.get(0).get(i);
             green[i] = rgbColorTable.get(1).get(i);
             blue[i] = rgbColorTable.get(2).get(i);
@@ -104,7 +104,7 @@ public class PatternUtil {
      * @param table
      */
     static void displayColorTable(List<List<Byte>> table) {
-        for (List<Byte> row : table) {
+        for(List<Byte> row : table) {
             System.out.println(row);
         }
     }
@@ -117,8 +117,8 @@ public class PatternUtil {
         int optimalSize = 500;// the pixel number to achieve good image
         int shrinkFactor = Math.max(original.length, original[0].length) / optimalSize;
         int[][] output = new int[original.length / shrinkFactor][original[0].length / shrinkFactor];
-        for (int r = 0; r * shrinkFactor < original.length; r++) {
-            for (int c = 0; c * shrinkFactor < original.length; c++) {
+        for(int r = 0; r * shrinkFactor < original.length; r++) {
+            for(int c = 0; c * shrinkFactor < original.length; c++) {
                 output[r][c] = original[r * shrinkFactor][c * shrinkFactor];
             }
         }
@@ -141,12 +141,12 @@ public class PatternUtil {
         int min = Integer.MAX_VALUE;
         
         // find max and min values of input array
-        for (int i = 0; i < output.length; i++) {
-            for (int j = 0; j < output[0].length; j++) {
-                if (input[i][j] > max) {
+        for(int i = 0; i < output.length; i++) {
+            for(int j = 0; j < output[0].length; j++) {
+                if(input[i][j] > max) {
                     max = input[i][j];
                 } 
-                else if (input[i][j] < min) {
+                else if(input[i][j] < min) {
                     min = input[i][j];
                 }
             }
@@ -157,9 +157,9 @@ public class PatternUtil {
         
         double factor = ((double) (max - min)) / numColors  +  1;
 
-        for (int i = 0; i < output.length; i++) {
-            for (int j = 0; j < output[0].length; j++) {
-                if (input[i][j] < min) {
+        for(int i = 0; i < output.length; i++) {
+            for(int j = 0; j < output[0].length; j++) {
+                if(input[i][j] < min) {
                     output[i][j] = 0;
                 } 
                 else {
@@ -203,7 +203,7 @@ public class PatternUtil {
         int[] srcbuf = ((DataBufferInt) src.getRaster().getDataBuffer()).getData();
         int[] dstbuf = ((DataBufferInt) copy.getRaster().getDataBuffer()).getData();
 
-        for (int y=0, srcoffs=0, dstoffs=0; y<height; y++, dstoffs+=width, srcoffs+=width ) {
+        for(int y=0, srcoffs=0, dstoffs=0; y<height; y++, dstoffs+=width, srcoffs+=width ) {
             System.arraycopy(srcbuf, srcoffs , dstbuf, dstoffs, width);
         }
         return copy;
@@ -258,7 +258,7 @@ public class PatternUtil {
         int[] g = new int[unit * height];
         int[] b = new int[unit * height];
 
-        for (int i = 0; i < width; i += unit) {
+        for(int i = 0; i < width; i += unit) {
             int colorIndex = i / unit;
             Arrays.fill(r, red[colorIndex]);
             Arrays.fill(g, green[colorIndex]);
@@ -298,7 +298,7 @@ public class PatternUtil {
         int[] g = new int[unit * height];
         int[] b = new int[unit * height];
 
-        for (int i = 0; i < width; i += unit) {
+        for(int i = 0; i < width; i += unit) {
             int colorIndex = i / unit;
             Arrays.fill(r, red[colorIndex]);
             Arrays.fill(g, green[colorIndex]);
@@ -330,8 +330,8 @@ public class PatternUtil {
         int[] g = new int[unit * unit];
         int[] b = new int[unit * unit];
 
-        for (int h = 0; h < height; h += unit) {
-            for (int w = 0; w < width; w += unit) {
+        for(int h = 0; h < height; h += unit) {
+            for(int w = 0; w < width; w += unit) {
 
                 int color = input[h/unit][w/unit];
                 Arrays.fill(r, red[color]);
@@ -355,12 +355,12 @@ public class PatternUtil {
         int N = b.length;
         // double EPSILON = 1e-10;
 
-        for (int p = 0; p < N; p++) {
+        for(int p = 0; p < N; p++) {
 
             // find pivot row and swap
             int max = p;
-            for (int i = p + 1; i < N; i++) {
-                if (Math.abs(A[i][p]) > Math.abs(A[max][p])) {
+            for(int i = p + 1; i < N; i++) {
+                if(Math.abs(A[i][p]) > Math.abs(A[max][p])) {
                     max = i;
                 }
             }
@@ -373,15 +373,15 @@ public class PatternUtil {
 
             // singular or nearly singular
             /*
-             * if (Math.abs(A[p][p]) <= EPSILON) { throw new
+             * if(Math.abs(A[p][p]) <= EPSILON) { throw new
              * RuntimeException("Matrix is singular or nearly singular"); }
              */
 
             // pivot within A and b
-            for (int i = p + 1; i < N; i++) {
+            for(int i = p + 1; i < N; i++) {
                 double alpha = A[i][p] / A[p][p];
                 b[i] -= alpha * b[p];
-                for (int j = p; j < N; j++) {
+                for(int j = p; j < N; j++) {
                     A[i][j] -= alpha * A[p][j];
                 }
             }
@@ -389,9 +389,9 @@ public class PatternUtil {
 
         // back substitution
         double[] x = new double[N];
-        for (int i = N - 1; i >= 0; i--) {
+        for(int i = N - 1; i >= 0; i--) {
             double sum = 0.0;
-            for (int j = i + 1; j < N; j++) {
+            for(int j = i + 1; j < N; j++) {
                 sum += A[i][j] * x[j];
             }
             x[i] = (b[i] - sum) / A[i][i];

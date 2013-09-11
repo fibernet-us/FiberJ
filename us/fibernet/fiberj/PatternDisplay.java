@@ -156,7 +156,7 @@ public class PatternDisplay {
     // track mouse pointer and draw cursor
     private void mouseHandler(MouseEvent e) {
         //added check for MouseEvent.BUTTON1 which is left click
-        if (e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON1) {
+        if(e.isPopupTrigger() || e.getButton() == MouseEvent.BUTTON1) {
             int x = e.getX();
             int y = e.getY();
             drawCrossHair(x,y);
@@ -232,7 +232,7 @@ public class PatternDisplay {
         UIMain.cursorUpdate(x, y);
     }
     
-    // draw a circle using Graphics2D.drawOval
+    // draw a Circle using Graphics2D.drawOval
     // maybe draw it manually for more accuracy
     public void drawCircle(Circle c) { 
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
@@ -247,8 +247,7 @@ public class PatternDisplay {
         imageLabel.setIcon(new ImageIcon(drawImage));   
     }
     
-    // draw a circle using Graphics2D.drawOval
-    // maybe draw it manually for more accuracy
+    // draw a list of Circles using Graphics2D.drawOval
     public void drawCircles(ArrayList<Circle> cs) { 
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g2d = drawImage.createGraphics();
@@ -276,5 +275,61 @@ public class PatternDisplay {
         }
         g2d.dispose();
         imageLabel.setIcon(new ImageIcon(drawImage));   
+    }
+    
+    // draw a Resolution using Graphics2D.drawOval
+    // TODO: how to draw Resolution?
+    public void drawResolution(Resolution r) { 
+        BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
+        Graphics2D g = drawImage.createGraphics();
+        g.setColor(r.getColor());
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        int x = (int)(r.getX() - r.getR() + 0.5);
+        int y = (int)(r.getY() - r.getR() + 0.5);
+        int w = (int)(r.getR() * 2.0 + 0.5);
+        g.drawOval(x, y, w, w);
+        g.dispose();
+        imageLabel.setIcon(new ImageIcon(drawImage));   
+    }
+    
+    // draw a list of Resolutions using Graphics2D.drawOval
+    // TODO: how to draw Resolution?
+    public void drawResolutions(ArrayList<Resolution> rs) { 
+        BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
+        Graphics2D g2d = drawImage.createGraphics();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        for(Resolution c : rs) {
+            g2d.setColor(c.getColor());
+            /*
+            int x = (int)(c.getX() - c.getR() + 0.5);
+            int y = (int)(c.getY() - c.getR() + 0.5);
+            int w = (int)(c.getR() * 2.0 + 0.5);
+            g2d.drawOval(x, y, w, w);
+            */
+            double x0 = c.getX();
+            double y0 = c.getY();
+            double r  = c.getR();
+            double thetaStep = c.getThetaStep();
+            double theta = 0;
+            int NP = (int)(Math.PI * 2 / thetaStep + 1.5);
+            for(int i=0; i<NP; i++) {
+                theta += thetaStep;
+                double x = x0 + r * Math.cos(theta);
+                double y = y0 + r * Math.sin(theta);
+                g2d.draw(new Line2D.Double(x, y, x, y));
+            }
+        }
+        g2d.dispose();
+        imageLabel.setIcon(new ImageIcon(drawImage));   
+    }
+    
+    // draw a Layerline using Graphics2D.drawOval
+    // TODO: how to draw Layerline?
+    public void drawLayerline(Layerline l) { 
+    }
+    
+    // draw a list of Resolutions using Graphics2D.drawOval
+    // TODO: how to draw Resolution?
+    public void drawLayerlines(ArrayList<Layerline> ls) { 
     }
 }
