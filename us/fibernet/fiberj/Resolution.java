@@ -58,8 +58,7 @@ public class Resolution {
         resolution = r;
         cx = x;
         cy = y;
-        // 1 degree theta increment for r=50
-        thetaStep = Math.PI * 2 / 360 / (r / 50); 
+        thetaStep = 0.0001; 
     }
     
     public String toString() {

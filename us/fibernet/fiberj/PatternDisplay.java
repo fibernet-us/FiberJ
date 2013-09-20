@@ -33,6 +33,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -45,6 +46,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -73,6 +75,10 @@ public class PatternDisplay {
         myPattern.setDisplay(this);
     }
 
+    public BufferedImage getDisplayImage() {
+        return currIndexImage;
+    }
+    
     private void initialize() {
 
         imagePanel.removeAll();
@@ -247,7 +253,7 @@ public class PatternDisplay {
         imageLabel.setIcon(new ImageIcon(drawImage));   
     }
     
-    // draw a list of Circles using Graphics2D.drawOval
+    // draw a list of Circles 
     public void drawCircles(ArrayList<Circle> cs) { 
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g2d = drawImage.createGraphics();
@@ -277,59 +283,75 @@ public class PatternDisplay {
         imageLabel.setIcon(new ImageIcon(drawImage));   
     }
     
-    // draw a Resolution using Graphics2D.drawOval
-    // TODO: how to draw Resolution?
+    // draw a Resolution
     public void drawResolution(Resolution r) { 
-        BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
-        Graphics2D g = drawImage.createGraphics();
-        g.setColor(r.getColor());
-        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        int x = (int)(r.getX() - r.getR() + 0.5);
-        int y = (int)(r.getY() - r.getR() + 0.5);
-        int w = (int)(r.getR() * 2.0 + 0.5);
-        g.drawOval(x, y, w, w);
-        g.dispose();
-        imageLabel.setIcon(new ImageIcon(drawImage));   
     }
     
-    // draw a list of Resolutions using Graphics2D.drawOval
-    // TODO: how to draw Resolution?
+    // draw a list of Resolutions 
     public void drawResolutions(ArrayList<Resolution> rs) { 
+        if(!myPattern.hasReciprocal()) {
+            return;
+        }
+        
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g2d = drawImage.createGraphics();
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        for(Resolution c : rs) {
-            g2d.setColor(c.getColor());
-            /*
-            int x = (int)(c.getX() - c.getR() + 0.5);
-            int y = (int)(c.getY() - c.getR() + 0.5);
-            int w = (int)(c.getR() * 2.0 + 0.5);
-            g2d.drawOval(x, y, w, w);
-            */
-            double x0 = c.getX();
-            double y0 = c.getY();
-            double r  = c.getR();
-            double thetaStep = c.getThetaStep();
-            double theta = 0;
-            int NP = (int)(Math.PI * 2 / thetaStep + 1.5);
-            for(int i=0; i<NP; i++) {
-                theta += thetaStep;
-                double x = x0 + r * Math.cos(theta);
-                double y = y0 + r * Math.sin(theta);
-                g2d.draw(new Line2D.Double(x, y, x, y));
+        
+        for(Resolution r : rs) {
+            g2d.setColor(r.getColor());
+            
+            ArrayList<Point> points = myPattern.getResolutionPoints(r);
+            if(points == null || points.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Resolution not defined.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            
+            for(Point p : points) {
+                g2d.draw(new Line2D.Double(p, p));
+            }          
         }
         g2d.dispose();
         imageLabel.setIcon(new ImageIcon(drawImage));   
     }
     
-    // draw a Layerline using Graphics2D.drawOval
-    // TODO: how to draw Layerline?
+    // draw a Layerline 
     public void drawLayerline(Layerline l) { 
     }
     
-    // draw a list of Resolutions using Graphics2D.drawOval
-    // TODO: how to draw Resolution?
-    public void drawLayerlines(ArrayList<Layerline> ls) { 
+    // draw a list of Layerlines
+    public void drawLayerlines(ArrayList<Layerline> lls) { 
+        if(!myPattern.hasReciprocal()) {
+            return;
+        }
+        
+        BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
+        Graphics2D g2d = drawImage.createGraphics();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        
+        for(Layerline ll : lls) {
+            
+            g2d.setColor(ll.getColor());
+            ArrayList<ArrayList<Point>> llPoints = myPattern.getLayerLines(ll.getR());
+            if(llPoints == null) {
+                JOptionPane.showMessageDialog(null, "Layerlines not defined.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            for(ArrayList<Point> points : llPoints) {
+                if(points == null || points.isEmpty()) {
+                    continue;
+                }
+                
+                Point pLast = points.get(points.size() - 1);
+                for(int i = points.size() - 2; i >= 0; --i) { // process all points on this layerline
+                    Point p = points.get(i);
+                    g2d.draw(new Line2D.Double(pLast, p));
+                    pLast = p;
+                }
+            } 
+        }
+        g2d.dispose();
+        imageLabel.setIcon(new ImageIcon(drawImage));          
+        
     }
 }

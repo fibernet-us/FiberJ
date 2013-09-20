@@ -30,6 +30,7 @@ package us.fibernet.fiberj;
 
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -38,7 +39,7 @@ import javax.swing.JFileChooser;
 public class MenuHandlerMainFile extends MenuHandlerMainDefault {  
 
     /*
-     * File -> Open
+     * Main Menu -> File -> Open
      */
     @Override
     public void mainFileOpen() {
@@ -58,60 +59,87 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
         }
     }
 
-
     /*
-     * File -> Exit
+     * Main Menu -> File -> Close
+     */
+    public void mainFileClose() {
+        // TODO: clean up resources
+        PatternProcessor.createPatternImage(600);
+    }
+    
+    
+    /*
+     * Main Menu -> Save As -> SMV
+     */
+    public void mainFileSaveAsSMV() {
+        saveImageFile("smv");
+    }
+    
+    /*
+     * Main Menu -> Save As -> PNG
+     */
+    public void mainFileSaveAsPNG() {
+        saveImageFile("png");
+    }
+    
+    /*
+     * Main Menu -> Save As -> JPG
+     */
+    public void mainFileSaveAsJPG() {
+        saveImageFile("jpg", "jpeg");
+    }
+    
+    /*
+     * Main Menu -> File -> Exit
      */
     @Override
     public void mainFileExit() {
         System.exit(0);
     }
 
-
-    /////////////////////// TODO ///////////////////////
+    
+    /*\*************************************************************************
+     * 
+     * TODO section
+     * 
+     */
 
     /*
-     * File -> Save
+     * Main Menu -> File -> Save
      */
     public void mainFileSave() {
         super.mainFileSave();
     }
 
     /*
-     * mainFileSaveAs handlers
+     * Main Menu -> File -> Save As -> TIF
      */
     public void mainFileSaveAsTIF() {
         super.mainFileSaveAsTIF();
     }
-
-    public void mainFileSaveAsSMV() {
-        super.mainFileSaveAsSMV();
-    }
-
-    public void mainFileSaveAsJPG() {
-        super.mainFileSaveAsJPG();
-    }
-    public void mainFileSaveAsPNG() {
-        super.mainFileSaveAsPNG();
-    }
     
-
-    public void mainFileClose() {
-        super.mainFileClose();
-    }
-    
+    /*
+     * Main Menu -> File -> Browse
+     */
     public void mainFileBrowse() {
         super.mainFileBrowse();
     }
 
+    /*
+     * Main Menu -> File -> Convert
+     */
     public void mainFileConvert() {
         super.mainFileConvert();
     }
 
+    /*
+     * Main Menu -> File -> Merge
+     */
     public void mainFileMerge() {
         super.mainFileMerge();
     }
 
+    
     /*
      * mainFileParameter handlers
      */
@@ -122,6 +150,74 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
     public void mainFileParameterSave() {
         super.mainFileParameterSave();
     }
+
+    
+    
+    /*\*************************************************************************
+     * 
+     * private method section
+     * 
+     */
+    
+    // A helper method used by all Save As method
+    private void saveImageFile(String... type) {
+        
+        // fire up a file browser in current working directory
+        JFileChooser fc = new JFileChooser(SystemSettings.getWorkingDir());   
+        
+        // loop until user enters a value file name to write to, or user cancel the dialog
+        while(true) {
+            int response = fc.showOpenDialog(null); 
+            
+            if(response == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String filePath = file.getAbsolutePath();
+                
+                // deal with cases where the file exists
+                if(new File(filePath).exists()) {
+                    int answer = JOptionPane.showConfirmDialog(null,  // center window
+                            filePath + " exists. Do you want to overwrite it?", // message
+                            "Danger!",  // title
+                            JOptionPane.YES_NO_OPTION); // option list
+                            
+                    if(answer == JOptionPane.NO_OPTION) {
+                        continue;
+                    }
+                }
+                
+                // update working directory
+                SystemSettings.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
+                System.out.println(filePath);
+                
+                // check file extension to see if it conforms to given type
+                String ext = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
+
+                boolean validExt = false;
+                for(String t : type) {
+                    if(t.equals(ext)) {
+                        validExt = true;
+                        break;
+                    }
+                }
+                
+                if(!validExt) {
+                    String err = ext + " is not a valid extension for a " + type[0] + " file!"; 
+                    JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                
+                if(!PatternProcessor.savePatternToFile(filePath)) {
+                    JOptionPane.showMessageDialog(null, "Save failed!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } 
+            else {
+                //System.out.println("Open command cancelled");
+            }
+            
+            break;
+        }
+    }
+    
     
 } // class MenuHandlerMainFile
 

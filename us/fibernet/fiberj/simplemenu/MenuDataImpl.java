@@ -26,7 +26,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.oldmenu;
+package us.fibernet.fiberj.simplemenu;
 
  /**
  * MenuData provides a partial implementation of MenuData. Concrete subclasses 

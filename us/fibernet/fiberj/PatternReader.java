@@ -38,8 +38,13 @@ import java.io.BufferedReader;
 
 import java.io.IOException;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
+
+import javax.imageio.ImageIO;
 
 import com.sun.media.jai.codec.SeekableStream;
 import com.sun.media.jai.codec.FileSeekableStream;
@@ -52,11 +57,11 @@ import com.sun.media.jai.codec.ImageCodec;
  *
  */
 @SuppressWarnings("restriction")
-public final class ImageReader {
+public final class PatternReader {
 
     private static int[][] image;
     
-    private ImageReader() {
+    private PatternReader() {
     }
 
     /**
@@ -81,8 +86,11 @@ public final class ImageReader {
                 data = readPlr(fname);
             } 
             else if(fname.toLowerCase().endsWith("smv")) {
-                return ImageSmv.readSmvPattern(fname);
+                return PatternSmv.readSmvPattern(fname);
             } 
+            else {
+                data = readImage(fname);
+            }   
         }
         else {
             if(fname.toLowerCase().endsWith("dat")) {
@@ -97,6 +105,7 @@ public final class ImageReader {
                 }
             }
         }
+
         
         if(data != null) {
             pattern = new Pattern(data, new File(fname).getName(), false);
@@ -125,8 +134,11 @@ public final class ImageReader {
                 return readPlr(fname);
             } 
             else if(fname.toLowerCase().endsWith("smv")) {
-                return ImageSmv.readSmv(fname);
+                return PatternSmv.readSmv(fname);
             } 
+            else {
+                return readImage(fname);
+            }               
         }
         else {
             if(fname.toLowerCase().endsWith("dat")) {
@@ -209,13 +221,109 @@ public final class ImageReader {
     }
 
     /*
+     * Read PNG, JPG, GIF, etc into a 2D array
+     */
+    private static int[][] readImage(String fname) {
+
+        image = null;
+
+        try {
+
+            BufferedImage img = ImageIO.read(new File(fname));
+            int height = img.getHeight();
+            int width = img.getWidth();
+            //int[] pixels = img.getRGB(0, 0, width, height, null, 0, width);
+            
+            // TODO: extract pixel values according to our color model
+            byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
+
+            image = new int[height][width];
+            int p = 0;
+            for(int h=0; h<height; h++) {
+                for(int w=0; w<width; w++) {
+                    image[h][w] = pixels[p++];
+                }
+            }
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return image;
+    }
+    
+    /*
+    public static void getPixels(String url) {
+
+        BufferedImage image = ImageIO.read(new URL(url));
+
+        int w = image.getWidth();
+        int h = image.getHeight();
+
+        int[] dataBuffInt = image.getRGB(0, 0, w, h, null, 0, w); 
+
+        Color c = new Color(dataBuffInt[100]);
+
+        System.out.println(c.getRed());   // = (dataBuffInt[100] >> 16) & 0xFF
+        System.out.println(c.getGreen()); // = (dataBuffInt[100] >> 8)  & 0xFF
+        System.out.println(c.getBlue());  // = (dataBuffInt[100] >> 0)  & 0xFF
+        System.out.println(c.getAlpha()); // = (dataBuffInt[100] >> 24) & 0xFF
+    }
+    */
+    
+    // ref: http://stackoverflow.com/questions/6524196/java-get-pixel-array-from-image
+    //
+    private static int[][] getPixels(BufferedImage image) {
+
+        final byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        final int width = image.getWidth();
+        final int height = image.getHeight();
+        final boolean hasAlphaChannel = image.getAlphaRaster() != null;
+
+        int[][] result = new int[height][width];
+        if (hasAlphaChannel) {
+           final int pixelLength = 4;
+           for (int pixel = 0, row = 0, col = 0; pixel < pixels.length; pixel += pixelLength) {
+              int argb = 0;
+              argb += (((int) pixels[pixel] & 0xff) << 24); // alpha
+              argb += ((int) pixels[pixel + 1] & 0xff); // blue
+              argb += (((int) pixels[pixel + 2] & 0xff) << 8); // green
+              argb += (((int) pixels[pixel + 3] & 0xff) << 16); // red
+              result[row][col] = argb;
+              col++;
+              if (col == width) {
+                 col = 0;
+                 row++;
+              }
+           }
+        } else {
+           final int pixelLength = 3;
+           for (int pixel = 0, row = 0, col = 0; pixel < pixels.length; pixel += pixelLength) {
+              int argb = 0;
+              argb += -16777216; // 255 alpha
+              argb += ((int) pixels[pixel] & 0xff); // blue
+              argb += (((int) pixels[pixel + 1] & 0xff) << 8); // green
+              argb += (((int) pixels[pixel + 2] & 0xff) << 16); // red
+              result[row][col] = argb;
+              col++;
+              if (col == width) {
+                 col = 0;
+                 row++;
+              }
+           }
+        }
+
+        return result;
+     }
+    
+    /*
      * Read a PLR image and extract image data into a 2D array
      */
     public static int[][] readPlr(String fname) {
         
         try {
             BufferedReader br = new BufferedReader(new FileReader(fname));
-            ImagePlr dp = new ImagePlr();
+            PatternPlr dp = new PatternPlr();
             dp.parseData(br);
             br.close();            
             return dp.getImageData();
@@ -241,7 +349,7 @@ public final class ImageReader {
         return output;
     }
 
-} // class ImageReader
+} // class PatternReader
 
 
 

@@ -31,8 +31,13 @@ package us.fibernet.fiberj;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -42,11 +47,12 @@ import javax.swing.JOptionPane;
  * @author kate.b.wu@gmail.com
  * 
  */
-public final class ImageSmv {
+public final class PatternSmv {
 
     private enum DataType { BYTE, UNSIGNED_BYTE, SHORT, UNSIGNED_SHORT, INT, UNSIGNED_INT, FLOAT, DOUBLE };
+    private static final int HEADER_LENGTH = 512;
 
-    private ImageSmv() {}
+    private PatternSmv() {}
 
     /**
      * read SMV and return a Pattern with available parameters set
@@ -64,7 +70,7 @@ public final class ImageSmv {
             double centerx  = 0;
             double centery  = 0;
 
-            try { isrecip = parameters.get("IsRecip").equals("1"); } 
+            try { isrecip = parameters.get("IS_RECIP").equals("1"); } 
             catch(Exception e) {}
 
             try { wlength = Double.parseDouble(parameters.get("WAVELENGTH")); }
@@ -73,7 +79,7 @@ public final class ImageSmv {
             try { distance = Double.parseDouble(parameters.get("DISTANCE")); }
             catch(Exception e) {} 
 
-            try { offset = Double.parseDouble(parameters.get("ZeroOffset")); }
+            try { offset = Double.parseDouble(parameters.get("OFFSET")); }
             catch(Exception e) {}
 
             try { pixsize = Double.parseDouble(parameters.get("PIXEL_SIZE")); } 
@@ -153,6 +159,100 @@ public final class ImageSmv {
         return parameters.toString();
     }
 
+    /**
+     * write a Pattern's parameters and data into a SMV file
+     */
+    public static boolean writeSmv(Pattern p, String fileName) {
+
+        try {
+            RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
+            raf.write(getPatternHeader(p).getBytes());
+            raf.seek(HEADER_LENGTH);
+            raf.write(p.getDataBytes());
+            raf.close();
+            return true;
+        }
+        catch(IOException e) {
+            e.printStackTrace(); 
+        }   
+        
+        return false;
+    }
+    
+    /**
+     * write a Pattern's parameters and data into a SMV file
+     * 
+     * TODO: this does not work, the header text is screwed somehow.
+     */
+    public static boolean writeSmv0(Pattern p, String fileName) {
+        boolean smvWritten = false;
+        if(writeSmvHeader(p, fileName)) {
+            try {
+                FileOutputStream sout = new FileOutputStream(fileName);
+                FileChannel ch = sout.getChannel();
+                ch.position(HEADER_LENGTH);
+                ch.write(ByteBuffer.wrap(p.getDataBytes()));
+                sout.close();
+                smvWritten = true;
+            }
+            catch(IOException e) {
+                e.printStackTrace(); 
+            }            
+        }
+        
+        return smvWritten;
+    }
+    
+    
+    /*
+     * return a Pattern's header info as a single String in SMV header format
+     */
+    private static String getPatternHeader(Pattern p) {
+        StringBuilder header = new StringBuilder();
+        String endline = System.getProperty("line.separator");
+        String endline2 = ";" + endline;
+        
+        header.append("{"                                   + endline);
+        header.append("HEADER_BYTES="  +  HEADER_LENGTH     + endline2);
+        header.append("BYTE_ORDER="    +  "big_endian"      + endline2);
+        header.append("BITSPERPIXEL="  +  "4"               + endline2);
+        header.append("TYPE="          +  "int"             + endline2);
+        header.append("DIM="           +  "2"               + endline2);          
+        header.append("SIZE1="         +  p.getWidth()      + endline2);
+        header.append("SIZE2="         +  p.getHeight()     + endline2);
+        header.append("PIXEL_SIZE="    +  p.getPixelSize()  + endline2);
+        header.append("WAVELENGTH="    +  p.getWavelen()    + endline2);
+        header.append("DISTANCE="      +  p.getDistance()   + endline2);
+        header.append("BEAM_CENTER_X=" +  p.getCenterX()    + endline2);
+        header.append("BEAM_CENTER_Y=" +  p.getCenterY()    + endline2);
+        header.append("D_CALIBRANT="   +  p.getdCalibrant() + endline2);           
+        header.append("FIBER_TWIST="   +  p.getTwist()      + endline2);
+        header.append("FIBER_TILT="    +  p.getTilt()       + endline2);
+        header.append("OFFSET="        +  p.getOffset()     + endline2);   
+        header.append("IS_RECIP="      +  (p.isRecip()?1:0) + endline2);
+        header.append("}"                                   + endline);
+        
+        return header.toString();
+    }
+    
+    /*
+     * write SMV header to a file
+     */
+    private static boolean writeSmvHeader(Pattern p, String fileName) {
+        boolean headerWritten = false;
+        
+        try {
+            PrintWriter sout = new PrintWriter(fileName);
+            sout.print(getPatternHeader(p));
+            sout.close();
+            headerWritten = true;
+        }
+        catch(IOException e) {
+            e.printStackTrace(); 
+        }
+        
+        return headerWritten;
+    }
 
 
     /*
@@ -161,7 +261,7 @@ public final class ImageSmv {
      */
     private static Map<String, String> readSmvHeader(String fileName) {
 
-        Map<String, String> hashMap = new HashMap<String, String>();
+        Map<String, String> headerMap = new HashMap<String, String>();
 
         BufferedReader reader = null;
         try {
@@ -178,10 +278,10 @@ public final class ImageSmv {
                 String[] s = line.split("[=; ]+");
 
                 if(s.length == 1 && !s[0].isEmpty()) {
-                    hashMap.put(s[0], "1");  // this parameter is set to be true
+                    headerMap.put(s[0].toUpperCase(), "1");  // this parameter is set to be true
                 } 
                 else if(s.length > 1) {
-                    hashMap.put(s[0], s[1]);
+                    headerMap.put(s[0].toUpperCase(), s[1]);
                 } 
                 else {
                     // TODO? ignore for now
@@ -202,7 +302,7 @@ public final class ImageSmv {
             }
         }
 
-        return hashMap;
+        return headerMap;
     }
 
     
@@ -290,17 +390,26 @@ public final class ImageSmv {
     /*
      *  convert raw array of bytes to image data (data type & byte order)
      */
-    private static void convertBytesToData(int[] data, byte[] bytes, boolean isBigEndian, DataType type, int imageWidth) {
-
-        // these are to save a branch inside for loop
-        int shiftA = isBigEndian ? 8 : 0;
-        int shiftB = shiftA ^ 8;
-
+    private static void convertBytesToData(int[] data, byte[] bytes, boolean isBigEndian, 
+                                           DataType type, int imageWidth) {
+        int shiftA, shiftB, shiftC, shiftD;
+        
         // do switch outside for loop
         switch(type) {
             case INT: 
-                // TODO
-                break;        
+                shiftA = isBigEndian ? 24 :  0;
+                shiftB = isBigEndian ? 16 :  8;
+                shiftC = isBigEndian ?  8 : 16;
+                shiftD = isBigEndian ?  0 : 24;
+                
+                for(int j=0, n=0; j<imageWidth; j++) {
+                    int A = bytes[n++] & 0xFF;  // convert to int as unsigned byte
+                    int B = bytes[n++] & 0xFF;
+                    int C = bytes[n++] & 0xFF;
+                    int D = bytes[n++] & 0xFF;
+                    data[j] = (A << shiftA) | (B << shiftB) | (C << shiftC) | (D << shiftD);
+                }
+                break;     
                 //
             case FLOAT: 
                 // TODO
@@ -313,6 +422,9 @@ public final class ImageSmv {
             case UNSIGNED_SHORT: 
                 // fall through. default SMV data type is UNSIGNED_SHORT
             default: 
+                shiftA = isBigEndian ? 8 : 0;
+                shiftB = shiftA ^ 8;
+                
                 for(int j=0, n=0; j<imageWidth; j++) {
                     int A = bytes[n++] & 0xFF;  // convert to int as unsigned byte
                     int B = bytes[n++] & 0xFF;
@@ -330,5 +442,5 @@ public final class ImageSmv {
         return DataType.valueOf(type.toUpperCase());
     }
     
-} // class ImageSmv
+} // class PatternSmv
 

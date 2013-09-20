@@ -77,7 +77,7 @@ public class DrawDialog extends JDialog {
     private Color penColor = Color.BLUE;
     
     private JLabel spinLabel;
-    private String[] labelStrings = {"resolution ", "resolution ", "repeat "};
+    private String[] labelStrings = {"radius ", "resolution ", "repeat "};
     private JSpinner rSpin;
     private SpinnerNumberModel rModel;
     private ChangeListener rListener;
@@ -85,7 +85,7 @@ public class DrawDialog extends JDialog {
     // data default for circle, resolution, layerline
     private double[] rMin   = { 10,  2,   1   };
     private double[] rMax   = { 900, 200, 500 };
-    private double[] rValue = { 100, 10,  70  };
+    private double[] rValue = { 100, 10,  4.8 };
     private double[] rStep  = { 1,   1,   1   };
     
     private JSpinner xSpin, ySpin;
@@ -360,8 +360,7 @@ public class DrawDialog extends JDialog {
         return panel;
     }
 
-    // TODO: need to connect step value with spinner's step value
-    //       also need connect center x and y value to current pattern's
+
     private JPanel createCenterPanel() {
         JPanel panel = new JPanel();
         
@@ -441,31 +440,9 @@ public class DrawDialog extends JDialog {
         return panel;
     }
     
-    // TODO: if there's a circle in circle queue, change its resolution to current r
-    //       else do nothing (user need to click draw button to draw)
-    private void rChanged(double r) {
-        rValue[curTabIndex] = r;
-        switch(curTabIndex) {
-            case CIRCLE: 
-                if(!circleList.isEmpty()) {
-                    circleList.get(circleList.size() - 1).setR(r);
-                    drawCircles();
-                }
-                else {
-                    Circle c = new Circle(r, xStart, yStart, penColor);
-                    circleList.add(c);
-                    drawCircles();   
-                }
-               
-                break;
-            case RESOLUTION: 
-                break;
-            case LAYERLINE: 
-                break;
-            default:
-                break;
-        }  
-    }
+
+
+    
     
     private void rStepChanged(double s) {
         rStep[curTabIndex] = s;
@@ -473,8 +450,52 @@ public class DrawDialog extends JDialog {
     }
     
     
+    // if there's an object in the object list, change its r to current r;
+    // else draw a new object
+    private void rChanged(double r) {
+        rValue[curTabIndex] = r;
+        switch(curTabIndex) {
+            case CIRCLE: 
+                if(!circleList.isEmpty()) {
+                    circleList.get(circleList.size() - 1).setR(r);
+                }
+                else {
+                    Circle c = new Circle(r, xStart, yStart, penColor);
+                    circleList.add(c);
+                }          
+                drawCircles();
+                break;
+            case RESOLUTION: 
+                if(!resolutionList.isEmpty()) {
+                    resolutionList.get(resolutionList.size() - 1).setR(r);
+                }
+                else {
+                    Resolution s = new Resolution(rValue[curTabIndex], xStart, yStart, penColor);
+                    resolutionList.add(s);
+                }            
+                drawResolutions();
+                break;
+            case LAYERLINE: 
+                if(!layerlineList.isEmpty()) {
+                    layerlineList.get(layerlineList.size() - 1).setR(r);
+                }
+                else {
+                    Layerline l = new Layerline(rValue[curTabIndex], xStart, yStart, penColor);
+                    layerlineList.add(l);
+                }            
+                drawLayerlines();
+                break;
+            default:
+                break;
+        }  
+    }
+
+    
+    
     // TODO: center changed so redrawn all objects
     private void xChanged(double x) {
+        getCurrentPattern().setCenterX(x);
+        
         switch(curTabIndex) {
             case CIRCLE: 
                 if(!circleList.isEmpty()) {
@@ -482,13 +503,17 @@ public class DrawDialog extends JDialog {
                         c.setX(x);
                     }
                     drawCircles();
-                }
-                getCurrentPattern().setCenterX(x);
-               
+                } 
                 break;
             case RESOLUTION: 
+                if(!resolutionList.isEmpty()) {
+                    drawResolutions();
+                }   
                 break;
             case LAYERLINE: 
+                if(!layerlineList.isEmpty()) {
+                    drawLayerlines();
+                }               
                 break;
             default:
                 break;
@@ -497,6 +522,8 @@ public class DrawDialog extends JDialog {
     
     // TODO: center changed so redrawn all objects
     private void yChanged(double y) {
+        getCurrentPattern().setCenterY(y);
+        
         switch(curTabIndex) {
             case CIRCLE: 
                 if(!circleList.isEmpty()) {
@@ -504,13 +531,17 @@ public class DrawDialog extends JDialog {
                         c.setY(y);
                     }
                     drawCircles();
-                }
-                getCurrentPattern().setCenterY(y);
-               
+                }               
                 break;
             case RESOLUTION: 
+                if(!resolutionList.isEmpty()) {
+                    drawResolutions();
+                }   
                 break;
             case LAYERLINE: 
+                if(!layerlineList.isEmpty()) {
+                    drawLayerlines();
+                }   
                 break;
             default:
                 break;
@@ -528,8 +559,14 @@ public class DrawDialog extends JDialog {
                 drawCircles();                
                 break;
             case RESOLUTION: 
+                Resolution r = new Resolution(rValue[curTabIndex], xStart, yStart, penColor);
+                resolutionList.add(r);
+                drawResolutions();
                 break;
             case LAYERLINE: 
+                Layerline l = new Layerline(rValue[curTabIndex], xStart, yStart, penColor);
+                layerlineList.add(l); 
+                drawLayerlines();
                 break;
             default:
                 break;
@@ -544,8 +581,14 @@ public class DrawDialog extends JDialog {
                 }
                 break;
             case RESOLUTION: 
+                for(Resolution r : resolutionList) {
+                    System.out.println(r);
+                }
                 break;
             case LAYERLINE: 
+                for(Layerline l : layerlineList) {
+                    System.out.println(l);
+                }
                 break;
             default:
                 break;
@@ -563,12 +606,27 @@ public class DrawDialog extends JDialog {
                     String err = "circle list is empty";
                     JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
                 }
-               
                 break;
             case RESOLUTION: 
+                if(!resolutionList.isEmpty()) {
+                    resolutionList.remove(resolutionList.size() - 1);
+                    drawResolutions();
+                }
+                else {
+                    String err = "resolution list is empty";
+                    JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             case LAYERLINE: 
-                break;
+                if(!layerlineList.isEmpty()) {
+                    layerlineList.remove(layerlineList.size() - 1);
+                    drawLayerlines();
+                }
+                else {
+                    String err = "layerline list is empty";
+                    JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                break;               
             default:
                 break;
         }  
@@ -587,8 +645,24 @@ public class DrawDialog extends JDialog {
                 }
                 break;
             case RESOLUTION: 
+                if(!resolutionList.isEmpty()) {
+                    resolutionList.clear();
+                    drawResolutions();
+                }
+                else {
+                    String err = "resolution list is empty";
+                    JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
+                }                
                 break;
             case LAYERLINE: 
+                if(!layerlineList.isEmpty()) {
+                    layerlineList.clear();
+                    drawLayerlines();
+                }
+                else {
+                    String err = "layerline list is empty";
+                    JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             default:
                 break;

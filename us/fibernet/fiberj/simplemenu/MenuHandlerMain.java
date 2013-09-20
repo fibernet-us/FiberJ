@@ -26,46 +26,44 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.oldmenu;
-
+package us.fibernet.fiberj.simplemenu;
 
 /**
- * A utility class containing the main window's menu data
+ * A default menu handler (adapter) for the MenuMain. 
  */
-public final class MenuDataMain extends MenuDataImpl {
-
-    private static final String[][] MENU_NAMES = {
-        { "File",    /**/ "Open", "Save", "Close", "Exit" },     
-        { "Image",   /**/ "Flip", "Rotate", "Resize", "Crop" },  
-        { "Colormap",/**/ "Load", "Save", "Customize"},       
-        { "Draw",    /**/ "Circle", "Resolution Circle", "Layerline", "Refresh", "Clear All" }, 
-        { "Process", /**/ "Filter", "Plot", "Correction", "Transform", "Background"},       
-        { "Window",  /**/ "Parameter", "Coordinates", "Pixel Viewer", "Log" },
-        { "Help",    /**/ "About", "Resource" }
-    };  
+public class MenuHandlerMain implements MenuHandler { 
     
-    // one handler per menu
-    private static final MenuHandlerMain[] MENU_HANDLERS = {
-        new MenuHandlerMainFile(),     // File      
-        new MenuHandlerMain(),         // Image     // TODO
-        new MenuHandlerMain(),         // Colormap  // TODO
-        new MenuHandlerMain(),         // Draw      // TODO
-        new MenuHandlerMain(),         // Process   // TODO
-        new MenuHandlerMain(),         // Window    // TODO
-        new MenuHandlerMain()          // Help      // TODO
-    };
+    public void fileOpen() {}   
+    public void fileSave() {}   
+    public void fileClose() {}    
+    public void fileExit() {}
 
-    public MenuDataMain() {
-    }  
-     
-    @Override
-    protected String[][] getMenuNames() { 
-        return MENU_NAMES;     
-    }
+    public void imageFlip() {} 
+    public void imageRotate() {} 
+    public void imageResize() {} 
+    public void imageCrop() {} 
+
+    public void colormapLoad() {} 
+    public void colormapSave() {} 
+    public void colormapCustomize() {} 
+
+    public void drawCircle() {} 
+    public void drawResolutionCircle() {} 
+    public void drawLayerline() {} 
+    public void drawRefresh() {} 
+    public void drawClearAll() {} 
+
+    public void processFilter() {} 
+    public void processPlot() {} 
+    public void processCorrection() {} 
+    public void processTransform() {} 
+    public void processBackground() {} 
+
+    public void windowParameter() {} 
+    public void windowCoordinates() {} 
+    public void windowPixelViewer() {} 
+    public void windowLog() {} 
     
-    @Override
-    protected MenuHandler getMenuHandler(int menuID, int menuItemID) {  
-        return MENU_HANDLERS[menuID];
-    }
-
-} // class MenuMain
+    public void helpAbout() {}   
+    public void helpResource() {}               
+}

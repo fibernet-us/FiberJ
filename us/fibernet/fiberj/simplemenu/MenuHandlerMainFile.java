@@ -26,18 +26,41 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.oldmenu;
+package us.fibernet.fiberj.simplemenu;
+
+import java.io.File;
+import javax.swing.JFileChooser;
+
 
 /**
- * An interface defining a middleman between menu event (listener) and menu handler.
- * Called by menu listener, and in turn, calls corresponding menu handler. 
- * Concrete MenuCommand(s) are created by concrete MenuData(s).
- * 
- * Roles with regard to Command Pattern:
- * MenuListener  --> Invoker
- * MenuCommand --> Command 
- * MenuHandler   --> Receiver 
+ * A menu handler for the Main menu bar, File menu
  */
-public interface MenuCommand {
-    void execute();
+public class MenuHandlerMainFile extends MenuHandlerMain {  
+     
+    /*
+     * File -> Open
+     */
+    @Override
+    public void fileOpen() {
+            // fire up a file broswer in current working directory
+            JFileChooser fc = new JFileChooser();   
+            int response = fc.showOpenDialog(null);      
+            if(response == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String filePath = file.getAbsolutePath();
+                System.out.println(filePath);
+            } 
+            else {
+                System.out.println("Open command cancelled");
+            }
+        }
+ 
+    
+    /*
+     * File -> Exit
+     */
+    @Override
+    public void fileExit() {
+        System.exit(0);
+    }
 }

@@ -65,7 +65,7 @@ import javax.swing.SwingUtilities;
  */
 public final class UIMain {
 
-    private static final String FIBERJ_VS = "FiberJ 0.6";
+    private static final String FIBERJ_VS = "FiberJ 0.7";
     private static Image myIcon;
     private static JFrame mainFrame;
     private static JScrollPane jScrollPane; // to scroll pattern when its display size is too big

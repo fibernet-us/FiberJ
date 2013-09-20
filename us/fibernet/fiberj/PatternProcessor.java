@@ -30,6 +30,8 @@ package us.fibernet.fiberj;
 
 import java.io.File;
 
+import javax.swing.JOptionPane;
+
 /**
  * A singleton class serving as the central processor of pattern processing tasks
  * 
@@ -52,7 +54,7 @@ public final class PatternProcessor {
             return;
         }
 
-        currentPattern = ImageReader.readPattern(args);
+        currentPattern = PatternReader.readPattern(args);
         createPatternImage(currentPattern); 
     }
   
@@ -89,6 +91,15 @@ public final class PatternProcessor {
     }
     
  
+    /** 
+     * Save current Pattern data or image into a file
+     */
+    public static synchronized boolean savePatternToFile(String filename) {
+        return PatternWriter.writePattern(currentPattern, filename);
+
+    }
+    
+    
     /**
      * Implements interface ComandProcessor to process user command
      * 
@@ -144,6 +155,15 @@ public final class PatternProcessor {
                 e.printStackTrace();
             } 
         }
+        else if(command.startsWith("r")) { // rotate
+            try {
+                double degree = Double.parseDouble(command.substring(command.indexOf(' ')).trim());
+                currentPattern.rotateData(degree);
+            }
+            catch(NumberFormatException e) {
+                e.printStackTrace();
+            } 
+        }
         else if(command.startsWith("s")) { // scroll
             try {
                 UIMain.scrollPattern();
@@ -161,6 +181,5 @@ public final class PatternProcessor {
             } 
         }           
     }
-
     
 } // class PatternProcessor

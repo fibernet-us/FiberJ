@@ -51,25 +51,37 @@ public class MenuHandlerMainImage extends MenuHandlerMainDefault {
      * Image -> View -> Custom
      */
     public void mainImageViewCustom() {
-        UIMain.setMessage("enter on right: width|height number");
+        UIMain.setMessage("enter on right: w|h size");
     }
     
-    /*
-     * mainImageFlip handlers
-     */
-    public void mainImageFlipHorizontal() { super.mainImageFlipHorizontal(); }
-    public void mainImageFlipVertical()   { super.mainImageFlipVertical();   }
+    public void mainImageFlipHorizontal() {
+        getCurrentPattern().flipDataHorizontal();
+    }
+    public void mainImageFlipVertical() {
+        getCurrentPattern().flipDataVertical();
+    }
 
-    /*
-     * mainImageRotate handlers
-     */
-    public void mainImageRotate90()       { super.mainImageRotate90();     }
-    public void mainImageRotate180()      { super.mainImageRotate180();    }
-    public void mainImageRotate270()      { super.mainImageRotate270();    }
-    public void mainImageRotateCustom()   { super.mainImageRotateCustom(); }
+    public void mainImageRotate90() { 
+        getCurrentPattern().rotateData(90);
+    }
+
+    public void mainImageRotate180() { 
+        getCurrentPattern().rotateData(180);
+    }
+    public void mainImageRotate270() { 
+        getCurrentPattern().rotateData(270);
+    }
+
+    public void mainImageRotateCustom() { 
+        UIMain.setMessage("enter on right: r degree");
+    }
 
     public void mainImageScale()          { super.mainImageScale();        }
-    public void mainImageCrop()           { super.mainImageCrop(); }
+    public void mainImageCrop()           { super.mainImageCrop();         }
     public void mainImageRepair()         { super.mainImageRepair();       }
     
+
+    private Pattern getCurrentPattern() {
+        return PatternProcessor.getCurrentPattern();
+    }
 }

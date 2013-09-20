@@ -47,7 +47,7 @@ import java.io.IOException;
  *  ...
  *  
  */
-public class ImagePlr { 
+public class PatternPlr { 
     
     int IFV, NULB, NTHET, IFOG, NGEOM, IOPT, NR;
     int[] IQ = {0, 0, 0, 0};
@@ -60,7 +60,7 @@ public class ImagePlr {
     static String headerFormat = "%5d%3d%6.1f%7d%6.1f%10.6f%9.5f%6.2f%6.2f%5d%5s%5s%12.4f" +
     		                     "%5d%3d%3d%3d%3d%3d%3d%12.4f%12.4f";
 
-    public ImagePlr() {      
+    public PatternPlr() {      
     }
     
     /**
@@ -271,5 +271,5 @@ public class ImagePlr {
         return (int) Math.round(d);
     }
     
-} // class ImagePlr
+} // class PatternPlr
 

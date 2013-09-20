@@ -26,41 +26,15 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.oldmenu;
-
-import java.io.File;
-import javax.swing.JFileChooser;
-
+package us.fibernet.fiberj.simplemenu;
 
 /**
- * A menu handler for the Main menu bar, File menu
+ * MenuHandler defines a marker interface for all MenuHandlers.
+ * 
+ * No common method is defined. When a concrete MenuHandler is called, 
+ * caller looks up the MenuHandler to see if it has certain methods, 
+ * and if it does, caller calls the methods; if not, caller complains.
  */
-public class MenuHandlerMainFile extends MenuHandlerMain {  
-     
-    /*
-     * File -> Open
-     */
-    @Override
-    public void fileOpen() {
-            // fire up a file broswer in current working directory
-            JFileChooser fc = new JFileChooser();   
-            int response = fc.showOpenDialog(null);      
-            if(response == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                String filePath = file.getAbsolutePath();
-                System.out.println(filePath);
-            } 
-            else {
-                System.out.println("Open command cancelled");
-            }
-        }
- 
-    
-    /*
-     * File -> Exit
-     */
-    @Override
-    public void fileExit() {
-        System.exit(0);
-    }
+public interface MenuHandler {
+
 }

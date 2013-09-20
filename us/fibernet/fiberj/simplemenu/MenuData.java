@@ -26,44 +26,25 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.oldmenu;
+package us.fibernet.fiberj.simplemenu;
 
 /**
- * A default menu handler (adapter) for the MenuMain. 
+ * An interface defining essential menu data functions to be used by a menu builder
  */
-public class MenuHandlerMain implements MenuHandler { 
+public interface MenuData {
+
+    /** @return  total number of menus in this MenuData */
+    int getNumberOfMenus();
     
-    public void fileOpen() {}   
-    public void fileSave() {}   
-    public void fileClose() {}    
-    public void fileExit() {}
-
-    public void imageFlip() {} 
-    public void imageRotate() {} 
-    public void imageResize() {} 
-    public void imageCrop() {} 
-
-    public void colormapLoad() {} 
-    public void colormapSave() {} 
-    public void colormapCustomize() {} 
-
-    public void drawCircle() {} 
-    public void drawResolutionCircle() {} 
-    public void drawLayerline() {} 
-    public void drawRefresh() {} 
-    public void drawClearAll() {} 
-
-    public void processFilter() {} 
-    public void processPlot() {} 
-    public void processCorrection() {} 
-    public void processTransform() {} 
-    public void processBackground() {} 
-
-    public void windowParameter() {} 
-    public void windowCoordinates() {} 
-    public void windowPixelViewer() {} 
-    public void windowLog() {} 
+    /** @return  total number of menu items in the menu identified by menuID */
+    int getNumberOfMenuItems(int menuID);
     
-    public void helpAbout() {}   
-    public void helpResource() {}               
+    /** @return  name of the menu identified by menuID */
+    String getMenuName(int menuID);
+    
+    /** @return  name of the menu item identified by menuID and menuItemID */
+    String getMenuItemName(int menuID, int menuItemID);
+    
+    /** @return  MenuCommand responsible for the menu item identified by menuID and menuItemID */
+    MenuCommand getMenuItemCommander(int menuID, int menuItemID);
 }

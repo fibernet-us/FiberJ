@@ -52,11 +52,11 @@ public final class MenuMain {
               new MenuItemLeaf(            "Open",          fileHandler), 
               new MenuItemLeaf(            "Save",          fileHandler), 
               new MenuItemComposite(       "Save As", 
-                    new MenuItemLeaf(         "TIF",        fileHandler),
                     new MenuItemLeaf(         "SMV",        fileHandler),
+                    new MenuItemLeaf(         "TIF",        fileHandler),
                     new MenuItemSeperator(),////////////////////////////////// 
-                    new MenuItemLeaf(         "JPG",        fileHandler),
-                    new MenuItemLeaf(         "PNG",        fileHandler)),
+                    new MenuItemLeaf(         "PNG",        fileHandler),
+                    new MenuItemLeaf(         "JPG",        fileHandler)),
               new MenuItemLeaf(            "Close",         fileHandler), 
               new MenuItemSeperator(),////////////////////////////////// 
               new MenuItemLeaf(            "Browse",        fileHandler), 

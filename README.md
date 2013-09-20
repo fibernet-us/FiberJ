@@ -1,1 +1,19 @@
-FiberJ is a Java program for processing x-ray fiber diffraction patterns. It transforms diffraction data into appropriate image representations for display, determines diffraction parameters, corrects systematic effects, maps diffraction data into reciprocal space, and provides various tools for structural analysis. In particular, FiberJ offers highly customizable colormaps great for visualizing patterns with large dynamic ranges of intensities. Its data plotting, image filtering and manipulation routines are also useful for general scientific image processing.
+FiberJ aims to provide a unified, open source platform for scientific computing in x-ray fiber diffraction, both non-crystalline and poly-crystalline.
+
+Current work focuses on implementing FiberNet pattern processing and simulation methods for non-crystalline fibers, in particular, the core functions of WCEN and RADFN:  
+
+1. Pattern visualization;
+2. Image processing;
+3. Diffraction parameter determination;
+4. Data correction;
+5. Data transformation into reciprocal space;
+6. Data plotting and analysis;
+7. Angular deconvolution.
+
+Future work:
+
+8. A scripting language for batch and command line processing;
+9. API for writing plugins and extensions;
+10. Diffraction simulation;
+11. Ab initio low resolution structure prediction;
+12. Core FibreFix functions.

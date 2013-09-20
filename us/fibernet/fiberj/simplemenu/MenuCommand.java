@@ -26,25 +26,18 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.oldmenu;
+package us.fibernet.fiberj.simplemenu;
 
 /**
- * An interface defining essential menu data functions to be used by a menu builder
+ * An interface defining a middleman between menu event (listener) and menu handler.
+ * Called by menu listener, and in turn, calls corresponding menu handler. 
+ * Concrete MenuCommand(s) are created by concrete MenuData(s).
+ * 
+ * Roles with regard to Command Pattern:
+ * MenuListener  --> Invoker
+ * MenuCommand --> Command 
+ * MenuHandler   --> Receiver 
  */
-public interface MenuData {
-
-    /** @return  total number of menus in this MenuData */
-    int getNumberOfMenus();
-    
-    /** @return  total number of menu items in the menu identified by menuID */
-    int getNumberOfMenuItems(int menuID);
-    
-    /** @return  name of the menu identified by menuID */
-    String getMenuName(int menuID);
-    
-    /** @return  name of the menu item identified by menuID and menuItemID */
-    String getMenuItemName(int menuID, int menuItemID);
-    
-    /** @return  MenuCommand responsible for the menu item identified by menuID and menuItemID */
-    MenuCommand getMenuItemCommander(int menuID, int menuItemID);
+public interface MenuCommand {
+    void execute();
 }

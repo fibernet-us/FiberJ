@@ -26,15 +26,46 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fiberj.oldmenu;
+package us.fibernet.fiberj.simplemenu;
+
 
 /**
- * MenuHandler defines a marker interface for all MenuHandlers.
- * 
- * No common method is defined. When a concrete MenuHandler is called, 
- * caller looks up the MenuHandler to see if it has certain methods, 
- * and if it does, caller calls the methods; if not, caller complains.
+ * A utility class containing the main window's menu data
  */
-public interface MenuHandler {
+public final class MenuDataMain extends MenuDataImpl {
 
-}
+    private static final String[][] MENU_NAMES = {
+        { "File",    /**/ "Open", "Save", "Close", "Exit" },     
+        { "Image",   /**/ "Flip", "Rotate", "Resize", "Crop" },  
+        { "Colormap",/**/ "Load", "Save", "Customize"},       
+        { "Draw",    /**/ "Circle", "Resolution Circle", "Layerline", "Refresh", "Clear All" }, 
+        { "Process", /**/ "Filter", "Plot", "Correction", "Transform", "Background"},       
+        { "Window",  /**/ "Parameter", "Coordinates", "Pixel Viewer", "Log" },
+        { "Help",    /**/ "About", "Resource" }
+    };  
+    
+    // one handler per menu
+    private static final MenuHandlerMain[] MENU_HANDLERS = {
+        new MenuHandlerMainFile(),     // File      
+        new MenuHandlerMain(),         // Image     // TODO
+        new MenuHandlerMain(),         // Colormap  // TODO
+        new MenuHandlerMain(),         // Draw      // TODO
+        new MenuHandlerMain(),         // Process   // TODO
+        new MenuHandlerMain(),         // Window    // TODO
+        new MenuHandlerMain()          // Help      // TODO
+    };
+
+    public MenuDataMain() {
+    }  
+     
+    @Override
+    protected String[][] getMenuNames() { 
+        return MENU_NAMES;     
+    }
+    
+    @Override
+    protected MenuHandler getMenuHandler(int menuID, int menuItemID) {  
+        return MENU_HANDLERS[menuID];
+    }
+
+} // class MenuMain
