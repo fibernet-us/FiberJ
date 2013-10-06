@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -30,27 +30,27 @@ package us.fibernet.fiberj;
 
 public class MenuHandlerParamParameter extends MenuHandlerParamDefault {
 
-    //public void paramParameterCenterfromReflection()    {  } 
-    
+    //public void paramParameterCenterfromReflection()    {  }
+
     /** set pattern center to be the cursor location  */
     @Override
-    public void paramParameterCenterfromCursor() { 
+    public void paramParameterCenterfromCursor() {
         Pattern cp = PatternProcessor.getCurrentPattern();
         cp.setCenterX(SystemSettings.getCursorX());
         cp.setCenterY(SystemSettings.getCursorY());
     }
 
-    //public void paramParameterDistancefromReflection()  {  } 
-    
+    //public void paramParameterDistancefromReflection()  {  }
+
     /** compute specimen to detector distance using calibrant ring */
     @Override
-    public void paramParameterDistancefromRing() { 
+    public void paramParameterDistancefromRing() {
         Pattern cp = PatternProcessor.getCurrentPattern();
         cp.calcSdd(DrawDialog.getCurrentCircleRadius());
     }
-    
-    public void paramParameterRefineSelected()   { super.paramParameterRefineSelected(); } 
-    public void paramParameterLoad()             { super.paramParameterRefineSelected(); } 
-    public void paramParameterSave()             { super.paramParameterRefineSelected(); } 
-    
-} 
+
+    public void paramParameterRefineSelected()   { super.paramParameterRefineSelected(); }
+    public void paramParameterLoad()             { super.paramParameterRefineSelected(); }
+    public void paramParameterSave()             { super.paramParameterRefineSelected(); }
+
+}

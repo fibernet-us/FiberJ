@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -39,7 +39,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
-*  A class holding an InfoItem's name, value, data type and format, JLabel and JTextField 
+*  A class holding an InfoItem's name, value, data type and format, JLabel and JTextField
 *  for displaying the item, and an InfoItemGuiCallBack object for passing on user input to
 */
 public class InfoItemTextField implements InfoItem {
@@ -48,26 +48,26 @@ public class InfoItemTextField implements InfoItem {
     private JTextField textField;
     boolean editable;
     private int nColumn;  // width of textField
-    private String name;  
+    private String name;
     private String value;
     private String format;
     private DataType dataType;
     private InfoItemGuiCallBack callBack;
-    
+
     private enum DataType {INT, DOUBLE, STRING};
-    
+
     /**
      * @param labelStr  the name of this item
-     * @param textStr   the value of this this item. the data type and display format of this item 
-     *                  will be extracted from textStr. e.g.: 0 means value is an integer, 
-     *                  while 0.00 means value is a double with the length of mantissa being 2 
+     * @param textStr   the value of this this item. the data type and display format of this item
+     *                  will be extracted from textStr. e.g.: 0 means value is an integer,
+     *                  while 0.00 means value is a double with the length of mantissa being 2
      * @param callBackObj  a InfoItemGuiCallBack object for passing on user input to
      */
-    public InfoItemTextField(String labelStr, String textStr, String textFormat, int columns, 
+    public InfoItemTextField(String labelStr, String textStr, String textFormat, int columns,
                              boolean isEditable, InfoItemGuiCallBack callBackObj) {
         label = new JLabel(labelStr);
         label.setFont(new Font("Arial", Font.BOLD, 12)); // the default font does not show letter "y"!
-        textField = new JTextField(textStr); 
+        textField = new JTextField(textStr);
         name = labelStr;
         value = textStr;
         format = textFormat;
@@ -83,75 +83,75 @@ public class InfoItemTextField implements InfoItem {
         }
         callBack = callBackObj;
         addCallback();
-        parseDataType();      
+        parseDataType();
     }
-    
+
     /** add label and textField to a JPanel */
     @Override
     public void addTo(JPanel parent) {
         parent.add(label);
         parent.add(textField);
     }
-    
+
     public JLabel getLabel() {
         return label;
     }
-    
+
     public JTextField getTextField() {
         return textField;
     }
-    
+
     /** return value */
     public String getValue() {
         return getFormattedValue();
     }
-    
+
     /** return value in appropriately formated String form */
     public String getFormattedValue() {
-        
+
         if(dataType == DataType.INT) {
-            return String.format(format, getIntValue()); 
+            return String.format(format, getIntValue());
         }
         else if(dataType == DataType.DOUBLE) {
             return String.format(format, getDoubleValue());
-        } 
+        }
         else {
             return String.format(format, value);
         }
     }
-    
+
     /** return value as int */
-    public int getIntValue() { 
+    public int getIntValue() {
         try {
             return Integer.parseInt(value);
         }
         catch(NumberFormatException e) {
             System.out.println("the value of this item can't be converted to an int, return -1");
             return -1;
-        } 
+        }
     }
-    
+
     /** return value as double */
-    public double getDoubleValue() { 
+    public double getDoubleValue() {
         try {
             return Double.parseDouble(value);
         }
         catch(NumberFormatException e) {
             System.out.println("the value of this item can't be converted to a double, return -1");
             return -1;
-        } 
+        }
     }
 
     public void setLabelFont(Font f) {
         label.setFont(f);
     }
-    
+
     public void setTextFieldSize(Dimension d) {
         textField.setPreferredSize(d);
         textField.setMaximumSize(d);
         textField.setMinimumSize(d);
     }
-    
+
     /**
      * verify user input and set value on gui according to desired format
      * @return an error string  @Attention("We return null for success!")
@@ -160,35 +160,35 @@ public class InfoItemTextField implements InfoItem {
         try {
             if(dataType == DataType.INT) {
                 Integer.parseInt(input);
-            } 
+            }
             else if(dataType == DataType.DOUBLE) {
                 Double.parseDouble(input);
-            }    
+            }
             value = input;
             textField.setText(getFormattedValue()); // set displayed value according to format
             return null;
         }
         catch(NumberFormatException e) {
-            String err = "Invalud number format. " + 
+            String err = "Invalud number format. " +
                          (dataType == DataType.INT ? "integer" : "double") + " expected. Reset.";
             textField.setText(getFormattedValue()); // reset GUI to display last valid value
             return err;
-        }                
+        }
     }
-    
+
     /**
      * set value on gui with given input without validation or formatting
      */
     public void setGuiValueNoCheck(String input) {
         value = input;
-        textField.setText(input);  
+        textField.setText(input);
     }
-    
+
     public String toString() {
         return "InfoItemTextField: (" + name + ", " + value + ")";
     }
-    
-    
+
+
     // add actionlistener to textField. validate user input. hook up callback.
     private void addCallback() {
         textField.addActionListener(new ActionListener() {
@@ -204,7 +204,7 @@ public class InfoItemTextField implements InfoItem {
             }
         });
     }
-    
+
     // get the dataType from format specifier
     private void parseDataType() {
         if(format.matches("%[0-9]*d")) {
@@ -216,9 +216,9 @@ public class InfoItemTextField implements InfoItem {
         else {
             dataType = DataType.STRING;
         }
-        
+
         //System.out.println(name + " ==> " + dataType);
     }
-    
-    
+
+
 } // class InfoItemTextField

@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -35,7 +35,7 @@ import javax.swing.JPanel;
  * or, other JPanels.
  */
 interface InfoItem {
-   
+
     /** add this InfoItem's GUI components to a JPanel */
     void addTo(JPanel parent);
-} 
+}

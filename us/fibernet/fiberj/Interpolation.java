@@ -26,13 +26,11 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package us.fibernet.fad;
+package us.fibernet.fiberj;
 
 import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.Comparator;
-
-import xiao.jad.ImageUtil;
 
 /**
  * Provide interpolation routines for a set of points
@@ -45,41 +43,43 @@ public class Interpolation {
      * @param interval The interval of x of the points in the output array
      * @return An array of points with a given interval of x that defines a curve passing the input points
      */
-	public static Point2D[] interpolation(Point2D[] pts, double interval){
-		Arrays.sort(pts, new Comparator<Point2D>(){
-			public int compare(Point2D p1, Point2D p2){
-				double sub = p1.getX() - p2.getX();
-				if(sub<0)
-					return -1;
-				else if(sub==0)
-					return 0;
-				else
-					return 1;
-			}
-		});
-		int nPts = pts.length;
-		double curveParams[] = new double[nPts];
-		double[][] xmatrix = new double[nPts][nPts];
+    public static Point2D[] interpolation(Point2D[] pts, double interval){
+        Arrays.sort(pts, new Comparator<Point2D>(){
+            public int compare(Point2D p1, Point2D p2){
+                double sub = p1.getX() - p2.getX();
+                if(sub<0) {
+                    return -1;
+                } else if(sub==0) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        });
+        int nPts = pts.length;
+        double[] curveParams = new double[nPts];
+        double[][] xmatrix = new double[nPts][nPts];
         double[] ymatrix = new double[nPts];
         for (int w = 0; w < nPts; w++) {
             for (int h = 0; h < nPts; h++) {
                 xmatrix[w][h] = Math.pow(pts[w].getX(), nPts - h - 1);
             }
         }
-        for (int y = 0; y < nPts; y++)
+        for (int y = 0; y < nPts; y++) {
             ymatrix[y] = pts[y].getY();
+        }
         curveParams = ImageUtil.gaussian(xmatrix, ymatrix);
         //int max = (int)(pts[nPts-1].getX()+1);
         int numInterPts = (int)((pts[nPts-1].getX()-pts[0].getX())/interval);
         Point2D[] result = new Point2D[numInterPts];
         double firstX = pts[0].getX();
         for(int i=0;i<result.length;i++){
-        	double currentX = firstX+i*interval;
-        	result[i]=new Point2D.Double(currentX,curveFunction(curveParams,currentX));
+            double currentX = firstX+i*interval;
+            result[i]=new Point2D.Double(currentX,curveFunction(curveParams,currentX));
         }
-		return result;
-	}
-    
+        return result;
+    }
+
     private static double curveFunction(double[] params, double x){
         int rank = params.length;
         double y = 0;
@@ -88,7 +88,7 @@ public class Interpolation {
         }
         return y;
     }
-    
+
     public static void main0(String[] args) {
         Point2D[] input = {new Point2D.Double(1,5), new Point2D.Double(2,11), new Point2D.Double(10,50)};
         Point2D[] pts = interpolation(input, 1);

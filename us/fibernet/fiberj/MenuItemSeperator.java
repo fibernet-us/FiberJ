@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -34,22 +34,22 @@ import javax.swing.JMenuItem;
  * A tag class for signaling of a line separator in menu definition
  */
 public final class MenuItemSeperator implements MenuItem {
-    
+
     /** implement MenuItem's getFullName() */
     @Override
     public String getFullName() {
-        return null;               
+        return null;
     }
-    
+
     /** implement MenuItem's setSurName */
     @Override
     public void setSurName(String surName) {
     }
-       
+
     /** implement MenuItem's build() */
     @Override
     public JMenuItem build() {
-        return null; 
+        return null;
     }
 
 }

@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -38,10 +38,10 @@ import javax.swing.JRadioButton;
 /**
  * a class to hold the name, value of reciprocal and the label, radio
  * buttons to display it
- * 
+ *
  */
 public class ParamListItemRecip implements InfoItem {
-    
+
     private JLabel label;
     private String name;
     private boolean value;
@@ -56,7 +56,7 @@ public class ParamListItemRecip implements InfoItem {
 
     ParamListItemRecip(String labelStr, boolean isRecip, JLabel actionLabel,
                       InfoItemGuiCallBack callbackObj) {
-        
+
         label = new JLabel(labelStr);
         name = labelStr;
         value = isRecip;
@@ -74,7 +74,7 @@ public class ParamListItemRecip implements InfoItem {
         this.actionLabel = actionLabel;
         addCallback();
     }
-    
+
     /**
      * add two radio buttons to a group so only one button is selected at a
      * time

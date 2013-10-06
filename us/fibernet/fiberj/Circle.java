@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -31,58 +31,58 @@ package us.fibernet.fiberj;
 import java.awt.Color;
 
 /**
- * 
- * A utility class representing a circle object in drawing and ploting 
+ *
+ * A utility class representing a circle object in drawing and ploting
  *
  */
 public class Circle {
 
     double radius;
     double cx, cy; // center x, y
-    Color color; 
-    double thetaStep; // increment in degree along perimeter 
+    Color color;
+    double thetaStep; // increment in degree along perimeter
                       // need to be small enough so circle looks continuous
-    
+
     public Circle(double r, double x, double y, double thetStep, Color color) {
         this(r, x, y);
         this.thetaStep = thetStep;
         this.color = color;
     }
-    
+
     public Circle(double r, double x, double y, Color color) {
         this(r, x, y);
         this.color = color;
     }
-    
+
     public Circle(double r, double x, double y) {
         radius = r;
         cx = x;
         cy = y;
         // 1 degree theta increment for r=50
-        thetaStep = Math.PI * 2 / 360 / (r / 50); 
+        thetaStep = Math.PI * 2 / 360 / (r / 50);
     }
-    
+
     public String toString() {
         return "circle: radius=" + radius + ", cx=" + cx + ", cy=" + cy;
     }
-    
+
     public double getX()          { return cx;        }
     public double getY()          { return cy;        }
     public double getR()          { return radius;    }
     public double getThetaStep()  { return thetaStep; }
     public Color getColor()       { return color;     }
-    
+
     public void setX(double x)    { cx = x;          }
     public void setY(double y)    { cy = y;          }
     public void setColor(Color c) { color = c;       }
-    
-    public void setR(double r) { 
-        radius = r; 
-        thetaStep = Math.PI * 2 / 360 / (r / 50); 
+
+    public void setR(double r) {
+        radius = r;
+        thetaStep = Math.PI * 2 / 360 / (r / 50);
     }
-    
+
     public int getIX()   { return (int)(cx + 0.5);     }
     public int getIY()   { return (int)(cy + 0.5);     }
     public int getIR()   { return (int)(radius + 0.5); }
-    
+
 }

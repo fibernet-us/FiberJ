@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -37,14 +37,14 @@ import java.awt.event.ActionListener;
 
 
 /**
- *  A class for creating a JMenuBar with a MenuData, on a JFrame. Each menu item 
+ *  A class for creating a JMenuBar with a MenuData, on a JFrame. Each menu item
  *  is associated with a MenuActionListener hooked to a MenuCommand.
  */
 public class MenuBuilder {
-      
+
     /*
-     *  Build a JMenuBar with menuData, add a MenuActionListener, and attach it to parentFrame 
-     *  
+     *  Build a JMenuBar with menuData, add a MenuActionListener, and attach it to parentFrame
+     *
      *  menu-0        menu-1       ...
      *  menu-item-0   menu-item-0  ...
      *  menu-item-1   menu-item-1  ...
@@ -52,44 +52,44 @@ public class MenuBuilder {
      */
     public static JMenuBar build(JFrame parentFrame, MenuData menuData) {
 
-        JMenuBar    menuBar = new JMenuBar();     
-        int          nMenus = menuData.getNumberOfMenus();       
+        JMenuBar    menuBar = new JMenuBar();
+        int          nMenus = menuData.getNumberOfMenus();
         JMenu[]       menus = new JMenu[nMenus];
         JMenuItem[][] items = new JMenuItem[nMenus][];
-        
-        for (int i = 0; i < nMenus; i++) {             
+
+        for (int i = 0; i < nMenus; i++) {
             int nItems = menuData.getNumberOfMenuItems(i);
-            menus[i] = new JMenu(menuData.getMenuName(i)); 
+            menus[i] = new JMenu(menuData.getMenuName(i));
             items[i] = new JMenuItem[nItems];
-            
+
             // build menus[i]: create menu items and add action listener
             for (int j = 0; j < nItems; j++) {
                 items[i][j] = new JMenuItem(menuData.getMenuItemName(i, j));
                 MenuActionListener mal = new MenuActionListener(menuData.getMenuItemCommander(i,j));
                 items[i][j].addActionListener(mal);
                 menus[i].add(items[i][j]);
-            }             
- 
-            menuBar.add(menus[i]);            
-        }      
+            }
+
+            menuBar.add(menus[i]);
+        }
 
         parentFrame.setJMenuBar(menuBar);
-        
+
         return menuBar;
-    }     
-    
+    }
+
     /*
-     *  An ActionListener implementer. It connects a MenuCommand 
+     *  An ActionListener implementer. It connects a MenuCommand
      *  corresponding to a menu item and calls its execute() on menu events
      */
-    protected static class MenuActionListener implements ActionListener {   
-        
+    protected static class MenuActionListener implements ActionListener {
+
         private MenuCommand menuCommand;
-        
+
         public MenuActionListener(MenuCommand menuCommand) {
             this.menuCommand = menuCommand;
         }
-        
+
         public void actionPerformed(ActionEvent event) {
             if(menuCommand != null) {
                 //String command = ((JMenuItem)event.getSource()).getText();
@@ -97,8 +97,8 @@ public class MenuBuilder {
                 menuCommand.execute();
             }
         }
-        
+
     } // class MenuCommandListener
 
-    
+
 } // class MenuBuilder

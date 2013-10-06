@@ -67,12 +67,12 @@ import javax.swing.border.EmptyBorder;
  */
 public class ColormapControl {
 
-    private static final String[] COLORMAPS = { 
-        "RGB", "BGR", "Rainbow", "Black_White", "White_Black", "Keiichi" 
+    private static final String[] COLORMAPS = {
+        "RGB", "BGR", "Rainbow", "Black_White", "White_Black", "Keiichi"
     };
     private static final int colorPaneWidth = 374;
     private static final int colorPaneHeight = 143;
-    
+
     private JFrame frame;
     private BufferedImage rainbow;
     private BufferedImage rainbowCache;
@@ -98,14 +98,14 @@ public class ColormapControl {
     private int minThreshold;
     private int maxThreshold;
     private int thresholdSelected;
-    
+
     private double histoFactor;
     private double rainbowHeightFactor = 255.0 / colorPaneHeight;
-    
+
     private double[] curveParam;
 
     /**
-     * @param indexArray array of color indexes 
+     * @param indexArray array of color indexes
      * @param pd PatternDisplay on which image will be generated
      */
     public ColormapControl(int[][] indexArray, Pattern pattern, PatternDisplay pd) {
@@ -129,7 +129,7 @@ public class ColormapControl {
             }
         });
     }
-    
+
     /**
      * Create the contents of the colormap control window
      */
@@ -153,7 +153,7 @@ public class ColormapControl {
         JLabel lblNewLabel = new JLabel("Colormap  ");
         //lblNewLabel.setLabelFor(comboBox);
         colormapSelectionPanel.add(lblNewLabel, BorderLayout.WEST);
-        
+
         JComboBox comboBox = new JComboBox(COLORMAPS);
         colormapSelectionPanel.add(comboBox, BorderLayout.CENTER);
         comboBox.addActionListener(new ActionListener() {
@@ -202,7 +202,7 @@ public class ColormapControl {
         JPopupMenu popupMenu = new JPopupMenu();
         popupMenu.setBounds(0, 0, 200, 50);
         panel_2.add(popupMenu);
-        
+
         JMenuItem addBox = new JMenuItem("Add Box");
         addBox.setActionCommand("add");
 
@@ -260,13 +260,13 @@ public class ColormapControl {
         minArea.setBounds(10, 372, 70, 20);
         minArea.setColumns(15);
         panel_2.add(minArea);
-        
+
 
         maxArea = new JTextField();
         maxArea.setBounds(314, 372, 70, 20);
         maxArea.setColumns(15);
         panel_2.add(maxArea);
-        
+
 
         // ====================done with components========================
 
@@ -420,7 +420,7 @@ public class ColormapControl {
     // ===============================================================================================
     // Generate the histogram of color usage
     private BufferedImage generateHistogram() {
-        
+
         TreeMap<Integer, Integer> colors = new TreeMap<Integer, Integer>();
         int[][] dataArray = myPattern.getData();
         int max = -1; // height
@@ -428,22 +428,22 @@ public class ColormapControl {
         int maxThre = Integer.MIN_VALUE;
         for(int i=0; i < indexArray.length; i++) {
             for(int j=0; j < indexArray[0].length; j++) {
-                
+
                 if(dataArray[i][j] < minThre && dataArray[i][j] > 0) {
                     minThre = dataArray[i][j];
                 }
-                
+
                 if(dataArray[i][j] > maxThre) {
                     maxThre = dataArray[i][j];
                 }
 
                 if(colors.containsKey(indexArray[i][j])) {
                     colors.put(indexArray[i][j], colors.get(indexArray[i][j]) + 1);
-                    
+
                     if(colors.get(indexArray[i][j]) > max  && indexArray[i][j] != 0) {
                         max = colors.get(indexArray[i][j]);
                     }
-                } 
+                }
                 else {
                     colors.put(indexArray[i][j], 1);
                 }
@@ -550,7 +550,7 @@ public class ColormapControl {
 
     // check which box is selected based on the position of the mouse click.
     private boolean isSelected(int x, int y, Point2D p) {
-        
+
         double maxDis = 10.0; // click within this radius selects the box
         double px = p.getX();
         double py = p.getY();
@@ -560,19 +560,19 @@ public class ColormapControl {
 
     // drag box to a position on the color table.
     private void boxMove(String eventName, MouseEvent e) {
-        
+
         if(eventName.equals("dragged")) {
-            
+
             if(selectedP != null) {
                 int x = e.getX();
                 int y = e.getY();
-                
+
                 // make sure that x and y does not go outside the label
                 if(x < 0)               x = 0;
                 if(x > colorPaneWidth)  x = colorPaneWidth;
                 if(y < 0)               y = 0;
                 if(y > colorPaneHeight) y = colorPaneHeight;
-                
+
                 selectedP.setLocation(x, y);
                 refreshRainbow();
             }
@@ -662,15 +662,15 @@ public class ColormapControl {
         // histogram = fitImage(histoLabel,histogramCache);
         if(thresholdSelected == 0) {
             minThreshold = x;
-        } 
+        }
         else if(thresholdSelected == 1) {
             maxThreshold = x;
         }
-        
+
         if(x > histogram.getWidth()) {
             maxThreshold = histogram.getWidth();
         }
-        
+
         if(x < 0) {
             minThreshold = 0;
         }
@@ -702,23 +702,23 @@ public class ColormapControl {
         int min = Integer.valueOf(minArea.getText());
         int max = Integer.valueOf(maxArea.getText());
         double scale = (double) (max - min) / colorPaneWidth;
-        
+
         for(int h = 0; h < dataArray.length; h++) {
             for(int w = 0; w < dataArray[0].length; w++) {
-                
+
                 if(dataArray[h][w] <= min) {
                     output[h][w] = 0; // first color
-                } 
+                }
                 else if(dataArray[h][w] >= max) {
                     output[h][w] = 255; // last color
-                } 
+                }
                 else {
                     int cf = (int) curveFunction((dataArray[h][w] - min) / scale);
                     output[h][w] = (int) ((rainbowLabel.getHeight() - cf) * rainbowHeightFactor);
                 }
             }
         }
-        
+
         patternDisplay.generateIndexedImage(output); // generate new image based on the color control
     }
 }

@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -34,36 +34,36 @@ package us.fibernet.fiberj;
 public class Timer {
 
     private long timeStart, timeEnd;  // for running time measurement
-    
-    public void startTimer() { 
+
+    public void startTimer() {
         timeStart = System.nanoTime();
     }
-    
-    public void endTimer() { 
+
+    public void endTimer() {
         timeEnd = System.nanoTime();
     }
-    
-    public long getElapsedNanoSeconds() { 
+
+    public long getElapsedNanoSeconds() {
         return (timeEnd - timeStart);
     }
-    
-    public long getElapsedMilliSeconds() { 
+
+    public long getElapsedMilliSeconds() {
         return (timeEnd - timeStart) / 1000000;
     }
 
-    public long getElapsedSeconds() { 
+    public long getElapsedSeconds() {
         return (timeEnd - timeStart) / 1000000000;
     }
-    
-    public void printElapsedNanoSeconds() { 
+
+    public void printElapsedNanoSeconds() {
         System.out.println("Elapsed nano-seconds: " + getElapsedNanoSeconds());
     }
-    
-    public void printElapsedMilliSeconds() { 
+
+    public void printElapsedMilliSeconds() {
         System.out.println("Elapsed milli-seconds: " + getElapsedMilliSeconds());
     }
-    
-    public void printElapsedSeconds() { 
+
+    public void printElapsedSeconds() {
         System.out.println("Elapsed seconds: " + getElapsedSeconds());
     }
 }

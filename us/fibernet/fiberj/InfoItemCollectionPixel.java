@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -34,7 +34,7 @@ import java.util.Iterator;
 import javax.swing.Box;
 
 /**
- * A class to store all info related to a pixel on a pattern. 
+ * A class to store all info related to a pixel on a pattern.
  * Used to display the info of the pixel at cursor on UIInfobar.
  */
 public final class InfoItemCollectionPixel extends InfoItemCollection implements InfoItemGuiCallBack {
@@ -47,7 +47,7 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
     private double D = 0.0;    // 1/d
     private double R = 0.0;    // reciprocal R
     private double Z = 0.0;    // reciprocal Z
-    
+
     public InfoItemCollectionPixel() {
         populateInfoItemList();
     }
@@ -55,7 +55,7 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
     /** implement InfoItemCollection's populateInfoItemList */
     @Override
     protected void populateInfoItemList() {
-        
+
         infoItemList = new ArrayList<InfoItem>();
         infoItemList.add(new InfoItemTextField("x", "0", "%d",   3, false, this));
         infoItemList.add(new InfoItemTextField("y", "0", "%d",   3, false, this));
@@ -66,16 +66,16 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
         infoItemList.add(new InfoItemTextField("R", "0", "%.4f", 5, false, this));
         infoItemList.add(new InfoItemTextField("Z", "0", "%.4f", 5, false, this));
     }
-    
+
     /** implement InfoItemGuiCallBack. obtain user input from gui */
     // TODO: update cursor position
     @Override
-    public void guiUpdated(String name, String newValue) {      
+    public void guiUpdated(String name, String newValue) {
         int iv = getIntValue(newValue);
-        double dv = getDoubleValue(newValue); 
+        double dv = getDoubleValue(newValue);
         if(iv < 0 || dv < 0) {
             return;
-        }      
+        }
         switch(name.charAt(0)) {
             case 'x': x = iv; break;
             case 'y': y = iv; break;
@@ -88,15 +88,15 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
             default:  break;
         }
     }
-    
-    
+
+
     /** update the x- and y- coordinate, and other info accordingly */
     public void updateLocation(int x, int y) {
         this.x = x;
         this.y = y;
         updateAll();  // update all info and update GUI
     }
-    
+
     public String toString() {
         return    "x=" + x + ", y=" + y + ", r=" + r + ", I=" + I +
                 ", d=" + d + ", D=" + D + ", R=" + R + ", Z=" + Z;
@@ -109,16 +109,16 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
         if(p == null) {
             return;
         }
-        
+
         r = p.getr(x, y);
         I = p.getI(x, y);
-        
+
         double[] RZ = {0.0, 0.0};
         if(p.xy2RZ(x, y, RZ)) {
             R = RZ[0];
             Z = RZ[1];
             D = Math.sqrt(R*R + Z*Z);
-            if(D != 0) { 
+            if(D != 0) {
                 d = 1/D;
             }
             else {
@@ -140,25 +140,25 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
         ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", R));
         ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", Z));
     }
-    
+
     // return value as int
-    private int getIntValue(String value) { 
+    private int getIntValue(String value) {
         try {
             return Integer.parseInt(value);
         }
         catch(NumberFormatException e) {
             return -1;
-        } 
+        }
     }
 
-    //return value as double 
-    private double getDoubleValue(String value) { 
+    //return value as double
+    private double getDoubleValue(String value) {
         try {
             return Double.parseDouble(value);
         }
         catch(NumberFormatException e) {
             return -1;
-        } 
+        }
     }
 
 } // class InfoItemCollectionPixel

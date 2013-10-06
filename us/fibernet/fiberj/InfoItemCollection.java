@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -40,55 +40,55 @@ import javax.swing.JPanel;
  * Subclasses need to populate infoItemList themselves.
  */
 abstract class InfoItemCollection implements InfoItem, Iterable<InfoItem> {
-    
+
     protected ArrayList<InfoItem> infoItemList;
-    
+
     /** create InfoItems and add them to infoItemList */
     protected abstract void populateInfoItemList();
-    
+
     /** implements InfoItem */
     @Override
     public void addTo(JPanel panel) {
         for(InfoItem item : infoItemList) {
             item.addTo(panel);
-            panel.add(Box.createHorizontalStrut(1)); 
+            panel.add(Box.createHorizontalStrut(1));
         }
     }
-    
+
     /** implements Iterable<InfoItem> */
     @Override
     public Iterator<InfoItem> iterator() {
         return  new InfoItemCollectionIterator();
     }
-    
+
 
     private class InfoItemCollectionIterator implements Iterator<InfoItem> {
-        
-        private int currentIndex = 0; 
-        
+
+        private int currentIndex = 0;
+
         public InfoItemCollectionIterator() {
             currentIndex = 0;
         }
-        
-        @Override
-        public boolean hasNext() { 
-            return currentIndex < infoItemList.size();
-        } 
 
         @Override
-        public InfoItem next() { 
+        public boolean hasNext() {
+            return currentIndex < infoItemList.size();
+        }
+
+        @Override
+        public InfoItem next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            
-            return infoItemList.get(currentIndex++); 
-        } 
+
+            return infoItemList.get(currentIndex++);
+        }
 
         @Override
-        public void remove() { 
-            throw new UnsupportedOperationException(); 
-        } 
-    
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
     } // class InfoItemCollectionIterator
-    
+
 }

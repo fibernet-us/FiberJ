@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -37,44 +37,44 @@ import javax.swing.JMenuItem;
  *
  */
 public class MenuItemLeaf implements MenuItem, ActionListener {
-    
+
     String name;
     String surName;
     MenuHandler handler;
-    
+
     public MenuItemLeaf(String surName, String name, MenuHandler handler) {
         this(name, handler);
-        this.surName = surName;       
+        this.surName = surName;
     }
-    
+
     public MenuItemLeaf(String name, MenuHandler handler) {
         this.name = name;
         this.surName = "";
-        this.handler = handler;        
+        this.handler = handler;
     }
-    
-    
+
+
     /** implement MenuItem's getFullName() */
     @Override
     public String getFullName() {
-        return surName.replaceAll("\\s","") + name.replaceAll("\\s","");               
+        return surName.replaceAll("\\s","") + name.replaceAll("\\s","");
     }
-    
+
     /** implement MenuItem's setSurName */
     @Override
     public void setSurName(String surName) {
         this.surName = surName;
     }
-       
+
     /** implement MenuItem's build() */
     @Override
     public JMenuItem build() {
         JMenuItem item = new JMenuItem(name);
-        item.addActionListener(this);         
+        item.addActionListener(this);
         return item;
     }
 
-    
+
     /** implement ActionListener actionPerformed() */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -84,27 +84,27 @@ public class MenuItemLeaf implements MenuItem, ActionListener {
     private void execute() {
 
         // look up the method in the handler class and call it if successful
-        try {             
+        try {
             java.lang.reflect.Method method = handler.getClass().getDeclaredMethod(getFullName());
 
             if(method != null) {
                 try {
                     method.invoke(handler, (Object[]) null);  // invoke handler.method()
-                } 
+                }
                 catch (java.lang.reflect.InvocationTargetException e) {
                     e.printStackTrace();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                }   
+                }
             }
-        } 
+        }
         catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
         catch (Exception e) {
             e.printStackTrace();
-        }   
+        }
 
     } // execute()
 

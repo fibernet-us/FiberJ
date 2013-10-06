@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -45,29 +45,29 @@ import javax.swing.JTextField;
  *                field, checkbox to display the item, and callBack to get and
  *                pass user's input
  * @author kate.b.wu@gmail.com
- * 
+ *
  */
 public class ParamListItem extends InfoItemTextField {
 
-	boolean refinable;
-	private JCheckBox ckbox;
+    boolean refinable;
+    private JCheckBox ckbox;
 
-	public ParamListItem(String labelStr, String textStr, String format, int columns,
-			boolean isRefinable, InfoItemGuiCallBack callBackObj) {
-	    
-		super(labelStr, textStr, format, columns, true, callBackObj);
-		
-		refinable = isRefinable;
-		if (refinable) {
-			ckbox = new JCheckBox();
-		}
-		
-		setLabelFont(new JLabel().getFont()); // use default
-		setTextFieldSize(new Dimension(90, 25));
-	}
+    public ParamListItem(String labelStr, String textStr, String format, int columns,
+            boolean isRefinable, InfoItemGuiCallBack callBackObj) {
 
-	/** get the checkbox component */
-	public JCheckBox getCheckBox() {
-		return ckbox;
-	}
+        super(labelStr, textStr, format, columns, true, callBackObj);
+
+        refinable = isRefinable;
+        if (refinable) {
+            ckbox = new JCheckBox();
+        }
+
+        setLabelFont(new JLabel().getFont()); // use default
+        setTextFieldSize(new Dimension(90, 25));
+    }
+
+    /** get the checkbox component */
+    public JCheckBox getCheckBox() {
+        return ckbox;
+    }
 }

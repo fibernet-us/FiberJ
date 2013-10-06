@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -29,17 +29,17 @@
 package us.fibernet.fiberj;
 
 /**
-* An interface used in InfoItem GUI callback. A GUI upon update will pass relevant 
+* An interface used in InfoItem GUI callback. A GUI upon update will pass relevant
 * information to a registered InfoItemGuiCallBack by calling its guiUpdated().
 * <p>
 * This should be implemented by data objects who use InfoItem for display info
 * and obtain info from user input.
 */
 interface InfoItemGuiCallBack {
-    
+
     /**
      * To pass user input on GUI to data associated with this InfoItemGuiCallBack
-     * 
+     *
      * @param name      name of the GUI associated with this InfoItemGuiCallBack
      * @param newValue  new value from user input on the GUI
      */

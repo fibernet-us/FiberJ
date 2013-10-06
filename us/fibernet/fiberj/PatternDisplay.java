@@ -78,7 +78,7 @@ public class PatternDisplay {
     public BufferedImage getDisplayImage() {
         return currIndexImage;
     }
-    
+
     private void initialize() {
 
         imagePanel.removeAll();
@@ -90,11 +90,11 @@ public class PatternDisplay {
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                mouseHandler(e);              
+                mouseHandler(e);
                 imageLabel.setFocusable(true);
                 imageLabel.requestFocusInWindow();
             }
-        });       
+        });
         imageLabel.addKeyListener(new KeyAdapter() {
             //public void keyReleased(KeyEvent e) {}
             @Override
@@ -102,8 +102,8 @@ public class PatternDisplay {
                keyHandler(e);
             }
          });
-        
-        createColormapControlGUI();    
+
+        createColormapControlGUI();
         myColormapControl.generatePatternImage();
         imagePanel.add(imageLabel);
 
@@ -113,17 +113,17 @@ public class PatternDisplay {
                 resizeImagePanel();
             };
         });
-          
+
         imagePanel.updateUI();
     }
-    
+
     // called upon imagePanel resize event, resize according to new height and aspect ratio
     private void resizeImagePanel() {
         int newHeight = imagePanel.getHeight();
         int newWidth = (int)(newHeight * myPattern.getAspectRatio());
         imagePanel.setSize(newWidth, newHeight);
         imagePanel.setPreferredSize(new Dimension(newWidth, newHeight));
-        myPattern.recalcShrinkScale(newHeight); 
+        myPattern.recalcShrinkScale(newHeight);
         reloadImageLabel();
     }
 
@@ -133,23 +133,23 @@ public class PatternDisplay {
         imageLabel.setBounds(0, 0, imagePanel.getWidth(), imagePanel.getHeight());
         currIndexImage = PatternUtil.fitImage(imageLabel, origIndexImage);   // currIndexImage size might change
     }
-    
+
     // open the color map myColormapControl panel
     private void createColormapControlGUI() {
         myColormapControl = new ColormapControl(imageIndexArray, myPattern, this);
     }
 
     /**
-     * Generate an new indexed BufferedImage based one the originalArray and 
+     * Generate an new indexed BufferedImage based one the originalArray and
      * current colormap. Called when a colormap change occurs
      */
     void generateIndexedImage(int[][] imageArray) {
 
-        try {           
-            origIndexImage = PatternUtil.calcBufferedImage(imageArray);           
-            //currIndexImage = PatternUtil.copyBufferedImage(origIndexImage); 
+        try {
+            origIndexImage = PatternUtil.calcBufferedImage(imageArray);
+            //currIndexImage = PatternUtil.copyBufferedImage(origIndexImage);
             reloadImageLabel();
-        } 
+        }
         catch (IOException e) {
             System.out.println("Could not generate currIndexImage.");
         }
@@ -168,13 +168,13 @@ public class PatternDisplay {
             drawCrossHair(x,y);
         }
     }
-    
+
     // update cursor location by arrow keys
     private void keyHandler(KeyEvent e) {
         int curX = SystemSettings.getCursorX();
         int curY = SystemSettings.getCursorY();
-        
-        switch(e.getKeyCode()) { 
+
+        switch(e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_KP_LEFT:
                 if(curX > 0) {
@@ -207,40 +207,40 @@ public class PatternDisplay {
                  break;
         }
     }
-    
+
     /*
      * draw a target centered at the current cursor location
-     * 
+     *
      *     _|_
      *  __|_|_|__
      *    |_|_|
-     *      |   
+     *      |
      */
     // TODO: draw on glass pane? maybe faster.
     public void drawCrossHair(int x, int y) {
         final int A = 12;  // half length of cross hair Axis
-        final int B = 6;  // half length of cross hair Box      
+        final int B = 6;  // half length of cross hair Box
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g = drawImage.createGraphics();
         g.setColor(Color.WHITE);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        g.draw(new Line2D.Double(x-A, y,   x+A, y  ));  
-        g.draw(new Line2D.Double(x,   y-A, x,   y+A));  
-        g.draw(new Line2D.Double(x-B, y-B, x+B, y-B));  
-        g.draw(new Line2D.Double(x-B, y-B, x-B, y+B));         
+        g.draw(new Line2D.Double(x-A, y,   x+A, y  ));
+        g.draw(new Line2D.Double(x,   y-A, x,   y+A));
+        g.draw(new Line2D.Double(x-B, y-B, x+B, y-B));
+        g.draw(new Line2D.Double(x-B, y-B, x-B, y+B));
         g.draw(new Line2D.Double(x+B, y+B, x+B, y-B));
         g.draw(new Line2D.Double(x+B, y+B, x-B, y+B));
         g.dispose();
-        imageLabel.setIcon(new ImageIcon(drawImage));   
+        imageLabel.setIcon(new ImageIcon(drawImage));
         //System.out.println("x,y: " + x + "," + y);
         SystemSettings.setCursorX(x);
         SystemSettings.setCursorY(y);
         UIMain.cursorUpdate(x, y);
     }
-    
+
     // draw a Circle using Graphics2D.drawOval
     // maybe draw it manually for more accuracy
-    public void drawCircle(Circle c) { 
+    public void drawCircle(Circle c) {
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g = drawImage.createGraphics();
         g.setColor(c.getColor());
@@ -250,11 +250,11 @@ public class PatternDisplay {
         int w = (int)(c.getR() * 2.0 + 0.5);
         g.drawOval(x, y, w, w);
         g.dispose();
-        imageLabel.setIcon(new ImageIcon(drawImage));   
+        imageLabel.setIcon(new ImageIcon(drawImage));
     }
-    
-    // draw a list of Circles 
-    public void drawCircles(ArrayList<Circle> cs) { 
+
+    // draw a list of Circles
+    public void drawCircles(ArrayList<Circle> cs) {
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g2d = drawImage.createGraphics();
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
@@ -280,78 +280,78 @@ public class PatternDisplay {
             }
         }
         g2d.dispose();
-        imageLabel.setIcon(new ImageIcon(drawImage));   
+        imageLabel.setIcon(new ImageIcon(drawImage));
     }
-    
+
     // draw a Resolution
-    public void drawResolution(Resolution r) { 
+    public void drawResolution(Resolution r) {
     }
-    
-    // draw a list of Resolutions 
-    public void drawResolutions(ArrayList<Resolution> rs) { 
+
+    // draw a list of Resolutions
+    public void drawResolutions(ArrayList<Resolution> rs) {
         if(!myPattern.hasReciprocal()) {
             return;
         }
-        
+
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g2d = drawImage.createGraphics();
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        
+
         for(Resolution r : rs) {
             g2d.setColor(r.getColor());
-            
+
             ArrayList<Point> points = myPattern.getResolutionPoints(r);
             if(points == null || points.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Resolution not defined.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             for(Point p : points) {
                 g2d.draw(new Line2D.Double(p, p));
-            }          
+            }
         }
         g2d.dispose();
-        imageLabel.setIcon(new ImageIcon(drawImage));   
+        imageLabel.setIcon(new ImageIcon(drawImage));
     }
-    
-    // draw a Layerline 
-    public void drawLayerline(Layerline l) { 
+
+    // draw a Layerline
+    public void drawLayerline(Layerline l) {
     }
-    
+
     // draw a list of Layerlines
-    public void drawLayerlines(ArrayList<Layerline> lls) { 
+    public void drawLayerlines(ArrayList<Layerline> lls) {
         if(!myPattern.hasReciprocal()) {
             return;
         }
-        
+
         BufferedImage drawImage = PatternUtil.copyBufferedImage(currIndexImage);
         Graphics2D g2d = drawImage.createGraphics();
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-        
+
         for(Layerline ll : lls) {
-            
+
             g2d.setColor(ll.getColor());
             ArrayList<ArrayList<Point>> llPoints = myPattern.getLayerLines(ll.getR());
             if(llPoints == null) {
                 JOptionPane.showMessageDialog(null, "Layerlines not defined.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             for(ArrayList<Point> points : llPoints) {
                 if(points == null || points.isEmpty()) {
                     continue;
                 }
-                
+
                 Point pLast = points.get(points.size() - 1);
                 for(int i = points.size() - 2; i >= 0; --i) { // process all points on this layerline
                     Point p = points.get(i);
                     g2d.draw(new Line2D.Double(pLast, p));
                     pLast = p;
                 }
-            } 
+            }
         }
         g2d.dispose();
-        imageLabel.setIcon(new ImageIcon(drawImage));          
-        
+        imageLabel.setIcon(new ImageIcon(drawImage));
+
     }
 }

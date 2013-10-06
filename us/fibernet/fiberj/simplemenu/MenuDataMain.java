@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -35,18 +35,18 @@ package us.fibernet.fiberj.simplemenu;
 public final class MenuDataMain extends MenuDataImpl {
 
     private static final String[][] MENU_NAMES = {
-        { "File",    /**/ "Open", "Save", "Close", "Exit" },     
-        { "Image",   /**/ "Flip", "Rotate", "Resize", "Crop" },  
-        { "Colormap",/**/ "Load", "Save", "Customize"},       
-        { "Draw",    /**/ "Circle", "Resolution Circle", "Layerline", "Refresh", "Clear All" }, 
-        { "Process", /**/ "Filter", "Plot", "Correction", "Transform", "Background"},       
+        { "File",    /**/ "Open", "Save", "Close", "Exit" },
+        { "Image",   /**/ "Flip", "Rotate", "Resize", "Crop" },
+        { "Colormap",/**/ "Load", "Save", "Customize"},
+        { "Draw",    /**/ "Circle", "Resolution Circle", "Layerline", "Refresh", "Clear All" },
+        { "Process", /**/ "Filter", "Plot", "Correction", "Transform", "Background"},
         { "Window",  /**/ "Parameter", "Coordinates", "Pixel Viewer", "Log" },
         { "Help",    /**/ "About", "Resource" }
-    };  
-    
+    };
+
     // one handler per menu
     private static final MenuHandlerMain[] MENU_HANDLERS = {
-        new MenuHandlerMainFile(),     // File      
+        new MenuHandlerMainFile(),     // File
         new MenuHandlerMain(),         // Image     // TODO
         new MenuHandlerMain(),         // Colormap  // TODO
         new MenuHandlerMain(),         // Draw      // TODO
@@ -56,15 +56,15 @@ public final class MenuDataMain extends MenuDataImpl {
     };
 
     public MenuDataMain() {
-    }  
-     
-    @Override
-    protected String[][] getMenuNames() { 
-        return MENU_NAMES;     
     }
-    
+
     @Override
-    protected MenuHandler getMenuHandler(int menuID, int menuItemID) {  
+    protected String[][] getMenuNames() {
+        return MENU_NAMES;
+    }
+
+    @Override
+    protected MenuHandler getMenuHandler(int menuID, int menuItemID) {
         return MENU_HANDLERS[menuID];
     }
 

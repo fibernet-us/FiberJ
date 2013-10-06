@@ -100,7 +100,7 @@ public class PatternUtil {
 
     /**
      * Display the color table. Used for test
-     * 
+     *
      * @param table
      */
     static void displayColorTable(List<List<Byte>> table) {
@@ -134,46 +134,46 @@ public class PatternUtil {
         if(input == null || input.length < 1) {
             return null;
         }
-        
+
         int[][] output = new int[input.length][input[0].length];
-        
+
         int max = Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
-        
+
         // find max and min values of input array
         for(int i = 0; i < output.length; i++) {
             for(int j = 0; j < output[0].length; j++) {
                 if(input[i][j] > max) {
                     max = input[i][j];
-                } 
+                }
                 else if(input[i][j] < min) {
                     min = input[i][j];
                 }
             }
         }
-        
+
         if(min < 0) { min = 0; } // TODO: warning
         if(max < 0) { max = 0; } // TODO: warning
-        
+
         double factor = ((double) (max - min)) / numColors  +  1;
 
         for(int i = 0; i < output.length; i++) {
             for(int j = 0; j < output[0].length; j++) {
                 if(input[i][j] < min) {
                     output[i][j] = 0;
-                } 
+                }
                 else {
                     output[i][j] = (int) ((input[i][j] - min) / factor);
                 }
             }
         }
-        
+
         return output;
     }
 
 
     /**
-     * make a deep copy of a BufferedImage, slow 
+     * make a deep copy of a BufferedImage, slow
      */
     public static BufferedImage copyBufferedImage0(final BufferedImage src) {
         ColorModel cm = src.getColorModel();
@@ -181,9 +181,9 @@ public class PatternUtil {
         WritableRaster raster = src.copyData(null);
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
-    
+
     /**
-     * make a deep copy of a BufferedImage, faster 
+     * make a deep copy of a BufferedImage, faster
      */
     public static BufferedImage copyBufferedImage1(final BufferedImage src) {
         BufferedImage copy = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -194,7 +194,7 @@ public class PatternUtil {
     }
 
     /**
-     * make a deep copy of a BufferedImage, fastest 
+     * make a deep copy of a BufferedImage, fastest
      */
     public static BufferedImage copyBufferedImage(BufferedImage src) {
         int width = src.getWidth();
@@ -209,23 +209,23 @@ public class PatternUtil {
         return copy;
     }
 
-    
+
     /**
      * To resize the image to fit in the JLabel, and set it to the JLabel
-     * 
+     *
      * @param label    the JLabel to hold the image
      * @param image    the image to fit in the JLabel
      * @return the resized Image
      */
     static BufferedImage fitImage(JLabel label, BufferedImage image) {
-        
+
         int newWidth = label.getWidth();
         int newHeight = label.getHeight();
-        
+
         if(newWidth < 1 || newHeight < 1) {
             return null;
         }
-        
+
         BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = resizedImage.createGraphics();
         g.drawImage(image, 0, 0, newWidth, newHeight, null);
@@ -235,7 +235,7 @@ public class PatternUtil {
     }
 
     /**
-     * 
+     *
      * @param width
      * @param height
      * @return a rainbow image based on the default color table
@@ -273,7 +273,7 @@ public class PatternUtil {
     }
 
     /**
-     * 
+     *
      * @return a rainbow image based on the default color table
      */
     static BufferedImage getRainbowImage() {
@@ -342,13 +342,13 @@ public class PatternUtil {
                 raster.setSamples(w, h, unit, unit, 2, b);
             }
         }
-        
+
         return im;
     }
 
     /**
      * GaussianElimination
-     * 
+     *
      * @return coefficients
      */
     static double[] gaussian(double[][] A, double[] b) {

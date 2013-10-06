@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -36,27 +36,27 @@ import javax.swing.JPanel;
 
 /**
  * A JPanel for displaying pattern related information.
- * Currently items include 
+ * Currently items include
  */
 @SuppressWarnings("serial")
 public class UIInfobar extends JPanel {
 
     private JFrame parentFrame;
-      
-    /** 
-     * create a FlowLayout JPanel with given dimension on a parent frame 
+
+    /**
+     * create a FlowLayout JPanel with given dimension on a parent frame
      */
     public UIInfobar(JFrame parent, int width, int height, InfoItem... infoItems) {
         parentFrame = parent;
         Dimension dim = new Dimension(width, height);
-        setPreferredSize(dim); 
-        setMinimumSize(dim);  
-        setLayout(new FlowLayout(FlowLayout.LEFT)); 
+        setPreferredSize(dim);
+        setMinimumSize(dim);
+        setLayout(new FlowLayout(FlowLayout.LEFT));
         for(InfoItem i : infoItems) {
             addInfoItem(i);
         }
     }
- 
+
     /**
      * add an InfoItem (implementing addTo(JPanel)) to UIInfobar
      */
@@ -64,5 +64,5 @@ public class UIInfobar extends JPanel {
         infoItem.addTo(this);
         this.add(Box.createHorizontalStrut(1)); // add spacing between InfoItems
     }
-        
+
 } // class UIInfobar

@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -39,8 +39,8 @@ import java.awt.event.ActionListener;
 /**
  * A UI class for displaying program messages and taking user commands
  * and pass the commands to an PatternProcessor.
- * 
- * Either of the two text fields can be used as command line. When one 
+ *
+ * Either of the two text fields can be used as command line. When one
  * is used as command line, the other will be used for message output.
  */
 @SuppressWarnings("serial")
@@ -49,22 +49,22 @@ public class UIMessage extends JPanel {
     private JFrame parentFrame;  // might be useful down the road
     private JTextField[] textFields;   // two text fields, one for message, one for command
     private int messageFieldNumber = 0; // id of the textField used to display messages
-    
-    public UIMessage(JFrame parent, int width, int height) {     
+
+    public UIMessage(JFrame parent, int width, int height) {
         parentFrame = parent;
-        Dimension dim = new Dimension(width, height);      
-        setPreferredSize(dim); 
-        setMinimumSize(dim); 
+        Dimension dim = new Dimension(width, height);
+        setPreferredSize(dim);
+        setMinimumSize(dim);
         setMaximumSize(dim);
-        setLayout(new GridLayout(1,2)); 
-        
+        setLayout(new GridLayout(1,2));
+
         textFields = new JTextField[2];
         for(int i=0; i<2; i++) {
             textFields[i] = new JTextField();
-            textFields[i].setName(i + ""); 
-            textFields[i].setBackground(this.getBackground().brighter());     
+            textFields[i].setName(i + "");
+            textFields[i].setBackground(this.getBackground().brighter());
             textFields[i].setEditable(true);
-            
+
             // add actionLister to take user command and process it
             textFields[i].addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -77,21 +77,21 @@ public class UIMessage extends JPanel {
             add(textFields[i]);
         }
     }
-    
+
     /**
-     * Show message or action result on the available textfield 
+     * Show message or action result on the available textfield
      */
     public void setMessage(String messsage) {
         textFields[messageFieldNumber].setText(messsage);
     }
-    
+
     /**
      * Get the command string from the command line text field
      */
     public String getCommand() {
         return textFields[1 - messageFieldNumber].getText();
     }
-    
+
     /**
      * Pass a user command String to PatternProcessor
      */
@@ -100,6 +100,6 @@ public class UIMessage extends JPanel {
             PatternProcessor.executeCommand(command);
         }
     }
-    
+
 } // class UIMessage
 

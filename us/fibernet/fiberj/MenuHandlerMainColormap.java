@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -32,17 +32,17 @@ package us.fibernet.fiberj;
 /**
  * A menu handler for the Main menu bar, Colormap menu
  */
-public class MenuHandlerMainColormap extends MenuHandlerMainDefault {  
-    
-    
+public class MenuHandlerMainColormap extends MenuHandlerMainDefault {
+
+
     /*
      * Colormap -> Customize
      */
     @Override
     public void mainColormapCustomize() {
         UIMain.openColormap();
-    } 
-    
+    }
+
     /*
      * Colormap -> Load
      */
@@ -50,15 +50,15 @@ public class MenuHandlerMainColormap extends MenuHandlerMainDefault {
     @Override
     public void mainColormapLoad() {
         super.mainColormapLoad();
-    } 
-    
+    }
+
     /*
      * Colormap -> Save
      */
     // TODO
     @Override
     public void mainColormapSave() {
-        super.mainColormapSave();        
-    } 
+        super.mainColormapSave();
+    }
 
 }

@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -55,12 +55,12 @@ import javax.swing.SwingUtilities;
  *  |______1______|
  *  |______2______|
  *  |             |
- *  |      3      | 
+ *  |      3      |
  *  |             |
  *  |_____________|
  *  |______4______|
- * 
- * 1: menu bar, 2: info bar, 3: pattern display, 4: message/command pane 
+ *
+ * 1: menu bar, 2: info bar, 3: pattern display, 4: message/command pane
  * </pre>
  */
 public final class UIMain {
@@ -70,45 +70,45 @@ public final class UIMain {
     private static JFrame mainFrame;
     private static JScrollPane jScrollPane; // to scroll pattern when its display size is too big
     private static JPanel patternPanel; // to hold uiPattern
-    private static JMenuBar  uiMenubar; 
-    private static UIInfobar uiInfobar; 
+    private static JMenuBar  uiMenubar;
+    private static UIInfobar uiInfobar;
     private static UIPattern uiPattern;
     private static UIMessage uiMessage;
-    
+
     // these parameters might get overwritten by those in ~/.fiberj or from command line
     private static int wPattern = 600; // width of uiPattern
-    private static int hPattern = 600; // height of uiPattern     
+    private static int hPattern = 600; // height of uiPattern
     private static int hInfobar = 30;  // height of uiInfobar: high enough for info widgets
     private static int hMessage = 30;  // height of uiMessage: high enough for one line of text
-    private static int patternPadding = 5;  // padding around uiPattern in patternPanel 
-    
+    private static int patternPadding = 5;  // padding around uiPattern in patternPanel
+
     // size of screen that is available for apps. equal to raw screen size minus size of taskbar, sidebar, etc
-    private static int availableScreenWidth, availableScreenHeight;    
-    
+    private static int availableScreenWidth, availableScreenHeight;
+
     // the accumulated size of the parts of mainFrame that are not uiPattern.
     // this info is used to maintain pattern's aspect ratio in window resizing event
     private static int nonPatternWidth, nonPatternHeight;
-    
+
     private static boolean isScrollPattern;  // if pattern is in a scrolled pane
-    
+
     private static InfoItemCollectionPixel currentPixelInfo;
 
-    
+
     /**
      * No instantiation. See init().
      */
-    private UIMain() { }  
-    
+    private UIMain() { }
+
     /**
-     * Create application UI and data hooks. Synchronize it to ensure UI creation happen once 
-     * and only once. No use of double checking lock which does not work on all JVMs. 
-     * 
+     * Create application UI and data hooks. Synchronize it to ensure UI creation happen once
+     * and only once. No use of double checking lock which does not work on all JVMs.
+     *
      * @param x x-coordinate of the main window's startup top-left position
      * @param y y-coordinate of the main window's startup top-left position
-     * @param wPatt if > 0 overwrite default wPattern         
-     * @param hPatt if > 0 overwrite default hPattern       
-     * @param hInfo if > 0 overwrite default hInfobar       
-     * @param hMess if > 0 overwrite default hMessage 
+     * @param wPatt if > 0 overwrite default wPattern
+     * @param hPatt if > 0 overwrite default hPattern
+     * @param hInfo if > 0 overwrite default hInfobar
+     * @param hMess if > 0 overwrite default hMessage
      */
     public static synchronized void init(int x, int y, int wPatt, int hPatt, int hInfo, int hMess) {
 
@@ -116,7 +116,7 @@ public final class UIMain {
             return;
         }
 
-        if(wPatt > 0) { wPattern = wPatt; }    
+        if(wPatt > 0) { wPattern = wPatt; }
         if(hPatt > 0) { hPattern = hPatt; }
         if(hInfo > 0) { hInfobar = hInfo; }
         if(hMess > 0) { hMessage = hMess; }
@@ -140,9 +140,9 @@ public final class UIMain {
         // add() is forwarded to getContentPane().add().
         // use BorderLayout to keep height of uiInfobar and uiMessage fixed
         // and let uiPattern take on resizing (BorderLayout.CENTER is greedy)
-        mainFrame.setLayout(new BorderLayout()); 
+        mainFrame.setLayout(new BorderLayout());
         mainFrame.add(uiInfobar, BorderLayout.PAGE_START);
-        mainFrame.add(uiMessage, BorderLayout.PAGE_END);    
+        mainFrame.add(uiMessage, BorderLayout.PAGE_END);
 
         // a hack to allow pattern resize to smaller than the main window and remain fully visible
         // without changing patter display related code - it seems quite messy to do that.
@@ -160,13 +160,13 @@ public final class UIMain {
         java.net.URL url = ClassLoader.getSystemResource("us/fibernet/fiberj/image/x32.png");
         myIcon = java.awt.Toolkit.getDefaultToolkit().createImage(url);
         mainFrame.setIconImage(myIcon);
-        
+
         mainFrame.pack();
         mainFrame.setVisible(true);
         isScrollPattern = false;
     }
 
-    
+
     /**
      * UI component getters, used by UI updater, massager, etc.
      */
@@ -177,14 +177,14 @@ public final class UIMain {
     public static Image getMyIcon()         {  return myIcon;     }
     public static int getAvailableScreenWidth()    {  return availableScreenWidth - nonPatternWidth;  };
     public static int getAvailableScreenHeight()   {  return availableScreenHeight - nonPatternHeight; };
-    
+
     /** Get and set the main window title */
     public static String getTitle()            { return FIBERJ_VS; }
     public static void setTitle(String title)  { mainFrame.setTitle(title);   }
-    
+
     /*
      * UI delegation methods. Pass calls from other component to sub UIs.
-     */ 
+     */
     public static void openColormap()              { uiPattern.openColormap();              }
     public static void setMessage(String message)  { uiMessage.setMessage(message);         }
     public static void cursorUpdate(int x, int y)  { currentPixelInfo.updateLocation(x, y); }
@@ -197,21 +197,21 @@ public final class UIMain {
         mainFrame.validate();
         mainFrame.repaint();
     }
-    
+
     /**
      * Remove the scrollbar from pattern display
      */
     public static synchronized void unScrollPattern() {
         if(isScrollPattern) {
             jScrollPane.remove(patternPanel);
-            mainFrame.remove(jScrollPane);           
+            mainFrame.remove(jScrollPane);
             jScrollPane.setVisible(false);
             mainFrame.add(patternPanel, BorderLayout.CENTER);
-            isScrollPattern = false;    
-        }       
+            isScrollPattern = false;
+        }
         refresh();
     }
-    
+
     /**
      * Add a scrollbar to pattern display
      */
@@ -222,32 +222,32 @@ public final class UIMain {
             jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             mainFrame.add(jScrollPane, BorderLayout.CENTER);
-            isScrollPattern = true;     
+            isScrollPattern = true;
         }
         refresh();
     }
-    
+
     /**
      * Resize pattern per user command line input. Add or remove scrollbar accordingly.
      */
     public static void resizeToHeight(int height)  {
-        double ratio = PatternProcessor.getAspectRatio();       
-        if(isZero(ratio)) {  
+        double ratio = PatternProcessor.getAspectRatio();
+        if(isZero(ratio)) {
             return;
         }
-        
+
         int width = (int) (height * ratio + 0.5);
         uiPattern.setPreferredSize(new Dimension(width, height));
-        
+
         if(height + patternPadding + nonPatternHeight > availableScreenHeight) {
-            scrollPattern();    
+            scrollPattern();
         }
         else {
             unScrollPattern();
-            mainFrame.pack();         
+            mainFrame.pack();
         }
     }
-    
+
     /**
      * Resize pattern to fit current window
      */
@@ -255,20 +255,20 @@ public final class UIMain {
         int height = mainFrame.getHeight() - nonPatternHeight;
         resizeToHeight(height);
     }
-    
+
     /**
      * Maintain the pattern's aspect ratio in window resizing event
      */
-    public static void onMainFrameResize() {    
+    public static void onMainFrameResize() {
         if(isScrollPattern) {
             return;
         }
-        
+
         double ratio = PatternProcessor.getAspectRatio();
-        if(isZero(ratio)) {  
+        if(isZero(ratio)) {
             return;
         }
-        
+
         // reset frame height based on corrected height and width-height ratio
         int hFrame   = mainFrame.getHeight();
         int hPatt = hFrame - nonPatternHeight;
@@ -279,51 +279,51 @@ public final class UIMain {
         mainFrame.pack();
         setMessage("width, height: " + wPatt + ", " + hPatt);
     }
-    
+
     /** check if a double value is close to zero */
     public static boolean isZero(double d) {
         return Math.abs(d) < 0.000001;  // define an global epsilon if needed
     }
-    
+
     /**
      * Get the accumulated size of the parts of mainFrame that are not uiPattern.
      * This info remains unchanged in window resizing, as uiPattern gets all "resize" as "CENTER".
      */
-    public static void updateSizeInfo() {       
-        nonPatternWidth  = mainFrame.getWidth() - uiPattern.getWidth(); 
-        nonPatternHeight = mainFrame.getHeight() - uiPattern.getHeight();  
+    public static void updateSizeInfo() {
+        nonPatternWidth  = mainFrame.getWidth() - uiPattern.getWidth();
+        nonPatternHeight = mainFrame.getHeight() - uiPattern.getHeight();
     }
-    
 
 
-    
+
+
     /**
      * <pre>
-     * @param args: in the form of -x value[,value]                        
+     * @param args: in the form of -x value[,value]
      *              -c int,int: coordinates (x, y) of the main window's top-left corner at startup
-     *              -d int,int: dimension (width, height) of the pattern panel          
+     *              -d int,int: dimension (width, height) of the pattern panel
      *              -i int    : info bar height, just large enough to show info widgets
      *              -m int    : message pane height, just large enough to show one line of text
-     *              -p string : pattern image file name 
+     *              -p string : pattern image file name
      * </pre>
      */
     /*
-     *  TODO: parse command line argument & configuration file (~/.fiberj) 
+     *  TODO: parse command line argument & configuration file (~/.fiberj)
      *       with command line given higher precedence over configuration
-     */       
+     */
     public static void main(String[] args) {
 
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     //try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
-                    //catch (Exception e) { }    
+                    //catch (Exception e) { }
                     //
                     // screen size
                     //GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
                     //screenWidth = gd.getDisplayMode().getWidth();
                     //screenHeight = gd.getDisplayMode().getHeight();
-                    
+
                     // get available screen size
                     Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
                     availableScreenWidth = (int)r.getWidth() - 50;
@@ -332,7 +332,7 @@ public final class UIMain {
                     SystemSettings.init();
                     UIMain.init(100, 100, 600, 600, 0, 0);
                     PatternProcessor.createPatternImage(600);
-                    
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

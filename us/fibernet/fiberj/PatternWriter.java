@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -45,7 +45,7 @@ public final class PatternWriter {
      * @param ptn   the pattern whose data or image is to be written to a file
      * @param args  the output file name and other attributes if applicable
      * @return      if the write is successful
-     * 
+     *
      * For type PNG/JPG/GIF, written is the pattern's displayed image (RGB color image);
      * For type TIF, written is the pattern's intensity (16-bit gray-scale);
      * For all other types, written is the pattern's intensity with appropriate header info.
@@ -55,27 +55,27 @@ public final class PatternWriter {
         if(ptn == null || args == null || args.length < 1) {
             return false;
         }
-            
+
         String fname = args[0];
         String ext = fname.substring(fname.lastIndexOf('.') + 1).toLowerCase();
         boolean writeStatus = false;
-        
+
         if(args.length == 1) {
             if("smv".equals(ext) || "img".equals(ext)) {
                 writeStatus = PatternSmv.writeSmv(ptn, fname);
-            } 
+            }
             else if("tif".equals(ext) || "tiff".equals(ext)) {
                 // TODO
-            } 
+            }
             else if("dat".equals(ext) || "raw".equals(ext)) {
                 // TODO
-            } 
+            }
             else if("png".equals(ext) || "gif".equals(ext) || "jpg".equals(ext) || "jpeg".equals(ext)) {
                 writeStatus = writeRgbImage(ptn.getDisplayImage(), fname, ext);
-            } 
+            }
             else {
                 // TODO
-            }   
+            }
         }
         else {
             // TODO
@@ -83,26 +83,26 @@ public final class PatternWriter {
 
         return writeStatus;
     }
-    
-    
+
+
     /**
      *  Write a BufferedImage to a file with ImageIO supported formats (PNG/JPG/GIF/BMP)
      */
     public static boolean writeRgbImage(BufferedImage bi, String fileName, String imgFormat) {
-        
+
         try {
             if(bi != null) {
                 File ofile = new File(fileName);
                 ImageIO.write(bi, imgFormat, ofile);
                 return true;
             }
-        } 
+        }
         catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         return false;
     }
-    
-    
+
+
 } // class PatternWriter

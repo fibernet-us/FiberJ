@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -31,17 +31,17 @@ package us.fibernet.fiberj;
 import javax.swing.JMenuItem;
 
 /**
- * An interface for decoupling the menu building process. 
+ * An interface for decoupling the menu building process.
  * A MenuItem knows how to build itself and set up hooks properly.
  */
 public interface MenuItem {
-    
+
     /** build self and children if applicable */
     JMenuItem build();
-    
+
     /** return full name for lookup purpose */
     String getFullName();
-    
+
     /** A convenient method to set parent's name */
     void setSurName(String surName);
 }

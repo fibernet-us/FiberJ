@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -29,34 +29,34 @@
 package us.fibernet.fiberj;
 
 /**
- * A class to hold current values for various system wide settings 
+ * A class to hold current values for various system wide settings
  *
  */
 public final class SystemSettings {
-   
+
     private static String homeDir;
     private static String workingDir;
     private static String inputImageType;
     private static String colormap;
     private static int cursorX;
     private static int cursorY;
-    
+
     private SystemSettings() { }
- 
-    public static String getHomeDir()    { return homeDir;        }  
-    public static String getWorkingDir() { return workingDir;     }  
+
+    public static String getHomeDir()    { return homeDir;        }
+    public static String getWorkingDir() { return workingDir;     }
     public static String getFileType()   { return inputImageType; }
-    public static String getColormap()   { return colormap;       }  
+    public static String getColormap()   { return colormap;       }
     public static int getCursorX()       { return cursorX;        }
     public static int getCursorY()       { return cursorY;        }
-    
+
     public static void setHomeDir(String s)    { homeDir = s;        }
     public static void setWorkingDir(String s) { workingDir = s;     }
     public static void setFileType(String s)   { inputImageType = s; }
-    public static void setColormap(String s)   { colormap = s;       }  
+    public static void setColormap(String s)   { colormap = s;       }
     public static void setCursorX(int x)       { cursorX = x;        }
     public static void setCursorY(int y)       { cursorY = y;        }
-    
+
     /**
      * Set system settings from a String array
      */
@@ -72,7 +72,7 @@ public final class SystemSettings {
      */
     public static void init(String filename) {
         homeDir = System.getProperty("user.home");
-        workingDir = System.getProperty("user.dir"); 
+        workingDir = System.getProperty("user.dir");
     }
-    
+
 } // class SystemSettings

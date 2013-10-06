@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -37,10 +37,10 @@ import java.io.InputStream;
 /**
  * A subclass of DataInputStream providing methods to read primitive data types
  * from files of both byte orders (BE for Big Endian, and LE for Little Endian).
- * 
- * We don't test for byte oder in a method, instead, to make reading efficient, 
+ *
+ * We don't test for byte oder in a method, instead, to make reading efficient,
  * user should do the test exact once outside a loop and call appropriate method(s).
- * 
+ *
  */
 public class EndianInputStream extends DataInputStream {
 
@@ -53,14 +53,14 @@ public class EndianInputStream extends DataInputStream {
     }
 
     /**
-     *  Read an unsigned short of Big Endian. 
+     *  Read an unsigned short of Big Endian.
      *  Simply call super.readUnsignedShort() as Java is always Big Endian.
      *  This method is just for sake of symmetry with readUnsignedShortLE().
      */
     public int readUnsignedShortBE() throws IOException {
-        return readUnsignedShort();  
+        return readUnsignedShort();
     }
-    
+
     /**
      *  Read an unsigned short of Little Endian and convert it to Big Endian
      */
@@ -70,5 +70,5 @@ public class EndianInputStream extends DataInputStream {
         return (int) ((B << 8) | A);
     }
 
-    
+
 } // class EndianInputStream

@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -35,11 +35,11 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * 
+ *
  * A utility class providing image rotation functions
- * 
+ *
  * Ref: http://opencv-srf.blogspot.com/2010/09/rotating-images.html
- * 
+ *
  */
 public final class ImageRotation {
 
@@ -51,49 +51,49 @@ public final class ImageRotation {
 
     private ImageRotation() {}
 
-    /** 
-     * rotate a double[][] with default center (x, y), default background pixel value and  
+    /**
+     * rotate a double[][] with default center (x, y), default background pixel value and
      * default interpolation method
      */
     public static double[][] rotate(double[][] array2d, double degree) {
         return rotate(array2d, degree, HALF_W, HALF_H, BG_PIXEL, NEAREST_INTERPOLATION);
     }
 
-    /** 
-     * rotate a double[][] with given center (x, y), default background pixel value and  
+    /**
+     * rotate a double[][] with given center (x, y), default background pixel value and
      * default interpolation method
      */
     public static double[][] rotate(double[][] array2d, double degree, double x0, double y0) {
         return rotate(array2d, degree, x0, y0, BG_PIXEL, NEAREST_INTERPOLATION);
     }
 
-    /** 
-     * rotate an int[][] with default center (x, y), default background pixel value and  
+    /**
+     * rotate an int[][] with default center (x, y), default background pixel value and
      * default interpolation method
      */
     public static int[][] rotate(int[][] array2d, double degree) {
         return rotate(array2d, degree, HALF_W, HALF_H, BG_PIXEL, NEAREST_INTERPOLATION);
     }
 
-    /** 
-     * rotate an int[][] with given center (x, y), default background pixel value and  
+    /**
+     * rotate an int[][] with given center (x, y), default background pixel value and
      * default interpolation method
      */
     public static int[][] rotate(int[][] array2d, double degree, double x0, double y0) {
         return rotate(array2d, degree, x0, y0, BG_PIXEL, NEAREST_INTERPOLATION);
     }
 
-    /** 
+    /**
      * rotate an int[][] with given center (x, y), background pixel value and interpolation method
      */
-    public static int[][] rotate(int[][] array2d, double degree, double x0, double y0, 
+    public static int[][] rotate(int[][] array2d, double degree, double x0, double y0,
                                                   int bgPixel, int interpolation) {
 
         // copy int[][] elements to a double[][]
         int H = array2d.length;
         int W = array2d[0].length;
         double[][] matrix = new double[H][W];
-        
+
         for(int h = 0; h < H; h++) {
             for(int w = 0; w < W; w++) {
                 matrix[h][w] = array2d[h][w];
@@ -107,7 +107,7 @@ public final class ImageRotation {
         H = rotArray2d.length;
         W = rotArray2d[0].length;
         int[][] newArray2d = new int[H][W];
-        
+
         for(int h = 0; h < H; h++) {
             for(int w = 0; w < W; w++) {
                 newArray2d[h][w] = (int) Math.round(rotArray2d[h][w]);
@@ -126,7 +126,7 @@ public final class ImageRotation {
      * @param y0
      * @param interpolation
      * @return
-     * 
+     *
      * x' = cosa * (x - x0) - sina * (y - y0)  + x0
      * y' = sina * (x - x0) + cosa * (y - y0)  + y0
      */
@@ -142,13 +142,13 @@ public final class ImageRotation {
 
         if(x0 == HALF_W)  {  x0 = (W - 1) / 2;  }   // not W/2!
         if(y0 == HALF_H)  {  y0 = (H - 1) / 2;  }
-        
-        
-        // calculate new image's dimension, from four corner points 
-        
+
+
+        // calculate new image's dimension, from four corner points
+
         double dx, dy, x1, y1, x2, y2, x3, y3, x4, y4;
-        
-        // (0, 0) 
+
+        // (0, 0)
         dx = 0 - x0;
         dy = 0 - y0;
         x1 = cosa * dx - sina * dy + x0;
@@ -182,14 +182,14 @@ public final class ImageRotation {
         //
         // e.g., xMin = 2.9, xMax = 5.7, then width = 5: 2 3 4 5 6
         //              2.2         5.7                  2 3 4 5 6
-        //              2.0         5.7                  2 3 4 5 6       
+        //              2.0         5.7                  2 3 4 5 6
         int newW = (int) Math.round(xMax - xMin + 1);
         int newH = (int) Math.round(yMax - yMin + 1);
-        
+
 
         //int newW = (int)(xMax) - (int)xMin + 2;
         //int newH = (int)(yMax) - (int)yMin + 2;
-        
+
         // if Max falls exactly on an int, then --W/H
         // e.g., xMin = 2.2, xMax = 5.0, then width = 4: 2 3 4 5
         //              2.0         5.0                  2 3 4 5
@@ -200,11 +200,11 @@ public final class ImageRotation {
         //if(Math.abs(yMax - Math.round(yMax)) < 0.000001) {
         //    --newH;
         //}
-        
+
         System.out.println("max x, y: " + xMax + ", " + yMax);
         System.out.println("min x, y: " + xMin + ", " + yMin);
         System.out.println("new w, h: " + newW + ", " + newH);
-        
+
         // image array to hold rotated data
         double[][] newArray2d = new double[newH][newW];
 
@@ -227,11 +227,11 @@ public final class ImageRotation {
                 int xx = (int) Math.round(xs);
                 int yy = (int) Math.round(ys);
 
-                if(interpolation == NEAREST_INTERPOLATION) { 
+                if(interpolation == NEAREST_INTERPOLATION) {
                     if(xx >= 0 && yy >= 0 && xx < W && yy < H) {
                         newArray2d[y][x] = array2d[yy][xx];
                     }
-                } 
+                }
                 else if(interpolation == BILINEAR_INTERPOLATION) {
                     int xx1 = xx - 1;
                     int yy1 = yy - 1;
@@ -254,7 +254,7 @@ public final class ImageRotation {
                         double Q21 = array2d[yy2][xx1];
                         double Q22 = array2d[yy2][xx2];
                         newArray2d[y][x] = bilinearinterpolation(xx1, xx2, xs, yy1, yy2, ys, Q11, Q12, Q21, Q22);;
-                    } 
+                    }
                     else if(xx >= 0 && yy >= 0 && xx < W && yy < H) {
                         newArray2d[y][x] = array2d[yy][xx];
                     }
@@ -270,7 +270,7 @@ public final class ImageRotation {
     // http://supercomputingblog.com/graphics/coding-bilinear-interpolation/
     private static double bilinearinterpolation(int x1, int x2, double x, int y1, int y2, double y,
                                                 double Q11, double Q12, double Q21, double Q22) {
-        
+
         double R1 = ((x2 - x) / (x2 - x1)) * Q11 + ((x - x1) / (x2 - x1)) * Q21;
         double R2 = ((x2 - x) / (x2 - x1)) * Q12 + ((x - x1) / (x2 - x1)) * Q22;
         double P = ((y2 - y) / (y2 - y1)) * R1 + ((y - y1) / (y2 - y1)) * R2;
@@ -278,7 +278,7 @@ public final class ImageRotation {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     // for test purpose
     private static void writeImage(int[][] imageArray) throws IOException {
         int H = imageArray.length;
@@ -294,7 +294,7 @@ public final class ImageRotation {
         ImageIO.write(im, "JPG", new File("./39_color.jpg"));
     }
 
-    public static void main0(String[] arg0) {     
+    public static void main0(String[] arg0) {
         String[] testfile = { "./39_color.tif" };
         // System.out.println(testfile);
 

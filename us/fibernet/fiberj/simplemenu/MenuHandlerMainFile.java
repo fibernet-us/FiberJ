@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -35,27 +35,27 @@ import javax.swing.JFileChooser;
 /**
  * A menu handler for the Main menu bar, File menu
  */
-public class MenuHandlerMainFile extends MenuHandlerMain {  
-     
+public class MenuHandlerMainFile extends MenuHandlerMain {
+
     /*
      * File -> Open
      */
     @Override
     public void fileOpen() {
             // fire up a file broswer in current working directory
-            JFileChooser fc = new JFileChooser();   
-            int response = fc.showOpenDialog(null);      
+            JFileChooser fc = new JFileChooser();
+            int response = fc.showOpenDialog(null);
             if(response == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 String filePath = file.getAbsolutePath();
                 System.out.println(filePath);
-            } 
+            }
             else {
                 System.out.println("Open command cancelled");
             }
         }
- 
-    
+
+
     /*
      * File -> Exit
      */

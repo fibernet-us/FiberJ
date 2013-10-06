@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -41,77 +41,77 @@ import javax.swing.border.Border;
 
 /**
  * A UI class for parameter and reflection operations
- * 
+ *
  */
 public final class UIParameter {
 
-	private static final String title = "Reflection-Parameter";
-	private static JFrame paramFrame;
-	private static JPanel paramPanel;
-	private static JPanel reflxPanel;
-	private static ParamListCollectionItem paramListCollectionItems;
+    private static final String title = "Reflection-Parameter";
+    private static JFrame paramFrame;
+    private static JPanel paramPanel;
+    private static JPanel reflxPanel;
+    private static ParamListCollectionItem paramListCollectionItems;
 
-	/**
-	 * No instantiation
-	 */
-	private UIParameter() {
-	};
+    /**
+     * No instantiation
+     */
+    private UIParameter() {
+    };
 
-	public static boolean isOpened() {
-	    return (paramFrame != null);
-	}
-	
-	/**
-	 * create Parameter UI and make sure it happens only once.
-	 */
-	public static synchronized void init() {
+    public static boolean isOpened() {
+        return (paramFrame != null);
+    }
 
-		if (isOpened()) {
-	        paramFrame.pack();
-	        paramFrame.setVisible(true);
-			return;
-		}
+    /**
+     * create Parameter UI and make sure it happens only once.
+     */
+    public static synchronized void init() {
 
-		paramFrame = new JFrame(title);
-		paramFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		paramFrame.addWindowListener(new WindowAdapter() {
+        if (isOpened()) {
+            paramFrame.pack();
+            paramFrame.setVisible(true);
+            return;
+        }
+
+        paramFrame = new JFrame(title);
+        paramFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        paramFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
                 paramFrame.setVisible(false);
             }
         });
 
-		paramListCollectionItems = new ParamListCollectionItem();
+        paramListCollectionItems = new ParamListCollectionItem();
 
-		MenuBuilder.build(paramFrame, new MenuParam().getMenuItems());
+        MenuBuilder.build(paramFrame, new MenuParam().getMenuItems());
 
-		reflxPanel = new JPanel();
-		paramPanel = new JPanel();
-		createGroups(paramPanel, paramListCollectionItems);
+        reflxPanel = new JPanel();
+        paramPanel = new JPanel();
+        createGroups(paramPanel, paramListCollectionItems);
 
-		Border lineBorder = BorderFactory.createLineBorder(Color.gray);
-		reflxPanel.setBorder(lineBorder);
+        Border lineBorder = BorderFactory.createLineBorder(Color.gray);
+        reflxPanel.setBorder(lineBorder);
         paramPanel.setBorder(lineBorder);
-        
-		Box hBox = Box.createHorizontalBox();
-		hBox.add(reflxPanel);
-		hBox.add(paramPanel);
-		paramFrame.add(hBox);
 
-		paramFrame.pack();
-		paramFrame.setVisible(true);
+        Box hBox = Box.createHorizontalBox();
+        hBox.add(reflxPanel);
+        hBox.add(paramPanel);
+        paramFrame.add(hBox);
 
-	}
+        paramFrame.pack();
+        paramFrame.setVisible(true);
 
-	/**
-	 * Other modules call this method when pattern parameters are updated
-	 */
-	public static void refresh() {
-	    if(isOpened()) {
-	        paramListCollectionItems.updateUI();
-	    }
-	}
-	
-	
+    }
+
+    /**
+     * Other modules call this method when pattern parameters are updated
+     */
+    public static void refresh() {
+        if(isOpened()) {
+            paramListCollectionItems.updateUI();
+        }
+    }
+
+
     /*
      * build paramPanel with GroupsLayout
      */
@@ -126,14 +126,14 @@ public final class UIParameter {
         // create horizontal sequential group
         GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
         GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
-     
+
         // create parallel group to hold the JCheckboxes
         GroupLayout.ParallelGroup h1 = layout.createParallelGroup(GroupLayout.Alignment.TRAILING);
         GroupLayout.ParallelGroup h2 = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
         GroupLayout.ParallelGroup h3 = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
 
         for(InfoItem i : infoItems) {
-            
+
             if(i instanceof ParamListItem) {
                 ParamListItem item = (ParamListItem) i;
                 h1 = h1.addComponent(item.getLabel());
@@ -169,9 +169,9 @@ public final class UIParameter {
                         .addComponent(item.getJLabel())
                         .addComponent(item.getJrbYes())
                         .addComponent(item.getJrbNo()));
-                
+
                 vGroup.addGap(10);
-            } 
+            }
 
         } // end of for loop
 
@@ -179,11 +179,11 @@ public final class UIParameter {
         hGroup.addGroup(h2);
         hGroup.addGroup(h3);
         vGroup.addGap(20);
-        
+
         layout.setHorizontalGroup(hGroup);
         layout.setVerticalGroup(vGroup);
     }
-    
-    
+
+
 } // class UIParameter
 

@@ -34,19 +34,19 @@ import javax.swing.JOptionPane;
 
 /**
  * A singleton class serving as the central processor of pattern processing tasks
- * 
+ *
  */
 public final class PatternProcessor {
 
     private static Pattern currentPattern;  // currently only allow one active pattern
-    private static PatternDisplay currentDisplay;  
-  
+    private static PatternDisplay currentDisplay;
+
     public static Pattern getCurrentPattern()  { return currentPattern;                   }
     public static double  getAspectRatio()     { return currentPattern.getAspectRatio();  }
     public static double  getShrinkScale()     { return currentPattern.getShrinkScale();  }
-   
+
     /**
-     * Read an image file and create an a pattern image 
+     * Read an image file and create an a pattern image
      * @param args  image file path and file attributes if applicable
      */
     public static synchronized void createPatternImage(String... args) {
@@ -55,92 +55,92 @@ public final class PatternProcessor {
         }
 
         currentPattern = PatternReader.readPattern(args);
-        createPatternImage(currentPattern); 
+        createPatternImage(currentPattern);
     }
-  
-    /** 
-     * Create an a square rainbow image 
+
+    /**
+     * Create an a square rainbow image
      */
     public static synchronized void createPatternImage(int width) {
         if(width < 0) {
             width = 600;
         }
-        
+
         int[][] intensityData = new int[width][width];
         for(int i=0; i<width; i++) {
             for(int j=0; j<width; j++) {
-                intensityData[i][j] = i + j; 
+                intensityData[i][j] = i + j;
             }
         }
-        
+
         currentPattern = new Pattern(intensityData, "", false);
         createPatternImage(currentPattern);
     }
 
-    /** 
+    /**
      * Create pattern image display for a Pattern
      */
-    public static synchronized void createPatternImage(Pattern pattern) {    
-        if(pattern != null) {            
+    public static synchronized void createPatternImage(Pattern pattern) {
+        if(pattern != null) {
             currentDisplay = new PatternDisplay(UIMain.getUIPattern(), pattern);
-            UIMain.setTitle(UIMain.getTitle() + "  " + pattern.getName()); 
+            UIMain.setTitle(UIMain.getTitle() + "  " + pattern.getName());
             UIMain.updateSizeInfo();
-            UIMain.resizeToHeight(currentPattern.getHeight()); 
+            UIMain.resizeToHeight(currentPattern.getHeight());
             UIParameter.refresh();
         }
     }
-    
- 
-    /** 
+
+
+    /**
      * Save current Pattern data or image into a file
      */
     public static synchronized boolean savePatternToFile(String filename) {
         return PatternWriter.writePattern(currentPattern, filename);
 
     }
-    
-    
+
+
     /**
      * Implements interface ComandProcessor to process user command
-     * 
+     *
      */
     // TODO: look up command from CommandTable and call corresponding action
     public synchronized static void executeCommand(String command) {
-        
-        command = command.toLowerCase();       
+
+        command = command.toLowerCase();
         //System.out.println(command);
 
-        if(command.startsWith("open") || command.startsWith("read")) { 
+        if(command.startsWith("open") || command.startsWith("read")) {
             String filename = command.substring(command.indexOf(' ')).trim();
             // check if the file name is valid, if not, try prepend working directory to it
             if(!new File(filename).exists()) {
                 filename = SystemSettings.getWorkingDir() + File.separator + filename;
             }
-            
+
             if(!new File(filename).exists()) {
                 UIMain.getUIMessage().setMessage(filename + " not found");
             }
             else {
                 createPatternImage(filename);
-            }                  
+            }
         }
         else if(command.startsWith("a")) {   // to actual image size
             try {
-                UIMain.resizeToHeight(currentPattern.getHeight()); 
+                UIMain.resizeToHeight(currentPattern.getHeight());
                 UIMain.setMessage("width, height: " + currentPattern.getWidth() + ", " + currentPattern.getHeight());
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
-            } 
+            }
         }
         else if(command.startsWith("f")) {  // to fit image to current window
             try {
-                UIMain.resizeToFit(); 
+                UIMain.resizeToFit();
                 UIMain.setMessage("width, height: " + UIMain.getUIPattern().getWidth() + ", " + UIMain.getUIPattern().getHeight());
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
-            } 
+            }
         }
         else if(command.startsWith("h") || command.startsWith("w")) { // to height, width
             try {
@@ -148,12 +148,12 @@ public final class PatternProcessor {
                 if(command.charAt(0) == 'w') {
                     size /= currentPattern.getAspectRatio();
                 }
-                UIMain.resizeToHeight(size); 
+                UIMain.resizeToHeight(size);
                 UIMain.setMessage("width, height: " + (int)(size*currentPattern.getAspectRatio()+0.5) + ", " + size);
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
-            } 
+            }
         }
         else if(command.startsWith("r")) { // rotate
             try {
@@ -162,7 +162,7 @@ public final class PatternProcessor {
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
-            } 
+            }
         }
         else if(command.startsWith("s")) { // scroll
             try {
@@ -170,7 +170,7 @@ public final class PatternProcessor {
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
-            } 
+            }
         }
         else if(command.startsWith("pwd")) {
             try {
@@ -178,8 +178,8 @@ public final class PatternProcessor {
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
-            } 
-        }           
+            }
+        }
     }
-    
+
 } // class PatternProcessor

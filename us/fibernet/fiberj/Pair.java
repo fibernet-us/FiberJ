@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -32,7 +32,7 @@ package us.fibernet.fiberj;
  * A simple Pair class to hold two objects
  */
 public class Pair<K, V> {
-    
+
     private K key;
     private V value;
 
@@ -48,7 +48,7 @@ public class Pair<K, V> {
     public V getValue() {
         return value;
     }
-    
+
     public void setKey(K key) {
         this.key = key;
     }
@@ -56,9 +56,9 @@ public class Pair<K, V> {
     public void setValue(V value) {
         this.value = value;
     }
-    
-    public String toString() { 
-        return "(" + key + ": " + value + ")"; 
+
+    public String toString() {
+        return "(" + key + ": " + value + ")";
     }
 
 }

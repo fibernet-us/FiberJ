@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -29,41 +29,41 @@
 package us.fibernet.fiberj.simplemenu;
 
 /**
- * A default menu handler (adapter) for the MenuMain. 
+ * A default menu handler (adapter) for the MenuMain.
  */
-public class MenuHandlerMain implements MenuHandler { 
-    
-    public void fileOpen() {}   
-    public void fileSave() {}   
-    public void fileClose() {}    
+public class MenuHandlerMain implements MenuHandler {
+
+    public void fileOpen() {}
+    public void fileSave() {}
+    public void fileClose() {}
     public void fileExit() {}
 
-    public void imageFlip() {} 
-    public void imageRotate() {} 
-    public void imageResize() {} 
-    public void imageCrop() {} 
+    public void imageFlip() {}
+    public void imageRotate() {}
+    public void imageResize() {}
+    public void imageCrop() {}
 
-    public void colormapLoad() {} 
-    public void colormapSave() {} 
-    public void colormapCustomize() {} 
+    public void colormapLoad() {}
+    public void colormapSave() {}
+    public void colormapCustomize() {}
 
-    public void drawCircle() {} 
-    public void drawResolutionCircle() {} 
-    public void drawLayerline() {} 
-    public void drawRefresh() {} 
-    public void drawClearAll() {} 
+    public void drawCircle() {}
+    public void drawResolutionCircle() {}
+    public void drawLayerline() {}
+    public void drawRefresh() {}
+    public void drawClearAll() {}
 
-    public void processFilter() {} 
-    public void processPlot() {} 
-    public void processCorrection() {} 
-    public void processTransform() {} 
-    public void processBackground() {} 
+    public void processFilter() {}
+    public void processPlot() {}
+    public void processCorrection() {}
+    public void processTransform() {}
+    public void processBackground() {}
 
-    public void windowParameter() {} 
-    public void windowCoordinates() {} 
-    public void windowPixelViewer() {} 
-    public void windowLog() {} 
-    
-    public void helpAbout() {}   
-    public void helpResource() {}               
+    public void windowParameter() {}
+    public void windowCoordinates() {}
+    public void windowPixelViewer() {}
+    public void windowLog() {}
+
+    public void helpAbout() {}
+    public void helpResource() {}
 }

@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -39,21 +39,21 @@ public class MenuHandlerMainImage extends MenuHandlerMainDefault {
     public void mainImageViewActual() {
         PatternProcessor.executeCommand("actual");
     }
-    
+
     /*
      * Image -> View -> Fit
      */
     public void mainImageViewFit() {
         PatternProcessor.executeCommand("fit");
     }
-    
+
     /*
      * Image -> View -> Custom
      */
     public void mainImageViewCustom() {
         UIMain.setMessage("enter on right: w|h size");
     }
-    
+
     public void mainImageFlipHorizontal() {
         getCurrentPattern().flipDataHorizontal();
     }
@@ -61,25 +61,25 @@ public class MenuHandlerMainImage extends MenuHandlerMainDefault {
         getCurrentPattern().flipDataVertical();
     }
 
-    public void mainImageRotate90() { 
+    public void mainImageRotate90() {
         getCurrentPattern().rotateData(90);
     }
 
-    public void mainImageRotate180() { 
+    public void mainImageRotate180() {
         getCurrentPattern().rotateData(180);
     }
-    public void mainImageRotate270() { 
+    public void mainImageRotate270() {
         getCurrentPattern().rotateData(270);
     }
 
-    public void mainImageRotateCustom() { 
+    public void mainImageRotateCustom() {
         UIMain.setMessage("enter on right: r degree");
     }
 
     public void mainImageScale()          { super.mainImageScale();        }
     public void mainImageCrop()           { super.mainImageCrop();         }
     public void mainImageRepair()         { super.mainImageRepair();       }
-    
+
 
     private Pattern getCurrentPattern() {
         return PatternProcessor.getCurrentPattern();

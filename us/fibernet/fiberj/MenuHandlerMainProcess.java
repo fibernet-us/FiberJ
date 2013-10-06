@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -32,28 +32,28 @@ package us.fibernet.fiberj;
 /**
  * A menu handler for the Main menu bar, Process menu
  */
-public class MenuHandlerMainProcess extends MenuHandlerMainDefault {  
-     
-  
+public class MenuHandlerMainProcess extends MenuHandlerMainDefault {
+
+
     /*
      * Process -> Transform
      */
     @Override
-    public void mainProcessTransform()  { 
+    public void mainProcessTransform()  {
         new Transform(PatternProcessor.getCurrentPattern()).toReciprocal();
-    } 
- 
+    }
+
     /*
      * Process -> Draw
      */
     @Override
-    public void mainProcessDraw() { 
+    public void mainProcessDraw() {
         new DrawDialog(PatternProcessor.getCurrentPattern());
     }
-    
+
     public void mainProcessBackground()     { super.mainProcessBackground();   }
     public void mainProcessCorrection()     { super.mainProcessCorrection();   }
     public void mainProcessFilter()         { super.mainProcessFilter();       }
     public void mainProcessPlot()           { super.mainProcessPlot();         }
-    
+
 } // class MenuHandlerMainProcess

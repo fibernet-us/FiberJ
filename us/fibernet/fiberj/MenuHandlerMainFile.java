@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -36,7 +36,7 @@ import javax.swing.JOptionPane;
 /**
  * A menu handler for the Main menu bar, File menu
  */
-public class MenuHandlerMainFile extends MenuHandlerMainDefault {  
+public class MenuHandlerMainFile extends MenuHandlerMainDefault {
 
     /*
      * Main Menu -> File -> Open
@@ -44,16 +44,16 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
     @Override
     public void mainFileOpen() {
         // fire up a file browser in current working directory
-        JFileChooser fc = new JFileChooser(SystemSettings.getWorkingDir());   
-        int response = fc.showOpenDialog(null);      
+        JFileChooser fc = new JFileChooser(SystemSettings.getWorkingDir());
+        int response = fc.showOpenDialog(null);
         if(response == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             String filePath = file.getAbsolutePath();
             System.out.println(filePath);
-            PatternProcessor.createPatternImage(filePath);      
+            PatternProcessor.createPatternImage(filePath);
             // user might have changed working directory, update it
             SystemSettings.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
-        } 
+        }
         else {
             System.out.println("Open command cancelled");
         }
@@ -66,29 +66,29 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
         // TODO: clean up resources
         PatternProcessor.createPatternImage(600);
     }
-    
-    
+
+
     /*
      * Main Menu -> Save As -> SMV
      */
     public void mainFileSaveAsSMV() {
         saveImageFile("smv");
     }
-    
+
     /*
      * Main Menu -> Save As -> PNG
      */
     public void mainFileSaveAsPNG() {
         saveImageFile("png");
     }
-    
+
     /*
      * Main Menu -> Save As -> JPG
      */
     public void mainFileSaveAsJPG() {
         saveImageFile("jpg", "jpeg");
     }
-    
+
     /*
      * Main Menu -> File -> Exit
      */
@@ -97,11 +97,11 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
         System.exit(0);
     }
 
-    
+
     /*\*************************************************************************
-     * 
+     *
      * TODO section
-     * 
+     *
      */
 
     /*
@@ -117,7 +117,7 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
     public void mainFileSaveAsTIF() {
         super.mainFileSaveAsTIF();
     }
-    
+
     /*
      * Main Menu -> File -> Browse
      */
@@ -139,56 +139,56 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
         super.mainFileMerge();
     }
 
-    
+
     /*
      * mainFileParameter handlers
      */
     public void mainFileParameterLoad() {
         super.mainFileParameterLoad();
-    } 
+    }
 
     public void mainFileParameterSave() {
         super.mainFileParameterSave();
     }
 
-    
-    
+
+
     /*\*************************************************************************
-     * 
+     *
      * private method section
-     * 
+     *
      */
-    
+
     // A helper method used by all Save As method
     private void saveImageFile(String... type) {
-        
+
         // fire up a file browser in current working directory
-        JFileChooser fc = new JFileChooser(SystemSettings.getWorkingDir());   
-        
+        JFileChooser fc = new JFileChooser(SystemSettings.getWorkingDir());
+
         // loop until user enters a value file name to write to, or user cancel the dialog
         while(true) {
-            int response = fc.showOpenDialog(null); 
-            
+            int response = fc.showOpenDialog(null);
+
             if(response == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
                 String filePath = file.getAbsolutePath();
-                
+
                 // deal with cases where the file exists
                 if(new File(filePath).exists()) {
                     int answer = JOptionPane.showConfirmDialog(null,  // center window
                             filePath + " exists. Do you want to overwrite it?", // message
                             "Danger!",  // title
                             JOptionPane.YES_NO_OPTION); // option list
-                            
+
                     if(answer == JOptionPane.NO_OPTION) {
                         continue;
                     }
                 }
-                
+
                 // update working directory
                 SystemSettings.setWorkingDir(filePath.substring(0,filePath.lastIndexOf(File.separator)));
                 System.out.println(filePath);
-                
+
                 // check file extension to see if it conforms to given type
                 String ext = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
 
@@ -199,25 +199,25 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
                         break;
                     }
                 }
-                
+
                 if(!validExt) {
-                    String err = ext + " is not a valid extension for a " + type[0] + " file!"; 
+                    String err = ext + " is not a valid extension for a " + type[0] + " file!";
                     JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
                     continue;
                 }
-                
+
                 if(!PatternProcessor.savePatternToFile(filePath)) {
                     JOptionPane.showMessageDialog(null, "Save failed!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } 
+            }
             else {
                 //System.out.println("Open command cancelled");
             }
-            
+
             break;
         }
     }
-    
-    
+
+
 } // class MenuHandlerMainFile
 

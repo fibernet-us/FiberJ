@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -35,14 +35,14 @@ import javax.swing.JMenuBar;
  *  A class for creating a JMenuBar on a JFrame given a list of MenuItems
  */
 public class MenuBuilder {
-   
-    public static JMenuBar build (JFrame parentFrame, MenuItem... menuItems) { 
+
+    public static JMenuBar build (JFrame parentFrame, MenuItem... menuItems) {
         JMenuBar menuBar = new JMenuBar();
         for(MenuItem mi : menuItems) {
             menuBar.add(mi.build());
         }
         parentFrame.setJMenuBar(menuBar);
         return menuBar;
-    }   
-    
+    }
+
 } // class MenuBuilder

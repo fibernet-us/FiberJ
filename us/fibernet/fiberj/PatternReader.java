@@ -60,7 +60,7 @@ import com.sun.media.jai.codec.ImageCodec;
 public final class PatternReader {
 
     private static int[][] image;
-    
+
     private PatternReader() {
     }
 
@@ -73,24 +73,24 @@ public final class PatternReader {
         if(args == null || args.length < 1) {
             return null;
         }
-            
+
         String fname = args[0];
         int[][] data = null;
         Pattern pattern = null;
-        
+
         if(args.length == 1) {
             if(fname.toLowerCase().endsWith("tif")) {
                 data = readTif(fname);
-            } 
+            }
             else if(fname.toLowerCase().endsWith("plr")) {
                 data = readPlr(fname);
-            } 
+            }
             else if(fname.toLowerCase().endsWith("smv")) {
                 return PatternSmv.readSmvPattern(fname);
-            } 
+            }
             else {
                 data = readImage(fname);
-            }   
+            }
         }
         else {
             if(fname.toLowerCase().endsWith("dat")) {
@@ -106,14 +106,14 @@ public final class PatternReader {
             }
         }
 
-        
+
         if(data != null) {
             pattern = new Pattern(data, new File(fname).getName(), false);
         }
 
         return pattern;
     }
-    
+
     /**
      * Parse the pattern file extension and call accordingly a read method
      * Read pattern files that come with attributes not stored in itself
@@ -123,22 +123,22 @@ public final class PatternReader {
         if(args == null || args.length < 1) {
             return null;
         }
-            
+
         String fname = args[0];
-        
+
         if(args.length == 1) {
             if(fname.toLowerCase().endsWith("tif")) {
                 return readTif(fname);
-            } 
+            }
             else if(fname.toLowerCase().endsWith("plr")) {
                 return readPlr(fname);
-            } 
+            }
             else if(fname.toLowerCase().endsWith("smv")) {
                 return PatternSmv.readSmv(fname);
-            } 
+            }
             else {
                 return readImage(fname);
-            }               
+            }
         }
         else {
             if(fname.toLowerCase().endsWith("dat")) {
@@ -233,7 +233,7 @@ public final class PatternReader {
             int height = img.getHeight();
             int width = img.getWidth();
             //int[] pixels = img.getRGB(0, 0, width, height, null, 0, width);
-            
+
             // TODO: extract pixel values according to our color model
             byte[] pixels = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
 
@@ -244,14 +244,14 @@ public final class PatternReader {
                     image[h][w] = pixels[p++];
                 }
             }
-        } 
+        }
         catch (Exception e) {
             e.printStackTrace();
         }
 
         return image;
     }
-    
+
     /*
     public static void getPixels(String url) {
 
@@ -260,7 +260,7 @@ public final class PatternReader {
         int w = image.getWidth();
         int h = image.getHeight();
 
-        int[] dataBuffInt = image.getRGB(0, 0, w, h, null, 0, w); 
+        int[] dataBuffInt = image.getRGB(0, 0, w, h, null, 0, w);
 
         Color c = new Color(dataBuffInt[100]);
 
@@ -270,7 +270,7 @@ public final class PatternReader {
         System.out.println(c.getAlpha()); // = (dataBuffInt[100] >> 24) & 0xFF
     }
     */
-    
+
     // ref: http://stackoverflow.com/questions/6524196/java-get-pixel-array-from-image
     //
     private static int[][] getPixels(BufferedImage image) {
@@ -315,29 +315,29 @@ public final class PatternReader {
 
         return result;
      }
-    
+
     /*
      * Read a PLR image and extract image data into a 2D array
      */
     public static int[][] readPlr(String fname) {
-        
+
         try {
             BufferedReader br = new BufferedReader(new FileReader(fname));
             PatternPlr dp = new PatternPlr();
             dp.parseData(br);
-            br.close();            
+            br.close();
             return dp.getImageData();
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-        
+
         return null;
     }
-    
-    
+
+
     /**
-     * 
+     *
      */
     static int[][] doubleToInt(double[][] array) {
         int[][] output = new int[array.length][array[0].length];
@@ -354,8 +354,8 @@ public final class PatternReader {
 
 
 /**
- * Input stream provided with NiftiDataset class. Better to use tools.EndianNeutralInputStream, 
- * because that gives an endian-correct result from the standard <code>DataInput</code> methods, 
+ * Input stream provided with NiftiDataset class. Better to use tools.EndianNeutralInputStream,
+ * because that gives an endian-correct result from the standard <code>DataInput</code> methods,
  * and will also read unsigned types.
  *
  * @author Philip Cook (imported this code)

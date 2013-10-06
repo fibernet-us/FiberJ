@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -35,5 +35,5 @@ public class MenuHandlerMainHelp extends MenuHandlerMainDefault {
      */
     public void mainHelpAbout()             { super.mainHelpAbout();         }
     public void mainHelpResource()          { super.mainHelpResource();      }
-    
+
 }

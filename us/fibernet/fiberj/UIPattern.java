@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -42,18 +42,18 @@ public class UIPattern extends ScrollablePanel {
     //private int width, height;
     private JFrame parentFrame;
     private PatternDisplay patternDisplay;
-    
+
     /**
-     * Create a JPanel with given dimensions on a parent JFrame 
+     * Create a JPanel with given dimensions on a parent JFrame
      */
     public UIPattern(JFrame parent, int width, int height) {
         parentFrame = parent;
-        setPreferredSize(new Dimension(width, height)); 
-        setMinimumSize(new Dimension(width, height)); 
+        setPreferredSize(new Dimension(width, height));
+        setMinimumSize(new Dimension(width, height));
         setBounds(0, 0, width, height);
         setLayout(null);
     }
-    
+
     /**
      * Place a PatternDisplay object on this panel
      */
@@ -64,7 +64,7 @@ public class UIPattern extends ScrollablePanel {
     public JFrame getParentFrame() {
         return parentFrame;
     }
-    
+
     /**
      * Create a Colormap control associated with current patternDisplay
      */
@@ -72,29 +72,29 @@ public class UIPattern extends ScrollablePanel {
         patternDisplay.openColorControl();
     }
 
-    
+
     public void drawCircle(Circle c) {
         patternDisplay.drawCircle(c);
     }
-    
+
     public void drawCircles(ArrayList<Circle> cs) {
         patternDisplay.drawCircles(cs);
     }
-    
-    public void drawResolution(Resolution r) { 
+
+    public void drawResolution(Resolution r) {
         patternDisplay.drawResolution(r);
     }
-    
-    public void drawResolutions(ArrayList<Resolution> rs) { 
+
+    public void drawResolutions(ArrayList<Resolution> rs) {
         patternDisplay.drawResolutions(rs);
     }
-    
-    public void drawLayerline(Layerline l) { 
+
+    public void drawLayerline(Layerline l) {
         patternDisplay.drawLayerline(l);
     }
-    
-    public void drawLayerlines(ArrayList<Layerline> ls) { 
+
+    public void drawLayerlines(ArrayList<Layerline> ls) {
         patternDisplay.drawLayerlines(ls);
     }
-    
+
 } // class UIPattern
