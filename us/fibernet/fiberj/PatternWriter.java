@@ -65,7 +65,7 @@ public final class PatternWriter {
                 writeStatus = PatternSmv.writeSmv(ptn, fname);
             }
             else if("tif".equals(ext) || "tiff".equals(ext)) {
-                // TODO
+                writeStatus = TiffWriter.writeImage(ptn.getWidth(), ptn.getHeight(), ptn.getDataBytes(2), fname);
             }
             else if("dat".equals(ext) || "raw".equals(ext)) {
                 // TODO

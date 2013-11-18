@@ -34,26 +34,26 @@ package us.fibernet.fiberj;
  */
 public class MenuHandlerMainProcess extends MenuHandlerMainDefault {
 
-
     /*
-     * Process -> Transform
-     */
-    @Override
-    public void mainProcessTransform()  {
-        new Transform(PatternProcessor.getCurrentPattern()).toReciprocal();
-    }
-
-    /*
-     * Process -> Draw
+     * Menu Main -> Process -> Draw
      */
     @Override
     public void mainProcessDraw() {
-        new DrawDialog(PatternProcessor.getCurrentPattern());
+        new DrawDialog();
     }
+    
+    /*
+     * Menu Main -> Process -> Plot
+     */
+    @Override
+    public void mainProcessPlot() {
+        new PlotDialog();
+    }
+    
 
-    public void mainProcessBackground()     { super.mainProcessBackground();   }
+    public void mainProcessTransform()      { super.mainProcessTransform();    }
     public void mainProcessCorrection()     { super.mainProcessCorrection();   }
     public void mainProcessFilter()         { super.mainProcessFilter();       }
-    public void mainProcessPlot()           { super.mainProcessPlot();         }
+
 
 } // class MenuHandlerMainProcess

@@ -65,36 +65,4 @@ public class UIPattern extends ScrollablePanel {
         return parentFrame;
     }
 
-    /**
-     * Create a Colormap control associated with current patternDisplay
-     */
-    public void openColormap() {
-        patternDisplay.openColorControl();
-    }
-
-
-    public void drawCircle(Circle c) {
-        patternDisplay.drawCircle(c);
-    }
-
-    public void drawCircles(ArrayList<Circle> cs) {
-        patternDisplay.drawCircles(cs);
-    }
-
-    public void drawResolution(Resolution r) {
-        patternDisplay.drawResolution(r);
-    }
-
-    public void drawResolutions(ArrayList<Resolution> rs) {
-        patternDisplay.drawResolutions(rs);
-    }
-
-    public void drawLayerline(Layerline l) {
-        patternDisplay.drawLayerline(l);
-    }
-
-    public void drawLayerlines(ArrayList<Layerline> ls) {
-        patternDisplay.drawLayerlines(ls);
-    }
-
 } // class UIPattern

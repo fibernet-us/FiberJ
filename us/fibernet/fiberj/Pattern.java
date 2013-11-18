@@ -6,7 +6,7 @@
  *
  * - Redistributions of source code must retain the above copyright notice, this list
  *   of conditions and the following disclaimer.
- * 
+ *
  * - Redistributions in binary form must reproduce the above copyright notice, this
  *   list of conditions and the following disclaimer listed in this license in the
  *   documentation and/or other materials provided with the distribution.
@@ -29,8 +29,12 @@
 package us.fibernet.fiberj;
 
 import java.awt.Point;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JOptionPane;
 import static java.lang.Math.asin;
@@ -38,16 +42,15 @@ import static java.lang.Math.tan;
 
 /**
  * A class containing all information about a fiber diffraction pattern
- * and related data operations
  */
 public class Pattern {
-    
-    private static final double EPS = 0.000001;  // values less than this are treated as 0
-    
+
+    private static final double EPS = 0.000001;  // threshold for floating number comparisons
+
     private String name;        // name or file name for this pattern
-    private int[][] data;       // working pattern data: diffracton intensity
-    private int[][] data0;      // original pattern data read from file
-    private int[][] mask;       // for pixels who are masked   
+    private int[][] data;       // diffracton intensity
+    private int[][] data0;      // original data read from file
+    private byte[][] mask;      // for pixels who are masked
     private int dataMin;        // min value of intensity data
     private int dataMax;        // max value of intensity data
     private boolean isRecip;    // if this pattern is in reciprocal space
@@ -57,131 +60,142 @@ public class Pattern {
     private double wavelen;     // radiation wave length (angstrom)
     private double sdd;         // specimen to detector distance in (millimeter)
     //private double sddP;      // normalized sdd (in pixel) // always compute on fly
-    private double pixelSize;   // pixel size of pattern image (millimeter)
-                                // or step size in reciprocal space (1/angstrom)
-    private double twist;       // fiber missetting angle: rotations about x axis (degree) 
+    private double pixelSize;   // pixel size of pattern image (micrometer)
+    // or step size in reciprocal space (1/angstrom)
+    private double twist;       // fiber missetting angle: rotations about x axis (degree)
     private double tilt;        // fiber missetting angle: rotations about y axis (degree)
     private double repeat;      // fiber repeat distance (angstrom)
     private double betaD;       // detector missetting angle: rotations about y axis (degree)
     private double gammaD;      // detector missetting angle: rotations about z axis (degree)
     private double offset;      // detector offset or bias or background
     private double dCalibrant;  // d-spacing of calibrant (angstrom)
-    
-    private double aspectRatio = 1.0;  // ratio of image display width to height
-    private double shrinkScale = 1.0;  // scale factor, size1 of displayData / size1 of data       
 
-    private PatternDisplay myDisplay;  
-    
+    private int dataScale = 1;          // data scale factor, data0.height / data.height
+    private double displayScale = 1.0;  // display scale factor, data.height / displayData.height;
+    private double aspectRatio = 1.0;   // width / height
+    private boolean isScaleFit = false;
+
+    private PatternDisplay myDisplay;
+
 
     /**
-     * @param pdata    pattern data, a 2D array of pixels
-     * @param pname    pattern name
-     * @param isRecip  if this pattern is in reciprocal space
+     * @param data     2D array of intensity data 
+     * @param name     pattern name
+     * @param isRecip  whether this is a reciprocal space pattern
      */
-    public Pattern(int[][] pdata, String pname, boolean isRecip) {
-        this.name = pname;
+    public Pattern(int[][] data, String name, boolean isRecip) {
+        this.data = data;
+        this.data0 = data;
+        this.name = name;
         this.isRecip = isRecip;
-        updateData(pdata);
+        setAspectRatio((data[0].length + 0.0) / data.length);
+        setPatternData(data);
     }
-    
-    /**
-     * print out all parameters of this pattern
-     */
+
+    // TODO: clean up upon user clicking the close button
+    public void close() {
+
+    }
+
     public String toString() {
-        return  "width = "      + getWidth()  + "\n" +  
-                "height = "     + getHeight() + "\n" +  
-                "centerX = "    + centerX     + "\n" +  
-                "centerY = "    + centerY     + "\n" +  
-                "pixelSize = "  + pixelSize   + "\n" +  
-                "wavelen = "    + wavelen     + "\n" +  
-                "sdd = "        + sdd         + "\n" +  
-                "sddp = "       + getSddP()   + "\n" +  
-                "twist = "      + twist       + "\n" +  
-                "tilt = "       + tilt        + "\n" +  
-                "repeat = "     + repeat      + "\n" +  
-                "betaD = "      + betaD       + "\n" +  
-                "gammaD = "     + gammaD      + "\n" +  
-                "offset = "     + offset      + "\n" +  
+        return  "width = "      + getWidth()  + "\n" +
+                "height = "     + getHeight() + "\n" +
+                "centerX = "    + centerX     + "\n" +
+                "centerY = "    + centerY     + "\n" +
+                "pixelSize = "  + pixelSize   + "\n" +
+                "wavelen = "    + wavelen     + "\n" +
+                "sdd = "        + sdd         + "\n" +
+                "twist = "      + twist       + "\n" +
+                "tilt = "       + tilt        + "\n" +
+                "repeat = "     + repeat      + "\n" +
+                "betaD = "      + betaD       + "\n" +
+                "gammaD = "     + gammaD      + "\n" +
+                "offset = "     + offset      + "\n" +
                 "dCalibrant = " + dCalibrant;
     }
-    
-    
+
+
     /*------------------------------- getters -------------------------------*/
-    
-    public String  getName()        { return name;           }
-    public int     getWidth()       { return data[0].length; }
-    public int     getHeight()      { return data.length;    }
-    public int     getDataMin()     { return dataMin;        }
-    public int     getDataMax()     { return dataMax;        }
-    public int[][] getData()        { return data;           }
-    public int[][] getMask()        { return mask;           }
-    public double  getCenterX()     { return centerX;        }
-    public double  getCenterY()     { return centerY;        }
-    public double  getWavelen()     { return wavelen;        }
-    public double  getSdd()         { return sdd;            }
-    public double  getDistance()    { return getSdd();       }
-    public double  getPixelSize()   { return pixelSize;      }
-    public double  getTwist()       { return twist;          }
-    public double  getTilt()        { return tilt;           }
-    public double  getRepeat()      { return repeat;         }
-    public double  getBetaD()       { return betaD;          }
-    public double  getGammaD()      { return gammaD;         }
-    public double  getOffset()      { return offset;         }
-    public double  getdCalibrant()  { return dCalibrant;     } 
-    public boolean isRecip()        { return isRecip;        }
-    public double  getAspectRatio() { return aspectRatio;    }
-    public double  getShrinkScale() { return shrinkScale;    }
-    
-    
-    /** 
-     * return intensity data as an array of bytes 
-     */
-    public byte[] getDataBytes() {
-        int W = getWidth();
-        int H = getHeight();
-        byte[] bytes = new byte[W*H*4];
-        
-        for(int h=0, p=0; h<H; h++) {
-            for(int w=0; w<W; w++) {
-                int i = data[h][w];
-                // no need to & 0xFF as cast only take the last byte
-                bytes[p++] = (byte)(i >> 24);
-                bytes[p++] = (byte)(i >> 16);
-                bytes[p++] = (byte)(i >> 8);
-                bytes[p++] = (byte)(i);
-            }
+
+    public String  getName()         { return name;           }
+    public int     getWidth()        { return data[0].length; }
+    public int     getHeight()       { return data.length;    }
+    public int     getDataMin()      { return dataMin;        }
+    public int     getDataMax()      { return dataMax;        }
+    public byte[][] getMask()        { return mask;           }
+    public double  getCenterX()      { return centerX;        }
+    public double  getCenterY()      { return centerY;        }
+    public double  getWavelen()      { return wavelen;        }
+    public double  getSdd()          { return sdd;            }
+    public double  getDistance()     { return getSdd();       }
+    public double  getPixelSize()    { return pixelSize;      }
+    public double  getTwist()        { return twist;          }
+    public double  getTilt()         { return tilt;           }
+    public double  getRepeat()       { return repeat;         }
+    public double  getBetaD()        { return betaD;          }
+    public double  getGammaD()       { return gammaD;         }
+    public double  getOffset()       { return offset;         }
+    public double  getdCalibrant()   { return dCalibrant;     }
+    public boolean isRecip()         { return isRecip;        }
+    public double  getAspectRatio()  { return aspectRatio;    }
+    public double  getShrinkScale()  { return displayScale;   }
+    public int[][] getData()         { return data;           }
+
+
+    /*---------------------- getters for derivative info --------------------*/
+
+    public int[][] getDisplayData() { 
+        if(isScaleDisplayData()) {
+            return PatternUtil.shrinkArray(data);  
         }
-        
-        return bytes;
+        else {
+            return data;
+        }
     }
- 
+    ///////
+    private boolean isScaleDisplayData() {
+        return Math.abs(displayScale - 1.0) > 0.01;
+    }
+
     
     /** 
-     * get the radius of the pixel at (x, y) relative to pattern center 
-     */
-    public double getr(int x, int y) {
-        double dx = x - centerX;
-        double dy = y - centerY;
-        return Math.sqrt(dx*dx + dy*dy);
-    }  
-        
-    
-    /** 
-     * get max dimension of the pattern 
+     * get max dimension of the pattern. used by DrawDialog 
      */
     public double getMaxDimension() {
         int w = getWidth();
         int h = getHeight();
         return Math.sqrt(w*w + h*h);
     }
-    
+
+    /** 
+     * Recalculate displayScale based on new pattern display height  
+     *  Do not change parameters, only update coordinates (so x,y no longer integers)
+     */
+    public void recalcDisplayScale(double newHeight) {
+        displayScale = data.length / newHeight;
+    }
+
     
     /** 
-     * get the intensity value of the pixel at (x, y) 
+     * get the x, y, radius, intensity of the pixel at display (x, y) 
      */
-    public double getI(int x, int y) {
-        int x0 = (int)(x / shrinkScale + 0.5);
-        int y0 = (int)(y / shrinkScale + 0.5);
+    public double getx(int px)  { 
+        return px * displayScale; 
+    }
+    
+    public double gety(int py)  { 
+        return py * displayScale; 
+    }
+
+    public double getr(int px, int py) {
+        double dx = px * displayScale - centerX;
+        double dy = py * displayScale - centerY;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    public double getI(double px, double py) {
+        int x0 = (int)(px * displayScale + 0.5);
+        int y0 = (int)(py * displayScale + 0.5);
         if(x0 < 0 || x0 >= getWidth() || y0 < 0 || y0 >= getHeight()) {
             return 0.0;
         }
@@ -190,34 +204,87 @@ public class Pattern {
 
     
     /** 
-     * get normalized sdd (unit is pixel instead of mm as in sdd) 
+     * get aggregated pixel data along X or along Y  
      */
-    public double getSddP() {
-        if(pixelSize < EPS) {
-            String err = "pixel size not defined!";
-            JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
-            return -1;
-        }     
+    public double getI(boolean aggregatePY, int px, int py, int offset) {
+        double sum = 0;
+        int x0 = (int)(px * displayScale + 0.5);
+        int y0 = (int)(py * displayScale + 0.5);
 
-        return sdd / pixelSize;
+        if(aggregatePY) {
+            for(int i=0; i<offset; i++) {
+                y0 = (int)((py + i) * displayScale + 0.5);
+                if(x0 < 0 || x0 >= getWidth() || y0 < 0 || y0 >= getHeight()) {
+                    continue;
+                }
+                sum += data[y0][x0];
+            }
+        }
+        else {
+            for(int i=0; i<offset; i++) {
+                x0 = (int)((px + i) * displayScale + 0.5);
+                if(x0 < 0 || x0 >= getWidth() || y0 < 0 || y0 >= getHeight()) {
+                    continue;
+                }
+                sum += data[y0][x0];
+            }                 
+        }
+
+        return sum / offset;
     }
-    
-    
+
+
     /** 
-     * get current displayed pattern image as a BufferedImage 
+     * return intensity data as an array of bytes 
      */
+    public byte[] getDataBytes(int pixSize) {
+        int W = getWidth();
+        int H = getHeight();
+        byte[] bytes;
+
+        if(pixSize == 4) {
+            bytes = new byte[W*H*4];
+            for(int h=0, p=0; h<H; h++) {
+                for(int w=0; w<W; w++) {
+                    int i = data[h][w];
+                    // no need to & 0xFF as cast only take the last byte
+                    bytes[p++] = (byte)(i >> 24);
+                    bytes[p++] = (byte)(i >> 16);
+                    bytes[p++] = (byte)(i >> 8);
+                    bytes[p++] = (byte)(i);
+                }
+            }
+        }
+        else {
+            bytes = new byte[W*H*2];
+            for(int h=0, p=0; h<H; h++) {
+                for(int w=0; w<W; w++) {
+                    int i = data[h][w];
+                    // no need to & 0xFF as cast only take the last byte
+                    bytes[p++] = (byte)(i >> 8);
+                    bytes[p++] = (byte)(i);
+                }
+            }            
+        }
+
+        return bytes;
+    }
+
+    /** return the displayed pattern as a BufferedImage */
     public BufferedImage getDisplayImage() {
         return myDisplay.getDisplayImage();
     }
     
-    
+    /** return the DrawKit on myDisplay */
+    public DrawKit getDrawKit() {
+        return myDisplay.getDrawKit();
+    }
+
+
     
     /*--------------------------------- setters --------------------------------------*/
-    
-    public void setCenterX(double d)          { centerX = d;    UIParameter.refresh(); }
-    public void setCenterY(double d)          { centerY = d;    UIParameter.refresh(); }
+
     public void setWavelen(double d)          { wavelen = d;    UIParameter.refresh(); }
-    public void setPixelSize(double d)        { pixelSize = d;  UIParameter.refresh(); }
     public void setSdd(double d)              { sdd = d;        UIParameter.refresh(); }
     public void setTwist(double d)            { twist = d;      UIParameter.refresh(); }
     public void setTilt(double d)             { tilt = d;       UIParameter.refresh(); }
@@ -227,50 +294,82 @@ public class Pattern {
     public void setOffset(double d)           { offset = d;     UIParameter.refresh(); }
     public void setdCalibrant(double d)       { dCalibrant = d; UIParameter.refresh(); }
     public void setRecip(boolean b)           { isRecip = b;    UIParameter.refresh(); }
-    public void setMask(int[][] a)            { mask = a;                              }
+    public void setPixelSize(double d)        { pixelSize = d;  UIParameter.refresh(); }
+
+    public void setCenterX(double d)          { centerX = d;    UIParameter.refresh(); }
+    public void setCenterY(double d)          { centerY = d;    UIParameter.refresh(); }
+    public void setCenterPX(double d)         { centerX = d * displayScale;    UIParameter.refresh(); }
+    public void setCenterPY(double d)         { centerY = d * displayScale;    UIParameter.refresh(); }
+
+    public void setMask(byte[][] a)           { mask = a;                              }
     public void setDataMin(int i)             { dataMin = i;                           }
     public void setDataMax(int i)             { dataMax = i;                           }
     public void setAspectRatio(double r)      { aspectRatio = r;                       }
-    public void setShrinkScale(double s)      { shrinkScale = s;                       }
     public void setDisplay(PatternDisplay d)  { myDisplay = d;                         }
-    // TODO: set according to scale factor
-    public void setCenterX0(double d)         { centerX = d;    UIParameter.refresh(); }
-    public void setCenterY0(double d)         { centerY = d;    UIParameter.refresh(); }
-    public void setPixelSize0(double d)       { pixelSize = d;  UIParameter.refresh(); }
-    
-    
+
+ 
     /** 
-     * Recalculate shrinkScale based on new pattern display height  
+     * when dataScale changes (data rescaling), update parameters affected 
      */
-    public void recalcShrinkScale(double newHeight) {
-        shrinkScale = data.length / newHeight;
+    public void onDataScaling()  { 
+        centerX /= dataScale;   
+        centerY /= dataScale;    
+        pixelSize *= dataScale;  
+        UIParameter.refresh(); 
     }
 
-    
+
     /**
-     * replace this pattern's data with a new one, set center and create a new mask
+     * replace this pattern's data array with a new one, set center and create a new mask
      */
-    public void updateData(int[][] newData) {
+    public void setPatternData(int[][] newData) {
         data = newData;
-        data0 = data.clone();
         int height = data.length;
         int width = data[0].length;
-        centerX = width / 2.0;
-        centerY = height / 2.0; 
-        mask = new int[height][width];
+        centerX = (width - 1) / 2.0;
+        centerY = (height - 1) / 2.0;
+        mask = new byte[height][width];
     }
-    
-    
+
+    /** 
+     * restore data to fit the screen 
+     */
+    public void scaleFit() {  
+        if(isScaleFit) {
+            return;
+        }
+
+        isScaleFit = true;
+        recalcDisplayScale(data0.length);
+        setPatternData(data0);
+        PatternProcessor.createPatternImage(this, null);
+    }
+
+    /** 
+     * restore data to the original size 
+     */
+    public void scaleToOriginal() {
+        if(!isScaleFit) {
+            return;
+        }
+
+        isScaleFit = false;
+        dataScale = 1;
+        onDataScaling();
+        setPatternData(PatternUtil.copy2dArray(data0));
+
+        PatternProcessor.createPatternImage(this, null);
+    }
+
     /** 
      * rotate the data array by degree 
      */
     public void rotateData(double degree) {
         int[][] newData = ImageRotation.rotate(data, degree, centerX, centerY);
-        updateData(newData);
-        PatternProcessor.createPatternImage(this);
+        setPatternData(newData);
+        PatternProcessor.createPatternImage(this, null);
     }
-    
-    
+
     /** 
      * flip data array horizontally 
      */
@@ -287,10 +386,9 @@ public class Pattern {
                 }
             }
         }
-        PatternProcessor.createPatternImage(this);
+        PatternProcessor.createPatternImage(this, null);
     }
-  
-    
+
     /** 
      * flip data array vertically 
      */
@@ -307,87 +405,117 @@ public class Pattern {
                 }
             }
         }
-        PatternProcessor.createPatternImage(this);
+        PatternProcessor.createPatternImage(this, null);
     }
-    
-    
-    
-    /** 
+
+
+    /**
+     *  check if essential reciprocal parameters have been defined
+     */
+    public boolean isParameterDefined(boolean verbose) {
+
+        boolean isDefined = (pixelSize > EPS && isRecip) ||
+                (pixelSize > EPS && sdd > EPS && wavelen > EPS);
+
+        if(!isDefined && verbose) {
+
+            String err = null;
+
+            if(pixelSize < EPS) {
+                err = "pixel size not defined!";
+            }
+            else if(wavelen < EPS) {
+                err = "radiation wave length not defined!";
+            }
+            else if(sdd < EPS) {
+                err = "specimen-detector distance not defined!";
+            }
+            else {
+                err = "unknown error";
+            }
+
+            JOptionPane.showMessageDialog(null, err, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return isDefined;
+    }
+
+
+    /**
      * return if the reciprocal has been calculated
      */
     public boolean hasReciprocal() {
         return false; // TODO
     }
-    
-    
+
+
     /**
      * update reciprocal info
      */
     public void updateReciprocal(boolean verbose) {
-        // TODO        
+        // TODO
     }
-    
+
     /**
-     *  return a list of pixels whose resolution matches Resolution r
+     * return a list of pixels whose resolution matches Resolution r
      */
     public ArrayList<Point> getResolutionPoints(Resolution r) {
         return null; // TODO
     }
-    
+
     /**
      * return layerlines, each as an ArrayList of Points
      */
-    public ArrayList<ArrayList<Point>> getLayerLines(double r) {  
+    public ArrayList<ArrayList<Point>> getLayerLines(double r) {
         return null; // TODO
     }
-    
-    
+
+
     /**
      * calculate sdd from calibrant ring
      */
     public void calcSdd(double radius) {
-        // TODO 
+        // TODO
     }
-    
-    
+
+
     /**
-     * transform a point from detector space to reciprocal space (R & Z) 
+     * transform a point from detector space to reciprocal space (R & Z)
      */
-    public boolean xy2RZ(double x, double y, double[] RZ) { 
-        return true; // TODO
-    }
-    
-    
-    /**
-     *  transform a point from detector space to reciprocal space (R & L) 
-     */
-    public boolean xy2RL(double x, double y, double[] RL) { 
-        return true; // TODO
-    }
-   
-    
-    /** 
-     * transform a point from detector space to reciprocal space (R & Z & incident Angle) 
-     */
-    public boolean xy2RZA(double x, double y, double[] RZA) { 
-        return true; // TODO
-    }
-    
-    
-    /**
-     * transform a point (R & L) from reciprocal space to detector space 
-     */
-    public boolean RL2xy(double RR, double LL, double[] xy)  { 
+    public boolean xy2RZ(double x, double y, double[] RZ) {
         return true; // TODO
     }
 
-    
-    /** 
-     * transform a point(R & Z) from reciprocal space to detector space 
+
+    /**
+     * transform a point from detector space to reciprocal space (R & L)
      */
-    public boolean RZ2xy(double R, double Z, double[] xy) { 
+    public boolean xy2RL(double x, double y, double[] RL) {
         return true; // TODO
     }
 
+
+    /**
+     * transform a point from detector space to reciprocal space (R & Z & incident Angle)
+     */
+    public boolean xy2RZA(double x, double y, double[] RZA) {
+        return true; // TODO
+    }
+
+
+    /**
+     * transform a point (R & L) from reciprocal space to detector space
+     */
+    public boolean RL2xy(double RR, double LL, double[] xy) {
+        return true; // TODO
+    }
+
+
+    /**
+     * transform a point(R & Z) from reciprocal space to detector space
+     */
+    public boolean RZ2xy(double R, double Z, double[] xy) {
+        return true; // TODO
+    }
 
 } // class Pattern

@@ -63,27 +63,33 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
      * Main Menu -> File -> Close
      */
     public void mainFileClose() {
-        // TODO: clean up resources
         PatternProcessor.createPatternImage(600);
     }
 
 
     /*
-     * Main Menu -> Save As -> SMV
+     * Main Menu -> File -> Save As -> SMV
      */
     public void mainFileSaveAsSMV() {
         saveImageFile("smv");
     }
 
     /*
-     * Main Menu -> Save As -> PNG
+     * Main Menu -> File -> Save As -> TIF
+     */
+    public void mainFileSaveAsTIF() {
+        saveImageFile("tif");
+    }
+    
+    /*
+     * Main Menu -> File -> Save As -> PNG
      */
     public void mainFileSaveAsPNG() {
         saveImageFile("png");
     }
 
     /*
-     * Main Menu -> Save As -> JPG
+     * Main Menu -> File -> Save As -> JPG
      */
     public void mainFileSaveAsJPG() {
         saveImageFile("jpg", "jpeg");
@@ -109,13 +115,6 @@ public class MenuHandlerMainFile extends MenuHandlerMainDefault {
      */
     public void mainFileSave() {
         super.mainFileSave();
-    }
-
-    /*
-     * Main Menu -> File -> Save As -> TIF
-     */
-    public void mainFileSaveAsTIF() {
-        super.mainFileSaveAsTIF();
     }
 
     /*

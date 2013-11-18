@@ -36,8 +36,8 @@ public class MenuHandlerParamParameter extends MenuHandlerParamDefault {
     @Override
     public void paramParameterCenterfromCursor() {
         Pattern cp = PatternProcessor.getCurrentPattern();
-        cp.setCenterX(SystemSettings.getCursorX());
-        cp.setCenterY(SystemSettings.getCursorY());
+        cp.setCenterPX(SystemSettings.getCursorX());
+        cp.setCenterPY(SystemSettings.getCursorY());
     }
 
     //public void paramParameterDistancefromReflection()  {  }

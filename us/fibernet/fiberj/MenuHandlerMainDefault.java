@@ -88,8 +88,15 @@ public class MenuHandlerMainDefault implements MenuHandler {
     public void mainImageRotate180()      { popupWarning("mainImageRotate180");    }
     public void mainImageRotate270()      { popupWarning("mainImageRotate270");    }
     public void mainImageRotateCustom()   { popupWarning("mainImageRotateCustom"); }
-
-    public void mainImageScale()        { popupWarning("mainImageRescale");    }
+    
+    /*
+     * mainImageScale handlers
+     */
+    public void mainImageScaleFit() { popupWarning("mainImageScaleFit"); }
+    public void mainImageScaleOriginal()   { popupWarning("mainImageScaleOriginal");   }
+    public void mainImageScaleCustom()   { popupWarning("mainImageScaleCustom");   }    
+    
+    
     public void mainImageCrop()         { popupWarning("mainImageCrop");       }
     public void mainImageRepair()       { popupWarning("mainImageRepair");     }
 
@@ -107,7 +114,6 @@ public class MenuHandlerMainDefault implements MenuHandler {
     public void mainProcessDraw()           { popupWarning("mainProcessDraw");         }
     public void mainProcessPlot()           { popupWarning("mainProcessPlot");         }
     public void mainProcessFilter()         { popupWarning("mainProcessFilter");       }
-    public void mainProcessBackground()     { popupWarning("mainProcessBackground");   }
     public void mainProcessCorrection()     { popupWarning("mainProcessCorrection");   }
     public void mainProcessTransform()      { popupWarning("mainProcessTransform");    }
 
@@ -117,7 +123,7 @@ public class MenuHandlerMainDefault implements MenuHandler {
     public void mainWindowParameter()       { popupWarning("mainWindowParameter");    }
     public void mainWindowReflection()     { popupWarning("mainWindowReflection");  }
     public void mainWindowPixelViewer()     { popupWarning("mainWindowPixelViewer");  }
-    public void mainWindowComandLine()      { popupWarning("mainWindowComandLine");   }
+    public void mainWindowCommandLine()      { popupWarning("mainWindowCommandLine");   }
     public void mainWindowLog()             { popupWarning("mainWindowLog");          }
 
     /*

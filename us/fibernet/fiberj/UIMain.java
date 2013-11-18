@@ -88,7 +88,8 @@ public final class UIMain {
     // the accumulated size of the parts of mainFrame that are not uiPattern.
     // this info is used to maintain pattern's aspect ratio in window resizing event
     private static int nonPatternWidth, nonPatternHeight;
-
+    
+    private static boolean isStartup = true;  // do some init things once at startup
     private static boolean isScrollPattern;  // if pattern is in a scrolled pane
 
     private static InfoItemCollectionPixel currentPixelInfo;
@@ -182,10 +183,8 @@ public final class UIMain {
     public static String getTitle()            { return FIBERJ_VS; }
     public static void setTitle(String title)  { mainFrame.setTitle(title);   }
 
-    /*
-     * UI delegation methods. Pass calls from other component to sub UIs.
-     */
-    public static void openColormap()              { uiPattern.openColormap();              }
+    
+    /** delegation methods. Pass calls from other component to sub UIs. */
     public static void setMessage(String message)  { uiMessage.setMessage(message);         }
     public static void cursorUpdate(int x, int y)  { currentPixelInfo.updateLocation(x, y); }
 
@@ -232,6 +231,7 @@ public final class UIMain {
      */
     public static void resizeToHeight(int height)  {
         double ratio = PatternProcessor.getAspectRatio();
+        //System.out.println(ratio);
         if(isZero(ratio)) {
             return;
         }
@@ -277,12 +277,12 @@ public final class UIMain {
         //layout does work properly if we also set the size of patternPanel
         //patternPanel.setPreferredSize(new Dimension(wPatt+patternPadding, hPatt+patternPadding));
         mainFrame.pack();
-        setMessage("width, height: " + wPatt + ", " + hPatt);
+        setMessage("display w, h: " + wPatt + ", " + hPatt);
     }
 
     /** check if a double value is close to zero */
     public static boolean isZero(double d) {
-        return Math.abs(d) < 0.000001;  // define an global epsilon if needed
+        return Math.abs(d) < 0.000001;  // TODO: move this into a utility class and define an epsilon
     }
 
     /**
@@ -290,11 +290,12 @@ public final class UIMain {
      * This info remains unchanged in window resizing, as uiPattern gets all "resize" as "CENTER".
      */
     public static void updateSizeInfo() {
-        nonPatternWidth  = mainFrame.getWidth() - uiPattern.getWidth();
-        nonPatternHeight = mainFrame.getHeight() - uiPattern.getHeight();
+        if(isStartup) {
+            nonPatternWidth  = mainFrame.getWidth() - uiPattern.getWidth();
+            nonPatternHeight = mainFrame.getHeight() - uiPattern.getHeight();
+            isStartup = false;
+        }
     }
-
-
 
 
     /**

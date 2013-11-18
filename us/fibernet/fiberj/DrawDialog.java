@@ -74,7 +74,7 @@ public class DrawDialog extends JDialog {
     private JPanel dataPanel;
     private JPanel cntrlPanel;
     private JLabel colorLabel;
-    private Color penColor = Color.BLUE;
+    private Color penColor = Color.CYAN;
 
     private JLabel spinLabel;
     private String[] labelStrings = {"radius ", "resolution ", "repeat "};
@@ -105,7 +105,11 @@ public class DrawDialog extends JDialog {
     private int curTabIndex = 0;
 
 
-    public DrawDialog(Pattern curPattern) {
+    /**
+     * construct a DrawDialog, setup default values and data structures
+     */
+    public DrawDialog() {
+        Pattern curPattern = getCurrentPattern();
         if(curPattern != null) {
             rMin[CIRCLE] = 10;
             rMax[CIRCLE] = curPattern.getMaxDimension();
@@ -180,7 +184,7 @@ public class DrawDialog extends JDialog {
         createColorPanel(colorPanel = new JPanel());
         createCntrlPanel(cntrlPanel = new JPanel());
         // createEmptyBorder(top, left, bottom, right)
-        colorPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        colorPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 5, 10));
         cntrlPanel.setBorder(BorderFactory.createCompoundBorder(
                                BorderFactory.createLineBorder(Color.gray),
                                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
@@ -671,39 +675,43 @@ public class DrawDialog extends JDialog {
 
     // not used
     private void drawCircle(Circle c) {
-        UIMain.getUIPattern().drawCircle(c);
+        getCurrentDrawKit().drawCircle(c);
     }
 
     // draw on pattern UI all circles in circleList
     private void drawCircles() {
-        UIMain.getUIPattern().drawCircles(circleList);
+        getCurrentDrawKit().drawCircles(circleList);
     }
 
     // not used
     private void drawResolution(Resolution r) {
-        UIMain.getUIPattern().drawResolution(r);
+        getCurrentDrawKit().drawResolution(r);
     }
 
     // draw on pattern UI all resolutions in resolutionList
     private void drawResolutions() {
-        UIMain.getUIPattern().drawResolutions(resolutionList);
+        getCurrentDrawKit().drawResolutions(resolutionList);
     }
 
     // not used
     private void drawLayerline(Layerline l) {
-        UIMain.getUIPattern().drawLayerline(l);
+        getCurrentDrawKit().drawLayerline(l);
     }
 
     // draw on pattern UI all layerlines in layerlineList
     private void drawLayerlines() {
-        UIMain.getUIPattern().drawLayerlines(layerlineList);
+        getCurrentDrawKit().drawLayerlines(layerlineList);
     }
 
-    /*
-     * @return the current Pattern object
-     */
+
+    // get the current Pattern object
     private Pattern getCurrentPattern() {
         return PatternProcessor.getCurrentPattern();
+    }
+    
+    // get the current Pattern's DrawKit
+    private DrawKit getCurrentDrawKit() {
+        return PatternProcessor.getCurrentPattern().getDrawKit();
     }
 }
 

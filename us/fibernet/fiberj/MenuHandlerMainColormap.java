@@ -40,7 +40,7 @@ public class MenuHandlerMainColormap extends MenuHandlerMainDefault {
      */
     @Override
     public void mainColormapCustomize() {
-        UIMain.openColormap();
+        PatternProcessor.openColormap();
     }
 
     /*

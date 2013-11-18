@@ -213,6 +213,9 @@ public class FittingGUI {
     }
 
     private void plot() {
+        this.points = getPlotData();
+        processPoints();
+        
         int w = graphPanel.getWidth();
         int h = graphPanel.getHeight();
         BufferedImage plotImage = new BufferedImage(w, h,
@@ -243,7 +246,7 @@ public class FittingGUI {
 
         graphLabel.setIcon(new ImageIcon(plotImage));
         currentImage = plotImage;
-        plotCache = ImageUtil.copyImage(plotImage);
+        plotCache = PatternUtil.copyBufferedImage(plotImage);
     }
 
     private void drawMarker(Graphics2D g2, Map<Double, Point2D> xMarkers,
@@ -310,7 +313,7 @@ public class FittingGUI {
     }
 
     private void fit() {
-        BufferedImage current = ImageUtil.copyImage(plotCache);
+        BufferedImage current = PatternUtil.copyBufferedImage(plotCache);
         drawCurve(current.createGraphics(), Color.RED, false, originX, originY,
                 imageWidth, imageHeight, getFittingPoints());// draw fitting
                                                              // curve
@@ -441,12 +444,24 @@ public class FittingGUI {
     }
 
     private void clear() {
-        BufferedImage current = ImageUtil.copyImage(plotCache);
+        BufferedImage current = PatternUtil.copyBufferedImage(plotCache);
         graphLabel.setIcon(new ImageIcon(current));
         currentImage = current;
     }
 
     public static Point2D[] getPlotData() {
+        double[] bgX = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+        double[] bgY = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
+
+        Point2D[] points = new Point2D[bgX.length];
+        for (int i = 0; i < bgX.length; i++) {
+            points[i] = new Point2D.Double(bgX[i], bgY[i]);
+        }
+
+        return points;
+    }
+    
+    public static Point2D[] getPlotData0() {
         double[] bgX = { // 200
         0.0522, 0.0525, 0.0529, 0.0532, 0.0536, 0.0539, 0.0542, 0.0546, 0.0549,
                 0.0553, 0.0556, 0.0560, 0.0563, 0.0567, 0.0570, 0.0573, 0.0577,
@@ -514,8 +529,8 @@ public class FittingGUI {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    FittingGUI window = new FittingGUI(getPlotData());
-                    window.frame.setVisible(true);
+                    FittingGUI fg = new FittingGUI();
+                    fg.frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

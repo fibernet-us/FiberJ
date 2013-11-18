@@ -201,9 +201,9 @@ public final class ImageRotation {
         //    --newH;
         //}
 
-        System.out.println("max x, y: " + xMax + ", " + yMax);
-        System.out.println("min x, y: " + xMin + ", " + yMin);
-        System.out.println("new w, h: " + newW + ", " + newH);
+        //System.out.println("max x, y: " + xMax + ", " + yMax);
+        //System.out.println("min x, y: " + xMin + ", " + yMin);
+        //System.out.println("new w, h: " + newW + ", " + newH);
 
         // image array to hold rotated data
         double[][] newArray2d = new double[newH][newW];

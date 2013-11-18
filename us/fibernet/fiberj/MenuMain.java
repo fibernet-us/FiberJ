@@ -72,8 +72,8 @@ public final class MenuMain {
 
         new MenuItemComposite(surName,  "Image ",
               new MenuItemComposite(       "View",
-                    new MenuItemLeaf(         "Actual",     imageHandler),
                     new MenuItemLeaf(         "Fit",        imageHandler),
+                    new MenuItemLeaf(         "Actual",     imageHandler),
                     new MenuItemLeaf(         "Custom",     imageHandler)),
               new MenuItemSeperator(),/////////////////////////////////////
               new MenuItemComposite(       "Flip",
@@ -84,7 +84,10 @@ public final class MenuMain {
                     new MenuItemLeaf(         "180",        imageHandler),
                     new MenuItemLeaf(         "270",        imageHandler),
                     new MenuItemLeaf(         "Custom",     imageHandler)),
-              new MenuItemLeaf(            "Scale",         imageHandler),
+              new MenuItemComposite(       "Scale",
+                    new MenuItemLeaf(         "Fit",        imageHandler),
+                    new MenuItemLeaf(         "Original",   imageHandler),
+                    new MenuItemLeaf(         "Custom",     imageHandler)),
               new MenuItemLeaf(            "Crop",          imageHandler),
               new MenuItemLeaf(            "Repair",        imageHandler)
         ),
@@ -99,7 +102,6 @@ public final class MenuMain {
               new MenuItemLeaf(            "Draw",          processHandler),
               new MenuItemLeaf(            "Plot",          processHandler),
               new MenuItemLeaf(            "Filter",        processHandler),
-              new MenuItemLeaf(            "Background",    processHandler),
               new MenuItemLeaf(            "Correction",    processHandler),
               new MenuItemLeaf(            "Transform",     processHandler)
         ),
@@ -108,7 +110,7 @@ public final class MenuMain {
               new MenuItemLeaf(            "Parameter",     windowHandler),
               new MenuItemLeaf(            "Reflection",    windowHandler),
               new MenuItemLeaf(            "Pixel Viewer",  windowHandler),
-              new MenuItemLeaf(            "Comand Line",   windowHandler),
+              new MenuItemLeaf(            "Command Line",   windowHandler),
               new MenuItemLeaf(            "Log",           windowHandler)
         ),
 

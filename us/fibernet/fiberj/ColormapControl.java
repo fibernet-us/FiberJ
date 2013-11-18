@@ -103,26 +103,28 @@ public class ColormapControl {
     private double rainbowHeightFactor = 255.0 / colorPaneHeight;
 
     private double[] curveParam;
+    public boolean isOpen;
 
     /**
      * @param indexArray array of color indexes
      * @param pd PatternDisplay on which image will be generated
      */
-    public ColormapControl(int[][] indexArray, Pattern pattern, PatternDisplay pd) {
-        this.indexArray = indexArray;
-        this.myPattern = pattern;
+    public ColormapControl(PatternDisplay pd) {
         this.patternDisplay = pd;
+        this.myPattern = pd.getPattern();
+        this.isOpen = false;
         initialize();
     }
 
     /**
      * Open the colormap control window
      */
-    public void openColorMapControl() {
+    public void open() {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
                     frame.setVisible(true);
+                    isOpen = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -130,6 +132,16 @@ public class ColormapControl {
         });
     }
 
+    public void close() {
+        frame.dispose();
+    }
+    
+    public boolean isOpen() {
+        return isOpen();
+    }
+    
+
+    
     /**
      * Create the contents of the colormap control window
      */
@@ -182,7 +194,8 @@ public class ColormapControl {
         panel_1.add(btnNewButton_2);
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
+                frame.setVisible(false);
+                isOpen = false;
             }
         });
 
@@ -395,7 +408,7 @@ public class ColormapControl {
         rainbow = PatternUtil.fitImage(rainbowLabel, rainbow);
         generateRainbowCurve();
         generateBox();
-        generatePatternImage();//
+        calculateImageIndex();//
     }
 
     // sort the order of boxes based on their x position
@@ -414,7 +427,7 @@ public class ColormapControl {
         refreshRainbow();
         initializeThresholds();
         refreshHistogram();
-        generatePatternImage();// redraw the original image.
+        calculateImageIndex();// redraw the original image.
     }
 
     // ===============================================================================================
@@ -422,7 +435,8 @@ public class ColormapControl {
     private BufferedImage generateHistogram() {
 
         TreeMap<Integer, Integer> colors = new TreeMap<Integer, Integer>();
-        int[][] dataArray = myPattern.getData();
+        int[][] indexArray  = PatternUtil.computerColorIndex(myPattern.getDisplayData(), 256);
+        int[][] dataArray = myPattern.getDisplayData();
         int max = -1; // height
         int minThre = Integer.MAX_VALUE;
         int maxThre = Integer.MIN_VALUE;
@@ -683,21 +697,21 @@ public class ColormapControl {
         generateThreLines();
         generateThresholdReadings();
         histogram = PatternUtil.fitImage(histoLabel, histogram);
-        generatePatternImage();
+        calculateImageIndex();
     }
 
     private void changeColorTable(String colorTableName) {
         PatternUtil.useColorTable(colorTableName);
         generateNewRainbow();
-        generatePatternImage();
+        calculateImageIndex();
     }
 
     // ==============================patterGUI interaction=======================
     // based on the dataArray, consider the thresholds and curve function,
     // generate new image array and make pattern GUI to update image based on this image.
-    void generatePatternImage() {
+    void calculateImageIndex() {
 
-        int[][] dataArray = myPattern.getData();
+        int[][] dataArray = myPattern.getDisplayData();
         int[][] output = new int[dataArray.length][dataArray[0].length];
         int min = Integer.valueOf(minArea.getText());
         int max = Integer.valueOf(maxArea.getText());

@@ -46,62 +46,34 @@ import javax.swing.JLabel;
 /**
  * Pattern display related utilities
  */
-public class PatternUtil {
+public final class PatternUtil {
 
-    private static final String colorTableDir = "ColorTables/";
     private static ColorTable colors;
+    
+    private PatternUtil() { }
 
     static {
         try {
-            colors = PatternUtil.getColorTable(colorTableDir + "rgb.txt");
+            colors = PatternUtil.getColorTable("rgb");
         } catch (IOException e) {
-            System.out.println("Couldn't find color table file.");
+            colors = new ColorTable(256);
         }
     }
 
-    static void useColorTable(String colorTable) {
+    public static void useColorTable(String colorTable) {
         try {
-            colors = PatternUtil.getColorTable(colorTableDir + colorTable.toLowerCase() + ".txt");
+            colors = PatternUtil.getColorTable(colorTable);
         } catch (IOException e) {
-            System.out.println("Couldn't find color table file.");
+            colors = new ColorTable(256);
         }
     }
 
-    /**
-     */
-    public static ColorTable getColorTable(String file) throws IOException {
-
-        List<List<Byte>> rgbColorTable = new ArrayList<List<Byte>>();
-        for(int i = 0; i < 3; i++) {
-            rgbColorTable.add(new ArrayList<Byte>());
-        }
-        Scanner scan = new Scanner(new File(file));
-        while (scan.hasNext()) {
-            rgbColorTable.get(0).add((byte) scan.nextInt());
-            rgbColorTable.get(1).add((byte) scan.nextInt());
-            rgbColorTable.get(2).add((byte) scan.nextInt());
-        }
-
-        ColorTable ct = new ColorTable(rgbColorTable.get(0).size());
-
-        byte[] red = ct.getRed();
-        byte[] green = ct.getGreen();
-        byte[] blue = ct.getBlue();
-
-        for(int i = 0; i < rgbColorTable.get(0).size(); i++) {
-            red[i] = rgbColorTable.get(0).get(i);
-            green[i] = rgbColorTable.get(1).get(i);
-            blue[i] = rgbColorTable.get(2).get(i);
-        }
-
-        scan.close();
-        return ct;
+    public static ColorTable getColorTable(String name) throws IOException {
+        return ColorTable.getColorTable(name);
     }
 
     /**
      * Display the color table. Used for test
-     *
-     * @param table
      */
     static void displayColorTable(List<List<Byte>> table) {
         for(List<Byte> row : table) {
@@ -114,7 +86,11 @@ public class PatternUtil {
      * the original int[][]
      */
     static int[][] shrinkArray(int[][] original) {
-        int optimalSize = 500;// the pixel number to achieve good image
+        int optimalSize = 1024;// the pixel number to achieve good image
+        if(original.length < optimalSize || original[0].length < optimalSize) {
+            return original;
+        }
+        
         int shrinkFactor = Math.max(original.length, original[0].length) / optimalSize;
         int[][] output = new int[original.length / shrinkFactor][original[0].length / shrinkFactor];
         for(int r = 0; r * shrinkFactor < original.length; r++) {
@@ -351,8 +327,8 @@ public class PatternUtil {
      *
      * @return coefficients
      */
-    static double[] gaussian(double[][] A, double[] b) {
-        int N = b.length;
+    static double[] gaussian(double[][] matrix, double[] vec) {
+        int N = vec.length;
         // double EPSILON = 1e-10;
 
         for(int p = 0; p < N; p++) {
@@ -360,16 +336,16 @@ public class PatternUtil {
             // find pivot row and swap
             int max = p;
             for(int i = p + 1; i < N; i++) {
-                if(Math.abs(A[i][p]) > Math.abs(A[max][p])) {
+                if(Math.abs(matrix[i][p]) > Math.abs(matrix[max][p])) {
                     max = i;
                 }
             }
-            double[] temp = A[p];
-            A[p] = A[max];
-            A[max] = temp;
-            double t = b[p];
-            b[p] = b[max];
-            b[max] = t;
+            double[] temp = matrix[p];
+            matrix[p] = matrix[max];
+            matrix[max] = temp;
+            double t = vec[p];
+            vec[p] = vec[max];
+            vec[max] = t;
 
             // singular or nearly singular
             /*
@@ -379,10 +355,10 @@ public class PatternUtil {
 
             // pivot within A and b
             for(int i = p + 1; i < N; i++) {
-                double alpha = A[i][p] / A[p][p];
-                b[i] -= alpha * b[p];
+                double alpha = matrix[i][p] / matrix[p][p];
+                vec[i] -= alpha * vec[p];
                 for(int j = p; j < N; j++) {
-                    A[i][j] -= alpha * A[p][j];
+                    matrix[i][j] -= alpha * matrix[p][j];
                 }
             }
         }
@@ -392,11 +368,22 @@ public class PatternUtil {
         for(int i = N - 1; i >= 0; i--) {
             double sum = 0.0;
             for(int j = i + 1; j < N; j++) {
-                sum += A[i][j] * x[j];
+                sum += matrix[i][j] * x[j];
             }
-            x[i] = (b[i] - sum) / A[i][i];
+            x[i] = (vec[i] - sum) / matrix[i][i];
         }
         return x;
     }
 
+    /** make a deep copy of a 2D array */
+    public static int[][] copy2dArray(int[][] data) {
+        int[][] copy = new int[data.length][];
+
+        for(int i = 0; i < data.length; i++) {
+            copy[i] = new int[data[i].length];
+            System.arraycopy(data[i], 0, copy[i], 0, data[i].length);
+        }
+
+        return copy;
+    }
 }

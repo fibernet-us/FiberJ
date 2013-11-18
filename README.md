@@ -15,5 +15,4 @@ Future work:
 8. A scripting language for batch and command line processing;
 9. API for writing plugins and extensions;
 10. Diffraction simulation;
-11. Ab initio low resolution structure prediction;
-12. Core FibreFix functions.
+11. Core FibreFix functions.

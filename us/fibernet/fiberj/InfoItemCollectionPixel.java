@@ -39,8 +39,8 @@ import javax.swing.Box;
  */
 public final class InfoItemCollectionPixel extends InfoItemCollection implements InfoItemGuiCallBack {
 
-    private int x = 0;         // x-coordinate
-    private int y = 0;         // y-coordinate
+    private double x = 0.0;    // x-coordinate
+    private double y = 0.0;    // y-coordinate
     private double r = 0.0;    // radius
     private double I = 0.0;    // intensity
     private double d = 0.0;    // d-spacing
@@ -57,10 +57,10 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
     protected void populateInfoItemList() {
 
         infoItemList = new ArrayList<InfoItem>();
-        infoItemList.add(new InfoItemTextField("x", "0", "%d",   3, false, this));
-        infoItemList.add(new InfoItemTextField("y", "0", "%d",   3, false, this));
+        infoItemList.add(new InfoItemTextField("x", "0", "%.0f", 3, false, this));
+        infoItemList.add(new InfoItemTextField("y", "0", "%.0f", 3, false, this));
         infoItemList.add(new InfoItemTextField("r", "0", "%.1f", 4, false, this));
-        infoItemList.add(new InfoItemTextField("I", "0", "%.1f", 5, false, this));
+        infoItemList.add(new InfoItemTextField("I", "0", "%.0f", 4, false, this));
         infoItemList.add(new InfoItemTextField("d", "0", "%.3f", 5, false, this));
         infoItemList.add(new InfoItemTextField("D", "0", "%.4f", 5, false, this));
         infoItemList.add(new InfoItemTextField("R", "0", "%.4f", 5, false, this));
@@ -90,33 +90,29 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
     }
 
 
-    /** update the x- and y- coordinate, and other info accordingly */
-    public void updateLocation(int x, int y) {
-        this.x = x;
-        this.y = y;
-        updateAll();  // update all info and update GUI
-    }
-
     public String toString() {
         return    "x=" + x + ", y=" + y + ", r=" + r + ", I=" + I +
                 ", d=" + d + ", D=" + D + ", R=" + R + ", Z=" + Z;
     }
+    
+    /** update the x- and y- coordinate, and other info accordingly */
+    public void updateLocation(int xpix, int ypix) {
 
-    // compute all data from x and y, and update gui
-    private void updateAll() {
         // TODO: compute other values
         Pattern p = PatternProcessor.getCurrentPattern();
         if(p == null) {
             return;
         }
 
-        r = p.getr(x, y);
-        I = p.getI(x, y);
+        x = p.getx(xpix);
+        y = p.gety(ypix);
+        r = p.getr(xpix, ypix);
+        I = p.getI(xpix, ypix);
 
         double[] RZ = {0.0, 0.0};
         if(p.xy2RZ(x, y, RZ)) {
-            R = RZ[0];
-            Z = RZ[1];
+            R = Math.abs(RZ[0]);
+            Z = Math.abs(RZ[1]);
             D = Math.sqrt(R*R + Z*Z);
             if(D != 0) {
                 d = 1/D;
@@ -131,10 +127,10 @@ public final class InfoItemCollectionPixel extends InfoItemCollection implements
 
         // display new values
         int i = -1;
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%d", x));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%d", y));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.0f", x));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.0f", y));
         ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.1f", r));
-        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.1f", I));
+        ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.0f", I));
         ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.3f", d));
         ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", D));
         ((InfoItemTextField) infoItemList.get(++i)).setGuiValueNoCheck(String.format("%.4f", R));

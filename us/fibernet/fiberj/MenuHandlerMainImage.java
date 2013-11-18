@@ -76,7 +76,24 @@ public class MenuHandlerMainImage extends MenuHandlerMainDefault {
         UIMain.setMessage("enter on right: r degree");
     }
 
-    public void mainImageScale()          { super.mainImageScale();        }
+    /*
+     * mainImageScale handlers
+     */
+    public void mainImageScaleFit() { 
+        //PatternProcessor.executeCommand("automatic");   
+        super.mainImageScaleFit();
+    }
+    
+    public void mainImageScaleOriginal()   { 
+        //PatternProcessor.executeCommand("original");
+        super.mainImageScaleOriginal();
+    }
+    
+    public void mainImageScaleCustom() { 
+        popupWarning("mainImageScaleCustom");   
+    }  
+    
+    
     public void mainImageCrop()           { super.mainImageCrop();         }
     public void mainImageRepair()         { super.mainImageRepair();       }
 

@@ -68,7 +68,8 @@ public class Interpolation {
         for (int y = 0; y < nPts; y++) {
             ymatrix[y] = pts[y].getY();
         }
-        curveParams = ImageUtil.gaussian(xmatrix, ymatrix);
+        
+        curveParams = PatternUtil.gaussian(xmatrix, ymatrix);
         //int max = (int)(pts[nPts-1].getX()+1);
         int numInterPts = (int)((pts[nPts-1].getX()-pts[0].getX())/interval);
         Point2D[] result = new Point2D[numInterPts];
@@ -89,6 +90,7 @@ public class Interpolation {
         return y;
     }
 
+    
     public static void main0(String[] args) {
         Point2D[] input = {new Point2D.Double(1,5), new Point2D.Double(2,11), new Point2D.Double(10,50)};
         Point2D[] pts = interpolation(input, 1);

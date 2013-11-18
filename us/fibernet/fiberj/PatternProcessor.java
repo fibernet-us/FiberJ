@@ -28,22 +28,62 @@
 
 package us.fibernet.fiberj;
 
+import java.awt.Dimension;
 import java.io.File;
 
 import javax.swing.JOptionPane;
 
 /**
- * A singleton class serving as the central processor of pattern processing tasks
+ * A central processor for  pattern processing tasks
  *
  */
 public final class PatternProcessor {
 
-    private static Pattern currentPattern;  // currently only allow one active pattern
-    private static PatternDisplay currentDisplay;
+    private static Pattern currentPattern = null;  // currently only allow one active pattern
+    private static PatternDisplay currentDisplay = null; 
+    private static PlotDialog currentPlotter = null;
 
-    public static Pattern getCurrentPattern()  { return currentPattern;                   }
-    public static double  getAspectRatio()     { return currentPattern.getAspectRatio();  }
-    public static double  getShrinkScale()     { return currentPattern.getShrinkScale();  }
+    public static Pattern getCurrentPattern() {
+        return currentPattern;
+    }
+
+    public static PlotDialog getCurrentPlotter() {
+        return currentPlotter;
+    }
+
+    public static double getAspectRatio() {
+        return currentPattern.getAspectRatio();
+    }
+
+    public static double getShrinkScale() {
+        return currentPattern.getShrinkScale();
+    }
+
+
+    public static synchronized void setCurrentPlotter(PlotDialog dp) {
+        currentPlotter = dp;
+    }
+
+    public static synchronized void openColormap() {
+        currentDisplay.openColorControl();
+    }
+
+    public static synchronized void reset() {
+        if(currentPattern != null) {
+            currentPattern.close();
+            currentPattern = null;
+        }
+
+        if(currentDisplay != null) {
+            currentDisplay.close();
+            currentDisplay = null;
+        }
+
+        if(currentPlotter != null) {
+            currentPlotter.close();
+            currentPlotter = null;
+        }
+    }
 
     /**
      * Read an image file and create an a pattern image
@@ -54,8 +94,9 @@ public final class PatternProcessor {
             return;
         }
 
+        reset();
         currentPattern = PatternReader.readPattern(args);
-        createPatternImage(currentPattern);
+        createPatternImage(currentPattern, null);
     }
 
     /**
@@ -73,20 +114,36 @@ public final class PatternProcessor {
             }
         }
 
+        reset();
         currentPattern = new Pattern(intensityData, "", false);
-        createPatternImage(currentPattern);
+        createPatternImage(currentPattern, null);
     }
 
     /**
      * Create pattern image display for a Pattern
      */
-    public static synchronized void createPatternImage(Pattern pattern) {
+    public static synchronized void createPatternImage(Pattern pattern, Dimension dim) {
         if(pattern != null) {
+            PatternDisplay oldDisplay = currentDisplay;
+            currentPattern = pattern;
+
+            //if(dim != null) {
+            //    UIMain.resizeToHeight(dim.height);
+            //}
+
             currentDisplay = new PatternDisplay(UIMain.getUIPattern(), pattern);
             UIMain.setTitle(UIMain.getTitle() + "  " + pattern.getName());
             UIMain.updateSizeInfo();
-            UIMain.resizeToHeight(currentPattern.getHeight());
+            //UIMain.resizeToHeight(currentPattern.getHeight());
             UIParameter.refresh();
+            
+            pattern.recalcDisplayScale(UIMain.getUIPattern().getHeight());
+            if(pattern.getHeight() > UIMain.getAvailableScreenHeight() || pattern.getWidth() != pattern.getHeight()) {
+                PatternProcessor.executeCommand("fit");
+            }
+            else {
+                PatternProcessor.executeCommand("actual");
+            }
         }
     }
 
@@ -96,7 +153,6 @@ public final class PatternProcessor {
      */
     public static synchronized boolean savePatternToFile(String filename) {
         return PatternWriter.writePattern(currentPattern, filename);
-
     }
 
 
@@ -124,37 +180,55 @@ public final class PatternProcessor {
                 createPatternImage(filename);
             }
         }
-        else if(command.startsWith("a")) {   // to actual image size
+        else if(command.startsWith("ac")) {   // to display actual image size
             try {
                 UIMain.resizeToHeight(currentPattern.getHeight());
-                UIMain.setMessage("width, height: " + currentPattern.getWidth() + ", " + currentPattern.getHeight());
+                UIMain.setMessage("data w, h: " + currentPattern.getWidth() + ", " + currentPattern.getHeight());
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
             }
         }
-        else if(command.startsWith("f")) {  // to fit image to current window
+        else if(command.startsWith("f")) {  // to display image to fit to current window
             try {
                 UIMain.resizeToFit();
-                UIMain.setMessage("width, height: " + UIMain.getUIPattern().getWidth() + ", " + UIMain.getUIPattern().getHeight());
+                UIMain.setMessage("display w, h: " + UIMain.getUIPattern().getWidth() + ", " + UIMain.getUIPattern().getHeight());
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
             }
         }
-        else if(command.startsWith("h") || command.startsWith("w")) { // to height, width
+        else if(command.startsWith("h") || command.startsWith("w")) { // display to height, width
             try {
                 int size = Integer.parseInt(command.substring(command.indexOf(' ')).trim());
                 if(command.charAt(0) == 'w') {
                     size /= currentPattern.getAspectRatio();
                 }
                 UIMain.resizeToHeight(size);
-                UIMain.setMessage("width, height: " + (int)(size*currentPattern.getAspectRatio()+0.5) + ", " + size);
+                UIMain.setMessage("display w, h: " + UIMain.getUIPattern().getWidth() + ", " + UIMain.getUIPattern().getHeight());
             }
             catch(NumberFormatException e) {
                 e.printStackTrace();
             }
         }
+        else if(command.startsWith("o")) {   // scale data to original image size
+            try {
+                currentPattern.scaleToOriginal();
+                UIMain.setMessage("data w, h: " + currentPattern.getWidth() + ", " + currentPattern.getHeight());
+            }
+            catch(NumberFormatException e) {
+                e.printStackTrace();
+            }
+        } 
+        else if(command.startsWith("au")) {   // scale data to current window size
+            try {
+                currentPattern.scaleFit();
+                UIMain.setMessage("data w, h: " + currentPattern.getWidth() + ", " + currentPattern.getHeight());
+            }
+            catch(NumberFormatException e) {
+                e.printStackTrace();
+            }
+        } 
         else if(command.startsWith("r")) { // rotate
             try {
                 double degree = Double.parseDouble(command.substring(command.indexOf(' ')).trim());
@@ -164,7 +238,7 @@ public final class PatternProcessor {
                 e.printStackTrace();
             }
         }
-        else if(command.startsWith("s")) { // scroll
+        else if(command.startsWith("sc")) { // scroll
             try {
                 UIMain.scrollPattern();
             }

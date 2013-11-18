@@ -28,6 +28,8 @@
 
 package us.fibernet.fiberj;
 
+import java.util.Scanner;
+
 /**
  * A utility class for storing RGB color tables
  */
@@ -76,4 +78,33 @@ public class ColorTable {
     public void setBlue(byte[] blue) {
         this.blue = blue;
     }
+    
+    public static ColorTable getColorTable(String name) {
+
+        ColorTable table = new ColorTable(256);
+        
+        try {
+            name = name.toLowerCase();   
+            Scanner scan = new Scanner(Resource.getColormap(name));
+            int i = 0;
+            byte[] red = table.getRed();
+            byte[] green = table.getGreen();
+            byte[] blue = table.getBlue();
+            while (scan.hasNext()) {
+                red[i] = ((byte) scan.nextInt());
+                green[i] = ((byte) scan.nextInt());
+                blue[i++] = ((byte) scan.nextInt());
+            }
+            scan.close();
+        }
+        catch(Exception e) {
+        }
+        finally {
+        }
+
+        return table;
+    }
+    
+
+    
 }

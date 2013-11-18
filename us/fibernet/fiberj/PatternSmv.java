@@ -107,9 +107,9 @@ public final class PatternSmv {
 
             if(data != null) {
                 Pattern p = new Pattern(data, new File(fileName).getName(), isrecip);
-                p.setCenterX0(centerx);
-                p.setCenterY0(centery);
-                p.setPixelSize0(pixsize);
+                p.setCenterX(centerx);
+                p.setCenterY(centery);
+                p.setPixelSize(pixsize);
                 p.setWavelen(wlength);
                 p.setSdd(distance);
                 p.setOffset(offset);
@@ -168,7 +168,7 @@ public final class PatternSmv {
             RandomAccessFile raf = new RandomAccessFile(fileName, "rw");
             raf.write(getPatternHeader(p).getBytes());
             raf.seek(HEADER_LENGTH);
-            raf.write(p.getDataBytes());
+            raf.write(p.getDataBytes(2));
             raf.close();
             return true;
         }
@@ -191,7 +191,7 @@ public final class PatternSmv {
                 FileOutputStream sout = new FileOutputStream(fileName);
                 FileChannel ch = sout.getChannel();
                 ch.position(HEADER_LENGTH);
-                ch.write(ByteBuffer.wrap(p.getDataBytes()));
+                ch.write(ByteBuffer.wrap(p.getDataBytes(2)));
                 sout.close();
                 smvWritten = true;
             }
@@ -215,8 +215,8 @@ public final class PatternSmv {
         header.append("{"                                   + endline);
         header.append("HEADER_BYTES="  +  HEADER_LENGTH     + endline2);
         header.append("BYTE_ORDER="    +  "big_endian"      + endline2);
-        header.append("BITSPERPIXEL="  +  "4"               + endline2);
-        header.append("TYPE="          +  "int"             + endline2);
+        header.append("BITSPERPIXEL="  +  "2"               + endline2);
+        header.append("TYPE="          +  "unsigned_short"             + endline2);
         header.append("DIM="           +  "2"               + endline2);
         header.append("SIZE1="         +  p.getWidth()      + endline2);
         header.append("SIZE2="         +  p.getHeight()     + endline2);
