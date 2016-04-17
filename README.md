@@ -14,6 +14,6 @@ Current work focuses on implementing FiberNet pattern processing and simulation 
 Future work:
 
 9. Diffraction simulation
-a. Core FibreFix functions
-b. A scripting language for batch and command line processing
-c. API for writing plugins and extensions
+10. Core FibreFix functions
+11. A scripting language for batch and command line processing
+12. API for writing plugins and extensions
